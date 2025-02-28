@@ -47,8 +47,12 @@
         }
         .login-btn {
             background-color: green;
-            color: rgb(4, 80, 4);
+            color: white;
             border-radius: 0;
+            transition: background-color 0.3s;
+        }
+        .login-btn:hover {
+            background-color: darkgreen;
         }
         .btn-light {
             border-radius: 0;
@@ -57,6 +61,13 @@
             margin-bottom: 10px;
             font-weight: bold;
         }
+        .card {
+            border-radius: 0;
+        }
+        .form-check-input:checked + .form-check-label {
+            color: blue;
+        }
+        
     </style>
 </head>
 <body>
@@ -69,7 +80,7 @@
 
         <p class="text-muted">Login to Access SMS v.1.1.1.1</p>
 
-        <div class="card p-3">
+        <div class="card bg-light p-3">
             <form method="POST" action="">
                 <p id="currentDateTime" class="text-muted"></p>
                 <div class="mb-3">
@@ -79,12 +90,15 @@
                     <input type="password" class="form-control" name="password" id="password" placeholder="Password" required>
                     <button class="btn btn-outline-secondary" type="button" id="togglePassword">👁️</button>
                 </div>
-                <div class="mb-3 form-check">
-                    <input type="checkbox" class="form-check-input" id="rememberMe" name="remember">
-                    <label class="form-check-label" for="rememberMe">Remember Me?</label>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" id="rememberMe" name="remember">
+                        <label class="form-check-label" for="rememberMe">Remember Me?</label>
+                    </div>
+                    <button type="button" class="btn btn-outline-secondary">Advance Server Setup</button>
                 </div>
                 <button type="submit" class="btn login-btn w-100">Login</button>
-                <button type="button" class="btn btn-light w-100 mt-2">Advance Server Setup</button>
+                
             </form>
         </div>
 
