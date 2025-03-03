@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMS Admin | Dashboard |</title>
+    <title>SMS Admin | Items |</title>
     <link rel="icon" href="{{ asset('assets/images/LOGO.webp') }}" type="image/png">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -36,6 +36,32 @@
             position: absolute;
             right: 20px;
         }
+        body {
+            background-color: #f8f9fa;
+            text-align: center;
+        }
+        .report-container {
+            width: 80%;
+            margin: 30px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #3a5a9a;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -49,8 +75,8 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/admin/dashboard') }}" style="background-color: #2d4373;">Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/admin/items') }}">Items</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('/admin/dashboard') }}" >Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('/admin/items') }}" style="background-color: #2d4373;">Items</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url('/admin/transaction') }}">transaction</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url('/admin/request') }}">Request</a></li>
                     <li class="nav-item"><a class="nav-link" href="{{ url('/admin/report') }}">Report</a></li>
@@ -66,7 +92,8 @@
         </div>
     </nav>
 
-
+    
+    
 
 </body>
 </html>
