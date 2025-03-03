@@ -49,9 +49,9 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/admin_checker/dashboard') }}" >Items</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/admin_checker/transaction') }}" >Transactions</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/admin_checker/request') }}" style="background-color: #2d4373;">Request</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('/checker_admin/dashboard') }}" >Items</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('/checker_admin/transaction') }}" style="background-color: #2d4373;">Transactions</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('/checker_admin/request') }}">Request</a></li>
                     
                 </ul>
                 <ul class="navbar-nav logout">

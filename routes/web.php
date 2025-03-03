@@ -1,7 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Inventory_Admin\IA_mainController;
+use App\Http\Controllers\User\User_mainController;
+use App\Http\Controllers\Head_Admin\HA_mainController;
+use App\Http\Controllers\Checker_Admin\CA_mainController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,77 +17,49 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
-
-
-/* -- ADMIN --*/
-Route::get('/admin/dashboard', function () {
-    return view('admin/dashboard');
+/* -- Inventory Admin --*/
+Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
+    //Route for Main Controller or Navigation
+    Route::controller(IA_mainController::class)->group(function(){
+        Route::get('admin/dashboard', 'goToDashboard');
+        Route::get('admin/items', 'goToItems');
+        Route::get('admin/transaction', 'goToTransactions');
+        Route::get('admin/request', 'goToRequest');
+        Route::get('admin/report', 'goToReport');
+        Route::get('admin/analytic', 'goToAnalytics');
+        Route::get('admin/account', 'goToAccount');
+        Route::get('admin/audit', 'goToAudit');
+        Route::get('admin/profile', 'goToProfile');
+    });
 });
-Route::get('/admin/items', function () {
-    return view('admin/items');
-});
-Route::get('/admin/transaction', function () {
-    return view('admin/transaction');
-});
-Route::get('/admin/request', function () {
-    return view('admin/request');
-});
-Route::get('/admin/report', function () {
-    return view('admin/report');
-});
-Route::get('/admin/analytic', function () {
-    return view('admin/analytic');
-});
-Route::get('/admin/account', function () {
-    return view('admin/account');
-});
-Route::get('/admin/audit', function () {
-    return view('admin/audit');
-});
-Route::get('/admin/profile', function () {
-    return view('admin/profile');
-});
-
-
-
 /* -- USER -- */
-Route::get('/user/dashboard', function () {
-    return view('user/dashboard');
+Route::group(['middleware' => 'loginCheckUser'], function () {
+    //Route for Main Controller or Navigation
+    Route::controller(User_mainController::class)->group(function() {
+        Route::get('user/dashboard', 'goToDashboard');
+        Route::get('user/request', 'goToRequest');
+        Route::get('user/history', 'goToHistory');
+        Route::get('user/profile', 'goToProfile');
+    });
 });
-Route::get('/user/request', function () {
-    return view('user/request');
-});
-Route::get('/user/history', function () {
-    return view('user/history');
-});
-Route::get('/user/profile', function () {
-    return view('user/profile');
-});
-
-
-
 /* -- ADMIN HEAD -- */
-Route::get('/admin_head/dashboard', function () {
-    return view('admin_head/dashboard');
-});
-Route::get('/admin_head/transaction', function () {
-    return view('admin_head/transaction');
-});
-Route::get('/admin_head/request', function () {
-    return view('admin_head/request');
+Route::group(['middleware' => 'loginCheckHeadAdmin'], function () {
+    //Route for Main Controller or Navigation
+    Route::controller(HA_mainController::class)->group(function(){
+        Route::get('head_admin/dashboard', 'goToDashboard');
+        Route::get('head_admin/transaction', 'goToTransactions');
+        Route::get('head_admin/request', 'goToRequest');
+    });
 });
 
-
-
-/* -- ADMIN HEAD -- */
-Route::get('/admin_checker/dashboard', function () {
-    return view('admin_checker/dashboard');
-});
-Route::get('/admin_checker/transaction', function () {
-    return view('admin_checker/transaction');
-});
-Route::get('/admin_checker/request', function () {
-    return view('admin_checker/request');
+/* -- ADMIN CHECKER */
+Route::group(['middleware' => 'loginCheckCheckerAdmin'], function () {
+    //Route for Main Controller or Navigation
+    Route::controller(CA_mainController::class)->group(function(){
+        Route::get('checker_admin/dashboard', 'goToDashboard');
+        Route::get('checker_admin/transaction', 'goToTransactions');
+        Route::get('checker_admin/request', 'goToRequest');
+    });
 });
