@@ -15,7 +15,7 @@ class LoginCheckInventoryAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!session()->has('loginCheckInventoryAdmin')) {
+        if (!session()->has('loggedInInventoryAdmin')) {
             if ($request->path() != '/') {
                 return redirect('/');
             }

@@ -1,10 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MainNavigation\MainNavigationController;
 use App\Http\Controllers\Inventory_Admin\IA_mainController;
 use App\Http\Controllers\User\User_mainController;
 use App\Http\Controllers\Head_Admin\HA_mainController;
 use App\Http\Controllers\Checker_Admin\CA_mainController;
+use App\Http\Controllers\Access\RegisterController;
+use App\Http\Controllers\Access\LoginController;
+use App\Http\Controllers\Inventory_Admin\IA_functionController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,23 +19,33 @@ use App\Http\Controllers\Checker_Admin\CA_mainController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('/', function () {
-    return view('index');
+//Route for Main Navigation
+Route::controller(MainNavigationController::class)->group(function() {
+    Route::get('/', 'goToIndex');
+});
+//Route for Access 
+Route::controller(RegisterController::class)->group(function() {
+    Route::post('/register-user', 'registration');
+});
+Route::controller(LoginController::class)->group(function(){
+    Route::post('/login-user', 'loginUser');
 });
 /* -- Inventory Admin --*/
 Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     //Route for Main Controller or Navigation
     Route::controller(IA_mainController::class)->group(function(){
-        Route::get('admin/dashboard', 'goToDashboard');
+        Route::get('admin/', 'goToDashboard');
         Route::get('admin/items', 'goToItems');
         Route::get('admin/transaction', 'goToTransactions');
         Route::get('admin/request', 'goToRequest');
         Route::get('admin/report', 'goToReport');
-        Route::get('admin/analytic', 'goToAnalytics');
-        Route::get('admin/account', 'goToAccount');
-        Route::get('admin/audit', 'goToAudit');
+        Route::get('admin/account', 'goToAccounts');
+        Route::get('admin/audit', 'goToAudits');
         Route::get('admin/profile', 'goToProfile');
+    });
+    //Route for admin functions
+    Route::controller(IA_functionController::class)->group(function() {
+        Route::get('/logoutAdmin', 'logoutAdmin');
     });
 });
 /* -- USER -- */

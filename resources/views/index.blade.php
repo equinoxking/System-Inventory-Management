@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>SMS</title>
     <link rel="icon" href="{{ asset('assets/images/LOGO.webp') }}" type="image/png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.17.2/dist/sweetalert2.min.css">
     <style>
         body {
             background-color: #f8f9fa;
@@ -86,7 +88,8 @@
         <p class="text-muted">Login to Access SMS v.1.1.1.1</p>
 
         <div class="card bg-light p-3">
-            <form method="POST" action="">
+            <form id="login-form">
+                @csrf
                 <p id="currentDateTime" class="text-muted"></p>
                 <div class="mb-3">
                     <input type="text" class="form-control" name="username" placeholder="Username" required>
@@ -128,15 +131,23 @@
         }); 
     </script>
 </body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="{{ asset('assets/js/main_js/modal.js') }}"></script>
+<script src="{{ asset('assets/js/external/registration.js') }}"></script>
+<script src="{{ asset('assets/js/external/login.js') }}"></script>
 </html>
+{{-- Modals --}}
+
 <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <div class="modal-header" style="background-color: yellowgreen">
+            <div class="modal-header" style="background-color: #3a5a9a">
                 <h5 class="modal-title" id="registerLabel" >Register Form</h5>
             </div>
             <div class="modal-body">
-                <form id="register-form">
+                <form id="registration-form">
                     @csrf
                     <div class="form-group">
                         <label for="firstName">First Name</label>
@@ -144,31 +155,32 @@
                     </div>
                     <div class="form-group">
                         <label for="lastName">Last Name</label>
-                        <input type="text" class="form-control" id="lastNameRegister" placeholder="Enter last name">
+                        <input type="text" class="form-control" id="lastNameRegister" name="lastName" placeholder="Enter last name">
                     </div>
                     <div class="form-group">
-                        <label for="lastName">Division</label>
-                        <select name="department" id="departmentRegister" class="form-control">
-                            <option value="PHRMO">PHRMO</option>
+                        <label for="division">Division</label>
+                        <select name="division" id="divisionRegister" class="form-control">
+                            <option value="phrmo">PHRMO</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="emailAddress">Email Address</label>
-                        <input type="email" class="form-control" id="emailAddressRegister" placeholder="Enter email">
+                        <input type="email" class="form-control" id="emailAddressRegister" name="email" placeholder="Enter email">
                     </div>
                     <div class="form-group">
                         <label for="password">Password</label>
-                        <input type="password" class="form-control" id="passwordRegister" placeholder="Enter passowrd">
+                        <input type="password" class="form-control" id="passwordRegister" name="password" placeholder="Enter passowrd">
+                    </div>
+                    <div class="form-group">
+                        <label for="re-password">Re-type Password</label>
+                        <input type="password" class="form-control" id="re-passwordRegister" name="re-password" placeholder="Enter re-type passowrd">
                     </div>
             </div>
-                <div class="modal-footer" style="background-color: yellowgreen">
+                <div class="modal-footer" style="background-color: #3a5a9a">
                     <button type="button" class="btn btn-secondary close-btn" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary" id="register-btn">Submit</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
-<script src="{{ asset('assets/js/main_js/modal.js') }}"></script>

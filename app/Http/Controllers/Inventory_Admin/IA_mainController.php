@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class IA_mainController extends Controller
 {
     public function goToDashboard(){
-        return view('admin.dashboard');
+        return view('admin.index');
     }
     public function goToItems(){
         return view('admin.items');
@@ -21,9 +21,6 @@ class IA_mainController extends Controller
     }
     public function goToReport(){
         return view('admin.report');
-    }
-    public function goToAnalytics(){
-        return view ('admin.analytic');
     }
     public function goToAccounts(){
         return view ('admin.account');

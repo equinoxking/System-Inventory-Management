@@ -1,0 +1,56 @@
+body {
+    background-color: #f8f9fa;
+    font-family: "Montserrat", sans-serif;
+}
+.navbar {
+    background: #3a5a9a;
+}
+.navbar a {
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+}
+.navbar a:hover {
+    background: #2d4373;
+}
+.content {
+    padding: 20px;
+}
+.navbar-brand img {
+    height: 40px;
+    margin-right: 10px;
+}
+.navbar-nav {
+    margin: auto;
+}
+.logout {
+    margin-left: auto;
+    position: absolute;
+    right: 20px;
+}
+body {
+    background-color: #f8f9fa;
+    text-align: center;
+}
+.report-container {
+    width: 80%;
+    margin: 30px auto;
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    border: 1px solid black;
+    padding: 10px;
+    text-align: center;
+}
+th {
+    background-color: #3a5a9a;
+    color: white;
+}
