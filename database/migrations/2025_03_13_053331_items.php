@@ -11,16 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clients', function (Blueprint $table) {
+        Schema::create('items', function (Blueprint $table) {
             $table->id();
-            $table->string('full_name' , 60);
-            $table->string('office', 10);
-            $table->string('position', 20);
-            $table->string('email' , 100)->unique();
-            $table->string('username', 30)->unique();
-            $table->string('password' , 120);
-            $table->string('role', 15);
-            $table->string('status', 15);
+            $table->foreignId('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->foreignId('unit_id')->references('id')->on('units')->onDelete('cascade');
+            $table->foreignId('itemStatus_id')->references('id')->on('item_statuses')->onDelete('cascade');
+            $table->string('name' , 60)->unique();
+            $table->string('description' , 255);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
         });
@@ -31,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('clients');
+        Schema::dropIfExists('items');
     }
 };

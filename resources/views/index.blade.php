@@ -106,7 +106,12 @@
                     <button type="button" class="btn btn-outline-secondary">Advance Server Setup</button>
                 </div>
                 <button type="submit" class="btn login-btn w-100">Login</button>
-                <button type="button" class="btn register-btn w-100 mt-1" data-toggle="modal" data-target="#registerModal">Register</button>
+                @php
+                    $user = $users;
+                @endphp
+                @if ($user <= 0)
+                    <button type="button" class="btn register-btn w-100 mt-1" data-toggle="modal" data-target="#registerModal">Register</button>
+                @endif
             </form>
         </div>
 
@@ -150,18 +155,18 @@
                 <form id="registration-form">
                     @csrf
                     <div class="form-group">
-                        <label for="firstName">First Name</label>
-                        <input type="text" class="form-control" id="firstNameRegister" name="firstName" placeholder="Enter first name">
+                        <label for="firstName">Full Name</label>
+                        <input type="text" class="form-control" id="fullNameRegister" name="fullName" placeholder="Enter first name">
                     </div>
                     <div class="form-group">
-                        <label for="lastName">Last Name</label>
-                        <input type="text" class="form-control" id="lastNameRegister" name="lastName" placeholder="Enter last name">
-                    </div>
-                    <div class="form-group">
-                        <label for="division">Division</label>
-                        <select name="division" id="divisionRegister" class="form-control">
+                        <label for="office">Office</label>
+                        <select name="office" id="officeRegister" class="form-control">
                             <option value="phrmo">PHRMO</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="position">Position</label>
+                        <input type="text" class="form-control" id="positionRegister" name="position" placeholder="Enter here your position">
                     </div>
                     <div class="form-group">
                         <label for="emailAddress">Email Address</label>

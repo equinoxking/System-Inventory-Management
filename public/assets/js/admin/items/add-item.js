@@ -4,5 +4,9 @@ $(document).ready(function() {
         "display": "flex",        
       });
     });
+    $('#createItem-closeBtn').click(function(){
+      $("#itemForm").css({
+        "display": "none",        
+      });
+    })
 });
-

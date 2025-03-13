@@ -11,56 +11,58 @@
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('/admin/') }}" 
-                       style="{{ (Request::is('admin/')) ? 'background-color: #2d4373;' : '' }}">
+                       style="{{ (Request::is('admin/')) ? 'background-color: #3d5c99;' : '' }}">
                        Dashboard
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/admin/items') }}" 
-                       style="{{ (Request::is('admin/items')) ? 'background-color: #2d4373;' : '' }}">
+                    <a class="nav-link" href="{{ url('/admin/items/view-items') }}" 
+                       style="{{ (Request::is('admin/items/view-items')) ? 'background-color: #3d5c99;' : '' }}">
                        Items
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('/admin/transaction') }}" 
-                       style="{{ (Request::is('admin/transaction')) ? 'background-color: #2d4373;' : '' }}">
+                       style="{{ (Request::is('admin/transaction')) ? 'background-color: #3d5c99;' : '' }}">
                        Transactions
                     </a>
                 </li>
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link" href="{{ url('/admin/request') }}" 
-                       style="{{ (Request::is('admin/request')) ? 'background-color: #2d4373;' : '' }}">
+                       style="{{ (Request::is('admin/request')) ? 'background-color: #3d5c99;' : '' }}">
                        Requests
                     </a>
-                </li>
+                </li> --}}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('/admin/report') }}" 
-                       style="{{ (Request::is('admin/report')) ? 'background-color: #2d4373;' : '' }}">
+                       style="{{ (Request::is('admin/report')) ? 'background-color: #3d5c99;' : '' }}">
                        Reports
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('/admin/account') }}" 
-                       style="{{ (Request::is('admin/account')) ? 'background-color: #2d4373;' : '' }}">
+                       style="{{ (Request::is('admin/account')) ? 'background-color: #3d5c99;' : '' }}">
                        Accounts
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('/admin/audit') }}" 
-                       style="{{ (Request::is('admin/audit')) ? 'background-color: #2d4373;' : '' }}">
+                       style="{{ (Request::is('admin/audit')) ? 'background-color: #3d5c99;' : '' }}">
                        Audits
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('/admin/profile') }}" 
-                       style="{{ (Request::is('admin/profile')) ? 'background-color: #2d4373;' : '' }}">
+                       style="{{ (Request::is('admin/profile')) ? 'background-color: #3d5c99;' : '' }}">
                        Profile
                     </a>
                 </li>
             </ul>
             <ul class="navbar-nav logout">
-                <li class="nav-item"><button type="button" class="btn btn-danger" id="signOutButton"><i class="fa-solid fa-right-from-bracket"></i></button></li>
+                <li class="nav-item"><button type="button" class="btn btn-danger" style="background-color: #FFB200 ; border-color: #FFB200;" id="signOutButton"><i class="fa-solid fa-right-from-bracket"></i></button></li>
             </ul>
         </div>
     </div>
 </nav>
+<div style="background: linear-gradient(to right, #dd9f03, #eabe03, #dd9f03); height: 10px; width: 100%;"></div>
+

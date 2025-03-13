@@ -4,14 +4,17 @@ namespace App\Http\Controllers\Inventory_Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use App\Models\CategoryModel;
+use App\Models\UnitModel;
 class IA_mainController extends Controller
 {
     public function goToDashboard(){
         return view('admin.index');
     }
     public function goToItems(){
-        return view('admin.items');
+        $categories = CategoryModel::all();
+        $units = UnitModel::all();
+        return view('admin.items.view-items', ['categories' => $categories, 'units' => $units]);
     }
     public function goToTransactions(){
         return view('admin.transaction');

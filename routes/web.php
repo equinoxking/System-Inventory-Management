@@ -35,7 +35,7 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     //Route for Main Controller or Navigation
     Route::controller(IA_mainController::class)->group(function(){
         Route::get('admin/', 'goToDashboard');
-        Route::get('admin/items', 'goToItems');
+        Route::get('admin/items/view-items', 'goToItems');
         Route::get('admin/transaction', 'goToTransactions');
         Route::get('admin/request', 'goToRequest');
         Route::get('admin/report', 'goToReport');

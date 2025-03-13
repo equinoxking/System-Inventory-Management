@@ -1,6 +1,20 @@
 @extends('admin.layout.admin-layout')
+
 @section('content')
-<div class="container-fluid card w-100">
+<div class="container-fluid mt-3 mb-3">
+    <div class="row">
+        <div class="col-md-12">
+            <!-- Breadcrumb Navigation -->
+            <nav aria-label="breadcrumb"> 
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{{ url('admin/') }}">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Reports</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
+
     <div class="row">
         <div class="col-md-12">
             <table id="auditTable">
