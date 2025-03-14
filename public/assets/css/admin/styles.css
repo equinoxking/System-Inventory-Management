@@ -1,19 +1,20 @@
 body {
-    background-color: #f8f9fa;
+    background-color: #ffffff;
     font-family: "Montserrat", sans-serif;
 }
 .navbar {
     background: #2f4a7f;
 }
 .navbar a {
-    color: rgb(226, 226, 226);
+    color: white;
     text-decoration: none;
     border-radius: 5px;
 }
 .navbar a:hover {
     background: #3d5c99;
-    color: #dd9f03;
+    color: #d29907;
 }
+
 .content {
     padding: 20px;
 }
@@ -30,7 +31,7 @@ body {
     right: 20px;
 }
 body {
-    background-color: #f8f9fa;
+    background-color: #ffffff;
     text-align: center;
 }
 .report-container {
@@ -53,5 +54,36 @@ th, td {
 }
 th {
     background-color: #3d5c99;
-    color: rgb(255, 255, 255);
+    color: #ffffff;
 }
+/* Custom Stock Status Styles */
+.stock-low {
+    color: white;
+    background-color: #f44336; /* Red background for Low Stock */
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.stock-moderate {
+    color: black;
+    background-color: #ff9800; /* Orange background for Moderate Stock */
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.stock-high {
+    color: white;
+    background-color: #4caf50; /* Green background for High Stock */
+    padding: 5px;
+    border-radius: 3px;
+}
+.badge-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-danger {
+    background-color: #dc3545;
+    color: white;
+}
+

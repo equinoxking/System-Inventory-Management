@@ -15,4 +15,8 @@ class UnitModel extends Model
         'created_at',
         'updated_at'
     ];
+    public function inventory()
+    {
+        return $this->hasMany(InventoryModel::class);
+    }
 }

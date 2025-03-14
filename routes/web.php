@@ -9,6 +9,10 @@ use App\Http\Controllers\Checker_Admin\CA_mainController;
 use App\Http\Controllers\Access\RegisterController;
 use App\Http\Controllers\Access\LoginController;
 use App\Http\Controllers\Inventory_Admin\IA_functionController;
+use App\Http\Controllers\Inventory_Admin\Items\CategoryController;
+use App\Http\Controllers\Inventory_Admin\Items\UnitManager;
+use App\Http\Controllers\Inventory_Admin\Items\itemManager;
+use App\Http\Controllers\Inventory_Admin\Items\InventoryManager;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -35,7 +39,7 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     //Route for Main Controller or Navigation
     Route::controller(IA_mainController::class)->group(function(){
         Route::get('admin/', 'goToDashboard');
-        Route::get('admin/items/view-items', 'goToItems');
+        // Route::get('admin/items/view-items', 'goToItems');
         Route::get('admin/transaction', 'goToTransactions');
         Route::get('admin/request', 'goToRequest');
         Route::get('admin/report', 'goToReport');
@@ -43,9 +47,22 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::get('admin/audit', 'goToAudits');
         Route::get('admin/profile', 'goToProfile');
     });
-    //Route for admin functions
+    Route::controller(CategoryController::class)->group(function() {
+        Route::get('/search-categories', 'searchCategory')->name('search.categories');
+        Route::get('/submit-category', 'store')->name('some_route');
+    });
+    Route::controller(UnitManager::class)->group(function() {
+        Route::get('/search-units', 'searchUnit')->name('search.units');
+        Route::get('/submit-unit', 'storeUnit')->name('storeUnit');
+    });
+    Route::controller(itemManager::class)->group(function() {
+        Route::post('/add-item', 'addItem');
+    });
+    Route::controller(InventoryManager::class)->group(function() {
+        Route::get('admin/items/view-items', 'showItems');
+    });
     Route::controller(IA_functionController::class)->group(function() {
-        Route::get('/logoutAdmin', 'logoutAdmin');
+        Route::get('logoutAdmin', 'logoutAdmin');
     });
 });
 /* -- USER -- */

@@ -13,13 +13,23 @@ class UnitSeeder extends Seeder
     public function run(): void
     {
         $units = [
-            ['name' => 'Piece', 'symbol' => 'pc'],
-            ['name' => 'Kilogram', 'symbol' => 'kg'],
-            ['name' => 'Gram', 'symbol' => 'g'],
-            ['name' => 'Liter', 'symbol' => 'L'],
-            ['name' => 'Milliliter', 'symbol' => 'mL'],
-            ['name' => 'Box', 'symbol' => 'box'],
-            ['name' => 'Pack', 'symbol' => 'pack'],
+            ['name' => 'can'],
+            ['name' => 'bottle'],
+            ['name' => 'box'],
+            ['name' => 'piece'],
+            ['name' => 'pad'],
+            ['name' => 'ream'],
+            ['name' => 'packs'],
+            ['name' => 'books'],
+            ['name' => 'jar'],
+            ['name' => 'roll'],
+            ['name' => 'bars'],
+            ['name' => 'gallon'],
+            ['name' => 'unit'],
+            ['name' => 'bundle'],
+            ['name' => 'set'],
+            ['name' => 'cart'],
+            ['name' => 'booklet'],
         ];
 
         foreach ($units as $unit) {

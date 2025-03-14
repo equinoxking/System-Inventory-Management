@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('items', function (Blueprint $table) {
+        Schema::create('inventories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->references('id')->on('categories')->onDelete('cascade');
-            $table->foreignId('status_id')->references('id')->on('item_statuses')->onDelete('cascade');
-            $table->string('controlNumber')->unique();
-            $table->string('name' , 60)->unique();
+            $table->foreignId('item_id')->references('id')->on('items')->onDelete('cascade');
+            $table->foreignId('unit_id')->references('id')->on('units')->onDelete('cascade');
+            $table->integer('quantity');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
         });
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('items');
+        Schema::dropIfExists('inventories');
     }
 };

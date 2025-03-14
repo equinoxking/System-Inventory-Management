@@ -10,7 +10,8 @@ $(function () {
                 { name: 'sm', width: 768 },
                 { name: 'xs', width: 576 }
             ]
-        }
+        },
+        "order": [[0, 'desc']],
     });
 });
 $(function () {
