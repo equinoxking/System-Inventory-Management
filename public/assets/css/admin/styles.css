@@ -1,5 +1,5 @@
 body {
-    background-color: #ffffff;
+    background-color: white;
     font-family: "Montserrat", sans-serif;
 }
 .navbar {
@@ -12,7 +12,7 @@ body {
 }
 .navbar a:hover {
     background: #3d5c99;
-    color: #d29907;
+    color: white;
 }
 
 .content {
@@ -31,7 +31,7 @@ body {
     right: 20px;
 }
 body {
-    background-color: #ffffff;
+    background-color: white;
     text-align: center;
 }
 .report-container {

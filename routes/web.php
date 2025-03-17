@@ -13,6 +13,7 @@ use App\Http\Controllers\Inventory_Admin\Items\CategoryController;
 use App\Http\Controllers\Inventory_Admin\Items\UnitManager;
 use App\Http\Controllers\Inventory_Admin\Items\itemManager;
 use App\Http\Controllers\Inventory_Admin\Items\InventoryManager;
+use App\Http\Controllers\Inventory_Admin\Items\ReceivedManager;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -39,7 +40,6 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     //Route for Main Controller or Navigation
     Route::controller(IA_mainController::class)->group(function(){
         Route::get('admin/', 'goToDashboard');
-        // Route::get('admin/items/view-items', 'goToItems');
         Route::get('admin/transaction', 'goToTransactions');
         Route::get('admin/request', 'goToRequest');
         Route::get('admin/report', 'goToReport');
@@ -60,6 +60,11 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     });
     Route::controller(InventoryManager::class)->group(function() {
         Route::get('admin/items/view-items', 'showItems');
+    });
+    Route::controller(ReceivedManager::class)->group(function(){
+        Route::get('/searchItem', 'searchItem')->name('search.itemName');
+        Route::get('/submit-item', 'storeItem');
+        Route::patch('/received-item', 'receivedItem');
     });
     Route::controller(IA_functionController::class)->group(function() {
         Route::get('logoutAdmin', 'logoutAdmin');

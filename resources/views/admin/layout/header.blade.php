@@ -27,15 +27,10 @@
                        Transactions
                     </a>
                 </li>
-                {{-- <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/admin/request') }}" 
-                       style="{{ (Request::is('admin/request')) ? 'background-color: #3d5c99;' : '' }}">
-                       Requests
-                    </a>
-                </li> --}}
+
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('/admin/report') }}" 
-                       style="{{ (Request::is('admin/report')) ? 'background-color: #3d5c99;' : '' }}">
+                       style="{{ (Request::is('admin/report')) ? 'background-color: #3d5c99 ;' : '' }}">
                        Reports
                     </a>
                 </li>

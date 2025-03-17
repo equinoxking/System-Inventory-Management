@@ -1,33 +1,35 @@
 $(document).ready(function() {
-    $("#addItemBtn").click(function() {
-      $("#itemForm").css({
+    $("#receivedBtn").click(function() {
+      $("#receivedItemForm").css({
         "display": "flex",        
       });
-      $("#receivedItemForm").css({
+      $("#itemForm").css({
         "display": "none",        
       });
     });
-    $('#createItem-closeBtn').click(function(){
-      $("#itemForm").css({
+    $('#receivedItem-closeBtn').click(function(){
+      $("#receivedItemForm").css({
         "display": "none",        
       });
     })
 });
 $(document).ready(function(){
-  $(document).on('submit', '#createItem-form', function(event){
-        event.preventDefault();
-        var formData = $('#createItem-form').serialize();
-       
-        
+  $(document).on('submit', '#receivedItem-form', function(event){
+    event.preventDefault();
+    var itemName =  $('#receiveItemName').val();
+    var itemId = $('#receiveItemId').val();
+    console.log('Item Name: ' + itemName);
+    console.log('Item Id: ' + itemId);
+    var formData = $('#receivedItem-form').serialize();
       $.ajax({
           headers: {
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
           },
-          url: '/add-item',
-          type: 'POST',
+          url: '/received-item',
+          type: 'PATCH',
           data: formData,
           beforeSend: function() {
-              $('#addItem-btn').attr('disabled', true);
+              $('#receivedItemSubmit-btn').attr('disabled', true);
               Swal.fire({
                   title: 'Loading...',
                   text: 'Please wait while we process your request.',

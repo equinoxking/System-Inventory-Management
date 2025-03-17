@@ -32,4 +32,8 @@ class ItemModel extends Model
     {
         return $this->belongsTo(ItemStatusModel::class);
     }
+    public function receive()
+    {
+        return $this->belongsTo(ReceiveModel::class);
+    }
 }

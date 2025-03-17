@@ -11,11 +11,6 @@ class IA_mainController extends Controller
     public function goToDashboard(){
         return view('admin.index');
     }
-    public function goToItems(){
-        $categories = CategoryModel::all();
-        $units = UnitModel::all();
-        return view('admin.items.view-items', ['categories' => $categories, 'units' => $units]);
-    }
     public function goToTransactions(){
         return view('admin.transaction');
     }
