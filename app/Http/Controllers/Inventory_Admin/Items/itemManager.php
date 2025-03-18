@@ -30,7 +30,6 @@ class itemManager extends Controller
             'quantity.*' => 'required|numeric|min:0', // Validate each quantity
             'maxQuantity' => 'required|array',
             'maxQuantity.*' => 'required|numeric|min:1'
-
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -93,5 +92,114 @@ class itemManager extends Controller
         $numberPart = intval(substr($controlNumber, -4)) + 1;
         $paddedNumber = str_pad($numberPart, 4, '0', STR_PAD_LEFT);
         return $currentYearAndMonth . '-' . $paddedNumber;
+    }
+    public function deleteItem(Request $request){
+        $validator = Validator::make($request->all(), [
+            'delete-item-id' => 'required'
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'message' => $validator->errors()
+            ]);
+        } else {
+            $item = ItemModel::where('id', $request->get('delete-item-id'))->delete();
+            if($item){
+                return response()->json([
+                    'message' => 'Item successfully deleted.',
+                    'status' => 200
+                ]);
+            }else{
+                return response()->json([
+                    'message' => 'Check your internet connection!',
+                    'status' => 500
+                ]);
+            }
+        }
+    }
+    public function editItem(Request $request){
+        $validator = Validator::make($request->all(), [
+            'edit-item-id' => 'required|array', // Expecting an array of item IDs
+            'edit-item-id.*' => 'required|exists:items,id', // Validate each item ID
+            'edit-category' => 'required|array',
+            'edit-category.*' => 'required|exists:categories,name',
+            'edit-categoryId' => 'required|array',
+            'edit-categoryId.*' => 'required|exists:categories,id',
+            'edit-itemName' => 'required|array',
+            'edit-itemName.*' => 'required|min:3|max:60',
+            'edit-unit' => 'required|array',
+            'edit-unit.*' => 'required',
+            'edit-unitId' => 'required|array',
+            'edit-unitId.*' => 'required|exists:units,id',
+            'edit-quantity' => 'required|array',
+            'edit-quantity.*' => 'required|numeric|min:0',
+            'edit-maxQuantity' => 'required|array',
+            'edit-maxQuantity.*' => 'required|numeric|min:1',
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'message' => $validator->errors()
+            ]);
+        } else {
+            foreach ($request->get('edit-item-id') as $index => $editItemId) {
+                $status = ItemStatusModel::where('name', 'Available')->first();
+                $selectedCategory = CategoryModel::findOrFail($request->get('edit-categoryId')[$index]);
+                $selectedUnit = UnitModel::findOrFail($request->get('edit-unitId')[$index]);
+        
+                if (!$selectedCategory || !$selectedUnit) {
+                    continue; 
+                }
+        
+                $item = ItemModel::find($editItemId);
+        
+                if ($item) {
+                    $item->category_id = $selectedCategory->id;
+                    $item->status_id = $status->id;
+                    $item->name = ucwords($request->get('edit-itemName')[$index]);  
+                    Log::info("Updating item: ", [$item]);
+                } else {
+     
+                    $item = new ItemModel();
+                    $item->category_id = $selectedCategory->id;
+                    $item->status_id = $status->id;
+                    $item->name = ucwords($request->get('edit-itemName')[$index]);
+                    $item->controlNumber = $this->generateControlNumber();  
+                    Log::info("Saving new item: ", [$item]);
+                }
+        
+                try {
+                    $item->save();
+                } catch (\Exception $e) {
+                    continue;  
+                }
+        
+                $inventory = InventoryModel::where('item_id', $item->id)->first();
+        
+                if (!$inventory) {
+                    $inventory = new InventoryModel();
+                    $inventory->item_id = $item->id;
+                }
+        
+                $inventory->quantity = $request->get('edit-quantity')[$index];
+                $inventory->unit_id = $selectedUnit->id;
+                $inventory->max_quantity = $request->get('edit-maxQuantity')[$index];
+                Log::info("Saving inventory: ", [$inventory]);
+        
+                try {
+                    $inventory->save();
+                } catch (\Exception $e) {
+                    Log::error("Error saving inventory: " . $e->getMessage());
+                    continue;  
+                }
+            }
+        
+            return response()->json([
+                'status' => 200,
+                'message' => 'Items and inventories have been updated successfully.',
+            ]);
+        }
+        
     }
 }

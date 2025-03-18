@@ -8,6 +8,8 @@ use App\Models\ClientModel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class RegisterController extends Controller
 {
@@ -15,6 +17,7 @@ class RegisterController extends Controller
         $validator = Validator::make($request->all(), [
             'fullName' => 'required|max:60',
             'office' => 'required',
+            'username' => 'required',
             'position' => 'required',
             'email' => [
                 'required',
@@ -32,45 +35,54 @@ class RegisterController extends Controller
                 'message' => $validator->errors()
             ]);
         } else {
+            $response = Http::post('http://authentication.local/api/register', [
+                'username' => $request->username,
+                'password' => $request->password,
+            ]);
+        
+            if ($response->successful()) {
+                $data = $response->json();
+                // \Log::('Data' . $data);
+                if (isset($data['token'])) {
+                    $token = $data['token'];
+        
+                    $userCount = ClientModel::count();
+                    $role = $userCount == 0 ? "InventoryAdmin" : "User";
+       
+                    $client = new ClientModel();
+                    $client->full_name = strtolower($request->get('fullName'));
+                    $client->office = $request->get('office');
+                    $client->position = $request->get('position');
+                    $client->email = $request->get('email');
+                    $client->username = $request->get('username');
+                    $client->password = Hash::make($request->get('password')); 
+                    $client->status = "Active";
+                    $client->role = $role;
+                    $client->save();
+        
+                    return response()->json([
+                        'message' => 'Registration successful!',
+                        'status' => 200,
+                        'client' => $client,
+                        'token' => $token
+                    ]);
+                } else {
 
-            $userCount = ClientModel::count();
-            $role = $userCount == 0 ? "InventoryAdmin" : "User";
-            $generateUsername = $request->get('office') . "."  . $this->trimFirstName($request->get('fullName')) . Str::afterLast($request->get('fullName'), ' ') . $this->generateNumbers(1);
-            $client = new ClientModel();
-            $client->full_name = strtolower($request->get('fullName'));
-            $client->office = $request->get('office');
-            $client->position = $request->get('position');
-            $client->email = $request->get('email');
-            $client->username = strtolower($generateUsername);
-            $client->password = Hash::make($request->get('password'));
-            $client->status = "Active";
-            $client->role = $role;
-            $client->save();
-           
+                    return response()->json([
+                        'message' => 'Incorrect Credentials.',
+                        'status' => 400
+                    ]);
+                }
+            } else {
+                return response()->json([
+                    'message' => 'Failed to authenticate.',
+                    'status' => 400
+                ]);
+            }
             return response()->json([
-                'username' => $generateUsername,
-                'message' => 'Registration successful!',
-                'status' => 200
+                'message' => 'Registration Error!',
+                'status' => 500
             ]);
         }
-        return response()->json([
-            'message' => 'Registration Error!',
-            'status' => 500
-        ]);
-    }
-    private function generateNumbers($length = 1){
-        $numbers = '1234567890';
-        $numbersLength = strlen($numbers);
-        $randomNumbers = '';
-        
-        for ($i = 0; $i <= $length; $i++){
-            $randomNumbers .= $numbers[rand(0, $numbersLength - 1)];
-        }
-        return $randomNumbers;
-    }
-    private function trimFirstName($firstName){
-        $firstName = explode(' ', $firstName)[0];
-        $firstName = substr($firstName, 0, 1);
-        return $firstName;
     }
 }

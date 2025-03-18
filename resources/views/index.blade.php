@@ -173,6 +173,10 @@
                         <input type="email" class="form-control" id="emailAddressRegister" name="email" placeholder="Enter email">
                     </div>
                     <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" id="usernameRegister" name="username" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
                         <label for="password">Password</label>
                         <input type="password" class="form-control" id="passwordRegister" name="password" placeholder="Enter passowrd">
                     </div>

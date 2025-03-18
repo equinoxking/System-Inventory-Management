@@ -28,10 +28,7 @@ use App\Http\Controllers\Inventory_Admin\Items\ReceivedManager;
 Route::controller(MainNavigationController::class)->group(function() {
     Route::get('/', 'goToIndex');
 });
-//Route for Access 
-Route::controller(RegisterController::class)->group(function() {
-    Route::post('/register-user', 'registration');
-});
+//Route for Access
 Route::controller(LoginController::class)->group(function(){
     Route::post('/login-user', 'loginUser');
 });
@@ -50,13 +47,18 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     Route::controller(CategoryController::class)->group(function() {
         Route::get('/search-categories', 'searchCategory')->name('search.categories');
         Route::get('/submit-category', 'store')->name('some_route');
+        Route::get('/search-edit-categories', 'searchCategory');
+
     });
     Route::controller(UnitManager::class)->group(function() {
         Route::get('/search-units', 'searchUnit')->name('search.units');
         Route::get('/submit-unit', 'storeUnit')->name('storeUnit');
+        Route::get('/edit-search-units', 'searchUnit');
     });
     Route::controller(itemManager::class)->group(function() {
         Route::post('/add-item', 'addItem');
+        Route::post('/delete-item', 'deleteItem');
+        Route::patch('/update-item', 'editItem');
     });
     Route::controller(InventoryManager::class)->group(function() {
         Route::get('admin/items/view-items', 'showItems');

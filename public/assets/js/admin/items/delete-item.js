@@ -1,19 +1,27 @@
+function deleteItem(item){
+    $('#deleteItemModal').modal('show');
+    var data = JSON.parse(item);
+    $('#delete-item-id').val(data.id);
+}
+$('#delete-item-close-btn').click(function(){
+    $('#deleteItemModal').modal('hide');
+});
 $(document).ready(function(){
-    $(document).on('submit', '#registration-form', function(event){
-        event.preventDefault();
-        var formData = $('#registration-form').serialize();
+    $(document).on('submit', '#delete-item-form', function(event){
+      event.preventDefault();
+      var formData = $('#delete-item-form').serialize();
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            url: '/api/register-user',
+            url: '/delete-item',
             type: 'POST',
             data: formData,
             beforeSend: function() {
-                $('#register-btn').attr('disabled', true);
+                $('#delete-submit-btn').attr('disabled', true);
                 Swal.fire({
                     title: 'Loading...',
-                    text: 'Please wait while we process your registration.',
+                    text: 'Please wait while we process your request.',
                     allowOutsideClick: false,
                     didOpen: () => {
                         Swal.showLoading();
@@ -29,13 +37,14 @@ $(document).ready(function(){
                         showConfirmButton: true,
                     })
                 }else if(response.status === 400){
+                        var errorMessages = Object.values(response.message).join('<br>');
                         Swal.fire({
                             icon: 'error',
-                            title: 'Registration validation failed!',
-                            html: response.message,
+                            title: 'Adding an item validation failed!',
+                            html: errorMessages,
                             showConfirmButton: true,
                         }).then(function() {
-                            $('#register-btn').attr('disabled', false);
+                            $('#addItem-btn').attr('disabled', false);
                         });
                 }else if(response.status === 200){
                     Swal.fire({
@@ -45,7 +54,6 @@ $(document).ready(function(){
                     showConfirmButton: true,
                     }).then(function(){
                         window.location.reload();
-                        $('#registerModal').modal('hide');
                     });
                 }
             },error: function(error){

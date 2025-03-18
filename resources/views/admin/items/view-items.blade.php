@@ -132,24 +132,17 @@
                                     </span>
                                 </td>                                
                                 <td>
-                                    <button type="button" id="viewItem" class="btn btn-warning" title="Item edit button"><i class="fa-solid fa-edit"></i></button>
-                                    <button type="button" id="viewItem" class="btn btn-danger" title="Item delete button"><i class="fa-solid fa-trash"></i></button>
+                                    <button type="button" class="btn btn-warning" title="Item edit button" id="editItemBtn" onclick="editItem('{{ addslashes(json_encode($item)) }}')"><i class="fa-solid fa-edit" style="color: white;"></i></button>
+                                    <button type="button" class="btn btn-danger"  title="Delete Item Button" id="deleteItemBtn" onclick="deleteItem('{{ addslashes(json_encode($item)) }}')"><i class="fa-solid fa-trash" style="color: white;"></i></button>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
-                    <tfoot>
-                    
-                    </tfoot>
                 </table>
             </div>
         </div>
     </div>
-
-
-
 <div class="container-fluid card w-100 shadow rounded p-4" id="itemForm" style="max-height: 300px; overflow-y: auto; background-color: #f8f9fa; display:none; border: 2px solid #ddd;">
-     
     <!-- Form Header -->
     <div class="d-flex justify-content-between align-items-center bg-success text-white p-3 rounded-top">
         <h4 class="m-0 text-center flex-grow-1"><strong>CREATE ITEM FORM</strong></h4>
@@ -206,7 +199,6 @@
                 </div>
             </div>
         </div>
-        
     </form>    
 </div>
 <div class="container-fluid card w-100 shadow rounded p-4" id="receivedItemForm" style="max-height: 300px; overflow-y: auto; background-color: #f8f9fa; display:none; border: 2px solid #ddd;">
@@ -246,10 +238,93 @@
                 </div>
             </div>
         </div>
-        
     </form>
 </div>
-
+<div class="modal fade" id="deleteItemModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+                <div class="modal-header bg-danger">
+                    <h5 class="modal-title" style="color:white;">DELETE ITEM FORM</h5>
+                    <button type="button" id="delete-item-close-btn" data-dismiss="modal" class="btn" aria-label="Close" style="background-color: white">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </button>
+                </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form id="delete-item-form">
+                        <div class="col-md-3 form-group" hidden>
+                            <label for="deleteItemId">Item ID</label>
+                            <input type="text" class="form-control" name="delete-item-id" id="delete-item-id">
+                        </div>
+                        <strong>Are you sure to delete this item?</strong>
+                </div>
+                <div class="row">
+                    <div class="modal-footer">
+                        <div class="col-md-3 form-group">
+                            <button type="submit" class="btn btn-danger" id="delete-submit-btn">SUBMIT</button>
+                        </div>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editItemModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:white;">EDIT ITEM FORM</h5>
+                    <button type="button" id="edit-item-close-btn" data-dismiss="modal" class="btn btn-danger" aria-label="Close">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </button>
+                </div>
+            <div class="modal-body">
+                <div class="row edit-item-row">
+                    <form id="edit-item-form">
+                        <div class="form-group" hidden>
+                            <label for="editItemId">Item ID</label>
+                            <input type="text" class="form-control" name="edit-item-id[]" id="edit-item-id">
+                        </div>
+                        <div class="form-group">
+                            <label for="category" class="font-weight-bold">Category</label>
+                            <input type="text" class="edit-search-category form-control" name="edit-category[]" placeholder="Search categories..." autocomplete="off"/>
+                            <ul class="edit-category-results" style="display: none; max-height: 200px; overflow-y: auto;"></ul>
+                            <input type="text" class="edit-selected-category-id" id="edit-category" name="edit-categoryId[]" hidden>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-itemName" class="font-weight-bold">Item Name</label>
+                            <textarea name="edit-itemName[]" id="edit-item-name" class="form-control" cols="5" rows="1"></textarea>
+                        </div>
+                        <!-- Item Unit -->
+                        <div class="form-group">
+                            <label for="itemUnit" class="font-weight-bold">Unit</label>
+                            <input type="text" class="edit-search-unit form-control" name="edit-unit[]"  placeholder="Search unit..." autocomplete="off"/>
+                            <ul class="edit-unit-results" style="display: none; max-height: 200px; overflow-y: auto;"></ul>
+                            <input type="text" class="edit-selected-unit-id" name="edit-unitId[]" hidden>
+                        </div>
+                        <!-- Item Quantity -->
+                        <div class="form-group">
+                            <label for="edit-quantity" class="font-weight-bold">Quantity</label>
+                            <input type="number" class="form-control" id="edit-quantity" name="edit-quantity[]" placeholder="Enter quantity" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-maxQuantity" class="font-weight-bold">Max Quantity</label>
+                            <input type="number" class="form-control" id="edit-max-quantity" name="edit-maxQuantity[]" placeholder="Enter max quantity" min="0">
+                        </div>
+                </div>
+                <div class="row">
+                    <div class="modal-footer">
+                        <div class="col-md-3 form-group">
+                            <button type="submit" class="btn btn-danger" id="delete-submit-btn">SUBMIT</button>
+                        </div>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
 /* Prevent item quantity to value of negative */
 document.addEventListener('DOMContentLoaded', function () {
@@ -265,5 +340,7 @@ document.addEventListener('DOMContentLoaded', function () {
 <script src="{{ asset('assets/js/admin/items/add-item-functions/unit-search.js') }}"></script>
 <script src="{{ asset('assets/js/admin/items/received-item-functions/search-item-name.js') }}"></script>
 <script src="{{ asset('assets/js/admin/items/received-item.js') }}"></script>
+<script src="{{ asset('assets/js/admin/items/delete-item.js') }}"></script>
+<script src="{{ asset('assets/js/admin/items/edit-item.js') }}"></script>
 @endsection
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

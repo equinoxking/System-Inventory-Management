@@ -16,10 +16,6 @@ $(document).ready(function() {
 $(document).ready(function(){
   $(document).on('submit', '#receivedItem-form', function(event){
     event.preventDefault();
-    var itemName =  $('#receiveItemName').val();
-    var itemId = $('#receiveItemId').val();
-    console.log('Item Name: ' + itemName);
-    console.log('Item Id: ' + itemId);
     var formData = $('#receivedItem-form').serialize();
       $.ajax({
           headers: {

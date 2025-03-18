@@ -24,6 +24,13 @@ $(document).ready(function(){
                         html: response.message,
                         showConfirmButton: true,
                     });
+                }else if(response.status === 401){
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error!",
+                        html: response.message,
+                        showConfirmButton: true,
+                    });
                 }else if(response.status === 400){
                      console.log(response.message);
                         var errorMessages = Object.values(response.message).join('<br>');
@@ -43,11 +50,10 @@ $(document).ready(function(){
                         showConfirmButton: true,
                     });
                 }else if(response.status === 200){
-                    console.log(response.roleId);
                     Swal.fire({
                     icon: "success",
                     title: "All set!",
-                    html: response.message,
+                    html: response.message + ' ' + response.username,
                     showConfirmButton: true,
                     }).then(function(){
                         const roleUrls = {
@@ -57,7 +63,6 @@ $(document).ready(function(){
                             4: "/user/"
                         };
                         const redirectUrl = roleUrls[response.roleId];
-                        console.log(redirectUrl);
                         if (redirectUrl) {
                             window.location = redirectUrl;
                         } else {

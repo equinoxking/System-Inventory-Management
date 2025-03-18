@@ -7,83 +7,109 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\ClientModel;
+use Illuminate\Support\Facades\Http;
 class LoginController extends Controller
 {
     public function loginUser(Request $request){
         $validator = Validator::make($request->all(), [
-            'username' =>'required|string|max:30',
+            'username' => 'required|string|max:30',
             'password' => 'required|min:6|max:50',
-            ]);
+        ]);
+    
         if ($validator->fails()) {
             return response()->json([
                 'message' => $validator->getMessageBag(),
                 'status' => 400
             ]);
-        }else{
-            $username = $request->input('username');
-            $client = ClientModel::where('username', $username)->first();
-            if(!$client){
-                return response()->json([
-                    'status' => 404,
-                    'message' => "Invalid username or password!"
-                ]);
-            }
-            if($client->status == 'Inactive'){
-                return response()->json([
-                    'status' => 423,
-                    'message' => "Account Locked!"
-                ]);
-            }
-            if($client){
-                if(Hash::check($request->password, $client->password)){
-                    $roles = [
-                        'InventoryAdmin' => 'loggedInInventoryAdmin',
-                        'CheckerAdmin' => 'loggedInCheckerAdmin',
-                        'HeadAdmin' => 'loggedInHeadAdmin',
-                        'User' => 'loggedInUser',
-                    ];
-                
-                    $roleKey = $client->role;
-                    $sessionKey = $roles[$roleKey] ?? null;
-
-                    $request->session()->put($sessionKey, [
-                        'id' => $client->id,
-                        'firstName' => $client->first_name,
-                        'lastName' => $client->last_name,
-                        'email' => $client->email,
-                        'username' => $client->username,
-                        'role' => $client->role,
-                        'division' => $client->division,
-                    ]);
+        }
     
-                    $roleIds = [
-                        'InventoryAdmin' => 1,
-                        'CheckerAdmin' => 2,
-                        'HeadAdmin' => 3,
-                        'User' => 4
-                    ];
-                
+        $username = $request->input('username');
+        $client = ClientModel::where('username', $username)->first();
+    
+        if (!$client) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Invalid username or password!'
+            ]);
+        }
+    
+        if ($client->status == 'Inactive') {
+            return response()->json([
+                'status' => 423,
+                'message' => 'Account Locked!'
+            ]);
+        }
+    
+        $response = Http::post('http://authentication.local/api/login', [
+            'username' => $request->username,
+            'password' => $request->password,
+        ]);
+        if ($response->successful()) {
+        
+            if (Hash::check($request->password, $client->password)) {
+                $roles = [
+                    'InventoryAdmin' => 'loggedInInventoryAdmin',
+                    'CheckerAdmin' => 'loggedInCheckerAdmin',
+                    'HeadAdmin' => 'loggedInHeadAdmin',
+                    'User' => 'loggedInUser',
+                ];
+    
+                $roleKey = $client->role;
+                $sessionKey = $roles[$roleKey] ?? null;
+    
+
+                $request->session()->put($sessionKey, [
+                    'id' => $client->id,
+                    'firstName' => $client->first_name,
+                    'lastName' => $client->last_name,
+                    'email' => $client->email,
+                    'username' => $client->username,
+                    'role' => $client->role,
+                    'division' => $client->division,
+                ]);
+
+                $roleIds = [
+                    'InventoryAdmin' => 1,
+                    'CheckerAdmin' => 2,
+                    'HeadAdmin' => 3,
+                    'User' => 4
+                ];
+    
+                $data = $response->json();
+                $token = $data['token'] ?? null;
+                $username = $data['username'] ?? null; 
+                if ($token) {
+                    // Optionally store the token in session for backend use
+                    $request->session()->put('token', $token); // Store token in session
+    
                     return response()->json([
                         'roleId' => $roleIds[$roleKey],
-                        'message' => "Welcome",
-                        'status' => 200
+                        'message' => 'Welcome',
+                        'status' => 200,
+                        'username' => $username,
+                        'token' => $token, // Return token in the response
                     ]);
-                }else{
+                } else {
                     return response()->json([
-                        'status' => 404, 
-                        'message' => "Invalid username or password!"
+                        'status' => 400,
+                        'message' => 'Token not found in the authentication response.',
                     ]);
                 }
-            }else{
+            } else {
                 return response()->json([
-                    'status' => 404, 
-                    'message' => "Invalid username or password!"
+                    'status' => 404,
+                    'message' => 'Invalid username or password!'
                 ]);
             }
+        } else {
+            return response()->json([
+                'status' => 401,
+                'message' => 'Invalid Credentials.'
+            ]);
         }
         return response()->json([
-            'status' => 500, 
-            'message' => "Internal Server Error!"
+            'status' => 500,
+            'message' => 'Internal Server Error!'
         ]);
     }
 }

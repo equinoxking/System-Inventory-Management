@@ -17,10 +17,12 @@ return new class extends Migration
             $table->string('office', 10);
             $table->string('position', 20);
             $table->string('email' , 100)->unique();
+            $table->timestamp('email_verified_at')->nullable();
             $table->string('username', 30)->unique();
             $table->string('password' , 120);
             $table->string('role', 15);
             $table->string('status', 15);
+            $table->rememberToken();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
         });
