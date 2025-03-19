@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->string('full_name' , 60);
             $table->string('office', 10);
             $table->string('position', 20);
@@ -20,7 +21,6 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('username', 30)->unique();
             $table->string('password' , 120);
-            $table->string('role', 15);
             $table->string('status', 15);
             $table->rememberToken();
             $table->timestamp('created_at')->useCurrent();

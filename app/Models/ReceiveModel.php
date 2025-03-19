@@ -13,12 +13,14 @@ class ReceiveModel extends Model
         'id',
         'item_id',
         'received_quantity',
-        'received_date',
+        'received_day',
+        'received_month',
+        'received_year',
         'created_at',
         'updated_at'
     ];
-    public function items()
+    public function item()
     {
-        return $this->hasMany(ItemModel::class);
+        return $this->belongsTo(ItemModel::class, 'item_id');
     }
 }

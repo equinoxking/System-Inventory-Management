@@ -23,4 +23,8 @@ class ClientModel extends Model
         'created_at',
         'updated_at'
     ];
+    public function role()
+    {
+        return $this->belongsTo(RoleModel::class);
+    }
 }

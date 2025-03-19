@@ -60,6 +60,7 @@ class itemManager extends Controller
                 $item->controlNumber = $this->generateControlNumber();
                 $item->save();
         
+
                 $inventory = new InventoryModel();
                 $inventory->item_id = $item->id;
                 $inventory->quantity = $request->quantity[$index];
@@ -67,11 +68,15 @@ class itemManager extends Controller
                 $inventory->max_quantity = $request->maxQuantity[$index];
                 $inventory->save();
 
-                $now = Carbon::now('Asia/Manila')->format('F');
+                $day = Carbon::now('Asia/Manila')->format('d');
+                $month = Carbon::now('Asia/Manila')->format('F');
+                $year = Carbon::now('Asia/Manila')->format('Y');
                 $receive = new ReceiveModel();
                 $receive->item_id = $item->id;
                 $receive->received_quantity = $request->quantity[$index];
-                $receive->received_date = $now;
+                $receive->received_day = $day;
+                $receive->received_month = $month;
+                $receive->received_year = $year;
                 $receive->save();
                 
             }

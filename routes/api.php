@@ -21,6 +21,3 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 Route::post('/register-user', [RegisterController::class, 'registration'])->name('register-user');
 
-Route::controller(LoginController::class)->group(function(){
-    Route::post('/login-user', 'loginUser');
-});

@@ -8,6 +8,7 @@ use App\Models\ItemModel;
 use App\Models\CategoryModel;
 use App\Models\UnitModel;
 use App\Models\ItemStatusModel;
+
 class InventoryManager extends Controller
 {
     public function showItems(){

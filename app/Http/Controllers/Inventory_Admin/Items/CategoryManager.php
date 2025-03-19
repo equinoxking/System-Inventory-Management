@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\CategoryModel;
 use Illuminate\Support\Facades\Log;
-class CategoryController extends Controller
+
+class CategoryManager extends Controller
 {
     public function searchCategory(Request $request){
         $query = $request->input('query'); 

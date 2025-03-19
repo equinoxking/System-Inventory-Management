@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-
+use App\Models\RoleModel;
 class RegisterController extends Controller
 {
     public function registration (Request $request){
@@ -42,13 +42,13 @@ class RegisterController extends Controller
         
             if ($response->successful()) {
                 $data = $response->json();
-                // \Log::('Data' . $data);
                 if (isset($data['token'])) {
                     $token = $data['token'];
-        
+                    $roleInventoryAdmin = RoleModel::where('name', 'InventoryAdmin')->first();
+                    $roleUser = RoleModel::where('name', 'User')->first();
                     $userCount = ClientModel::count();
-                    $role = $userCount == 0 ? "InventoryAdmin" : "User";
-       
+                    $role = $userCount == 0 ? $roleInventoryAdmin->id : $roleUser->id;
+                    
                     $client = new ClientModel();
                     $client->full_name = strtolower($request->get('fullName'));
                     $client->office = $request->get('office');
@@ -57,7 +57,7 @@ class RegisterController extends Controller
                     $client->username = $request->get('username');
                     $client->password = Hash::make($request->get('password')); 
                     $client->status = "Active";
-                    $client->role = $role;
+                    $client->role_id = $role;
                     $client->save();
         
                     return response()->json([

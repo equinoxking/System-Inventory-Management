@@ -44,13 +44,18 @@ class ReceivedManager extends Controller
             $allItemsProcessed = true;
             foreach ($request->receivedItemId as $index => $receivedItemId) {
                 try {
-                    $now = Carbon::now('Asia/Manila')->format('F');
                     $item = ItemModel::findOrFail($receivedItemId);
+        
+                    $day = Carbon::now('Asia/Manila')->format('d');
+                    $month = Carbon::now('Asia/Manila')->format('F');
+                    $year = Carbon::now('Asia/Manila')->format('Y');
 
                     $receive = new ReceiveModel();
-                    $receive->item_id = $receivedItemId;
+                    $receive->item_id = $item->id;
                     $receive->received_quantity = $request->receivedQuantity[$index];
-                    $receive->received_date = $now;
+                    $receive->received_day = $day;
+                    $receive->received_month = $month;
+                    $receive->received_year = $year;
                     $receive->save();
 
                     $inventory = InventoryModel::where('item_id', $receivedItemId)->first();

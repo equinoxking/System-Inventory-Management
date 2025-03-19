@@ -18,7 +18,7 @@
                 <button type="button" class="btn btn-warning" id="receivedBtn" title="Deliver item button">
                     <i class="fa-solid fa-cart-plus" style="color: #ffffff;"></i>
                 </button>
-                <button type="button" class="btn btn-info" title="Generate PDF button">
+                <button type="button" class="btn btn-info" id="pdfBtn" title="Generate PDF button">
                     <i class="fa-solid fa-file-pdf"></i>
                 </button>
             </div>
@@ -325,6 +325,67 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="pdfReportModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title" style="color:white;">PDF CUSTOMIZE FORM</h5>
+                    <button type="button" id="pdf-report-close-btn" data-dismiss="modal" class="btn" aria-label="Close" style="background-color: white">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </button>
+                </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form id="pdf-report-form">
+                        <div class="form-group">
+                            <label for="period" class="font-weight-bold">Period</label>
+                            <select name="period" id="period" class="form-control">
+                                <option value="">Select period</option>
+                                <option value="Monthly">Monthly</option>
+                                <option value="Quarterly">Quarterly</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="month-row" style="display: none">
+                            <label for="month" class="font-weight-bold">Month</label>
+                            <select name="month" id="month" class="form-control">
+                                <option value="">Select month</option>
+                                <option value="January">January</option>
+                                <option value="February">February</option>
+                                <option value="March">March</option>
+                                <option value="April">April</option>
+                                <option value="May">May</option>
+                                <option value="June">June</option>
+                                <option value="July">July</option>
+                                <option value="August">August</option>
+                                <option value="September">September</option>
+                                <option value="October">October</option>
+                                <option value="November">November</option>
+                                <option value="December">December</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="quarterly-row" style="display: none">
+                            <label for="quarterly" class="font-weight-bold">Quarterly</label>
+                            <select name="quarterly" id="quarterly" class="form-control">
+                                <option value="">Select quarterly</option>
+                                <option value="Jan-Feb-Mar">Jan-Feb-Mar</option>
+                                <option value="Apr-May-Jun">Apr-May-Jun</option>
+                                <option value="Jul-Aug-Sep">Jul-Aug-Sep</option>
+                                <option value="Oct-Nov-Dec">Oct-Nov-Dec</option>
+                            </select>
+                        </div>
+                    </div>
+                <div class="row">
+                    <div class="modal-footer">
+                        <div class="col-md-3 form-group">
+                            <button type="submit" class="btn btn-info" id="report-submit-btn">SUBMIT</button>
+                        </div>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
 /* Prevent item quantity to value of negative */
 document.addEventListener('DOMContentLoaded', function () {
@@ -335,6 +396,24 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+document.addEventListener('DOMContentLoaded', function () {
+    const period = document.getElementById("period");
+    period.addEventListener('change', function () {
+        const monthRow = document.getElementById("month-row");
+        const quarterlyRow = document.getElementById('quarterly-row')
+        if (period.value === "Monthly") {
+            monthRow.style.display = "block"; 
+            quarterlyRow.style.display = "none";
+        } else if(period.value === "Quarterly") {
+            monthRow.style.display = "none"; 
+            quarterlyRow.style.display = "block";
+        }else{
+            quarterlyRow.style.display = "none";
+            monthRow.style.display = "none"; 
+        }
+    });
+});
+
 </script>
 <script src="{{ asset('assets/js/admin/items/add-item-functions/category-search.js') }}"></script>
 <script src="{{ asset('assets/js/admin/items/add-item-functions/unit-search.js') }}"></script>
@@ -342,5 +421,6 @@ document.addEventListener('DOMContentLoaded', function () {
 <script src="{{ asset('assets/js/admin/items/received-item.js') }}"></script>
 <script src="{{ asset('assets/js/admin/items/delete-item.js') }}"></script>
 <script src="{{ asset('assets/js/admin/items/edit-item.js') }}"></script>
+<script src="{{ asset('assets/js/admin/pdf/report.js') }}"></script>
 @endsection
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

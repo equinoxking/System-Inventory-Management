@@ -10,7 +10,7 @@ use App\Models\ClientModel;
 use Illuminate\Support\Facades\Http;
 class LoginController extends Controller
 {
-    public function loginUser(Request $request){
+    public function login(Request $request){
         $validator = Validator::make($request->all(), [
             'username' => 'required|string|max:30',
             'password' => 'required|min:6|max:50',
@@ -48,13 +48,13 @@ class LoginController extends Controller
         
             if (Hash::check($request->password, $client->password)) {
                 $roles = [
-                    'InventoryAdmin' => 'loggedInInventoryAdmin',
-                    'CheckerAdmin' => 'loggedInCheckerAdmin',
-                    'HeadAdmin' => 'loggedInHeadAdmin',
-                    'User' => 'loggedInUser',
+                    1 => 'loggedInInventoryAdmin',
+                    2 => 'loggedInCheckerAdmin',
+                    3 => 'loggedInHeadAdmin',
+                    4 => 'loggedInUser',
                 ];
     
-                $roleKey = $client->role;
+                $roleKey = $client->role_id;
                 $sessionKey = $roles[$roleKey] ?? null;
     
 
@@ -69,25 +69,24 @@ class LoginController extends Controller
                 ]);
 
                 $roleIds = [
-                    'InventoryAdmin' => 1,
-                    'CheckerAdmin' => 2,
-                    'HeadAdmin' => 3,
-                    'User' => 4
+                    1 => 'InventoryAdmin',
+                    2 => 'CheckerAdmin',
+                    3 => 'HeadAdmin',
+                    4 => 'User'
                 ];
     
                 $data = $response->json();
                 $token = $data['token'] ?? null;
                 $username = $data['username'] ?? null; 
                 if ($token) {
-                    // Optionally store the token in session for backend use
-                    $request->session()->put('token', $token); // Store token in session
-    
+                    $request->session()->put('token', $token); 
                     return response()->json([
-                        'roleId' => $roleIds[$roleKey],
+                        'roleId' => $roleKey,
+                        'roleName' => $roleIds[$roleKey] ?? 'Unknown',
                         'message' => 'Welcome',
                         'status' => 200,
                         'username' => $username,
-                        'token' => $token, // Return token in the response
+                        'token' => $token, 
                     ]);
                 } else {
                     return response()->json([

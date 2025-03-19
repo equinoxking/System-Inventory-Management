@@ -9,11 +9,14 @@ use App\Http\Controllers\Checker_Admin\CA_mainController;
 use App\Http\Controllers\Access\RegisterController;
 use App\Http\Controllers\Access\LoginController;
 use App\Http\Controllers\Inventory_Admin\IA_functionController;
-use App\Http\Controllers\Inventory_Admin\Items\CategoryController;
+use App\Http\Controllers\Inventory_Admin\Items\CategoryManager;
 use App\Http\Controllers\Inventory_Admin\Items\UnitManager;
 use App\Http\Controllers\Inventory_Admin\Items\itemManager;
 use App\Http\Controllers\Inventory_Admin\Items\InventoryManager;
 use App\Http\Controllers\Inventory_Admin\Items\ReceivedManager;
+use App\Http\Controllers\Inventory_Admin\Accounts\AccountManager;
+use App\Http\Controllers\Inventory_Admin\Pdf\ReportManager;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -29,7 +32,9 @@ Route::controller(MainNavigationController::class)->group(function() {
     Route::get('/', 'goToIndex');
 });
 //Route for Access
-
+Route::controller(LoginController::class)->group(function(){
+    Route::post('/login-user', 'login');
+});
 /* -- Inventory Admin --*/
 Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     //Route for Main Controller or Navigation
@@ -38,11 +43,10 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::get('admin/transaction', 'goToTransactions');
         Route::get('admin/request', 'goToRequest');
         Route::get('admin/report', 'goToReport');
-        Route::get('admin/account', 'goToAccounts');
         Route::get('admin/audit', 'goToAudits');
         Route::get('admin/profile', 'goToProfile');
     });
-    Route::controller(CategoryController::class)->group(function() {
+    Route::controller(CategoryManager::class)->group(function() {
         Route::get('/search-categories', 'searchCategory')->name('search.categories');
         Route::get('/submit-category', 'store')->name('some_route');
         Route::get('/search-edit-categories', 'searchCategory');
@@ -65,6 +69,12 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::get('/searchItem', 'searchItem')->name('search.itemName');
         Route::get('/submit-item', 'storeItem');
         Route::patch('/received-item', 'receivedItem');
+    });
+    Route::controller(AccountManager::class)->group(function(){
+        Route::get('/admin/account', 'goToAccounts');
+    });
+    Route::controller(ReportManager::class)->group(function(){
+        Route::post('/generate-report', 'generateReport');
     });
     Route::controller(IA_functionController::class)->group(function() {
         Route::get('logoutAdmin', 'logoutAdmin');

@@ -32,8 +32,8 @@ class ItemModel extends Model
     {
         return $this->belongsTo(ItemStatusModel::class);
     }
-    public function receive()
+    public function receives()
     {
-        return $this->belongsTo(ReceiveModel::class);
+        return $this->hasMany(ReceiveModel::class, 'item_id');
     }
 }

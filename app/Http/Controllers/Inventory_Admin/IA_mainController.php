@@ -20,9 +20,7 @@ class IA_mainController extends Controller
     public function goToReport(){
         return view('admin.report');
     }
-    public function goToAccounts(){
-        return view ('admin.account');
-    }
+    
     public function goToAudits(){
         return view ('admin.audit');
     }
