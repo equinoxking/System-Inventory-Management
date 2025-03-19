@@ -10,62 +10,69 @@ use App\Models\InventoryModel;
 use App\Models\ItemModel;
 use App\Models\ItemStatusModel;
 use App\Models\UnitModel;
+use App\Models\ReceiveModel;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 class itemManager extends Controller
 {
     public function addItem(Request $request){
+        //validate data in item form
         $validator = Validator::make($request->all(), [
-            'category' => 'required|array', // Expecting an array of categories
-            'category.*' => 'required|exists:categories,name', // Validate each category name
-            'categoryId' => 'required|array', // Expecting an array of category IDs
-            'categoryId.*' => 'required|exists:categories,id', // Validate each category ID
-            'itemName' => 'required|array', // Expecting an array of item names
-            'itemName.*' => 'required|min:3|max:60', // Validate each item name
-            'unit' => 'required|array', // Expecting an array of units
-            'unit.*' => 'required', // Validate each unit (this depends on your validation rule)
-            'unitId' => 'required|array', // Expecting an array of unit IDs
-            'unitId.*' => 'required|exists:units,id', // Validate each unit ID
-            'quantity' => 'required|array', // Expecting an array of quantities
-            'quantity.*' => 'required|numeric|min:0', // Validate each quantity
+            'category' => 'required|array', 
+            'category.*' => 'required|exists:categories,name', 
+            'categoryId' => 'required|array', 
+            'categoryId.*' => 'required|exists:categories,id', 
+            'itemName' => 'required|array', 
+            'itemName.*' => 'required|min:3|max:60', 
+            'unit' => 'required|array', 
+            'unit.*' => 'required', 
+            'unitId' => 'required|array', 
+            'unitId.*' => 'required|exists:units,id', 
+            'quantity' => 'required|array', 
+            'quantity.*' => 'required|numeric|min:0', 
             'maxQuantity' => 'required|array',
             'maxQuantity.*' => 'required|numeric|min:1'
         ]);
+        //if validator fails it will send information to the user
         if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
                 'message' => $validator->errors()
             ]);
         } else {
+            //mapping incoming array of data
             foreach ($request->categoryId as $index => $categoryId) {
-                // Get the status for the item
+                //select query for item status
                 $status = ItemStatusModel::where('name', 'Available')->first();
-                
-                // Get the category and unit based on IDs
+                //query to find the selected category id
                 $selectedCategory = CategoryModel::findOrFail($categoryId);
+                //query to find the selected unit id
                 $selectedUnit = UnitModel::findOrFail($request->unitId[$index]);                
-
+                //condition for 
                 if (!$selectedCategory || !$selectedUnit) {
-                    continue;  // Skip invalid categories or units
+                    continue;  
                 }
              
-                // Create a new item
                 $item = new ItemModel();
                 $item->category_id = $selectedCategory->id;
                 $item->status_id = $status->id;
                 $item->name = ucwords($request->itemName[$index]);
                 $item->controlNumber = $this->generateControlNumber();
-                Log::info("Saving item: ", [$item]);
                 $item->save();
         
-                // Create a new inventory entry for the item
                 $inventory = new InventoryModel();
                 $inventory->item_id = $item->id;
                 $inventory->quantity = $request->quantity[$index];
                 $inventory->unit_id = $selectedUnit->id;
                 $inventory->max_quantity = $request->maxQuantity[$index];
-                Log::info("Saving inventory: ", [$inventory]);
                 $inventory->save();
+
+                $now = Carbon::now('Asia/Manila')->format('F');
+                $receive = new ReceiveModel();
+                $receive->item_id = $item->id;
+                $receive->received_quantity = $request->quantity[$index];
+                $receive->received_date = $now;
+                $receive->save();
                 
             }
             Log::info('Request Data:', $request->all());
@@ -119,8 +126,8 @@ class itemManager extends Controller
     }
     public function editItem(Request $request){
         $validator = Validator::make($request->all(), [
-            'edit-item-id' => 'required|array', // Expecting an array of item IDs
-            'edit-item-id.*' => 'required|exists:items,id', // Validate each item ID
+            'edit-item-id' => 'required|array', 
+            'edit-item-id.*' => 'required|exists:items,id', 
             'edit-category' => 'required|array',
             'edit-category.*' => 'required|exists:categories,name',
             'edit-categoryId' => 'required|array',

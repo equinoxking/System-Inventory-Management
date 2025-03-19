@@ -29,9 +29,7 @@ Route::controller(MainNavigationController::class)->group(function() {
     Route::get('/', 'goToIndex');
 });
 //Route for Access
-Route::controller(LoginController::class)->group(function(){
-    Route::post('/login-user', 'loginUser');
-});
+
 /* -- Inventory Admin --*/
 Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     //Route for Main Controller or Navigation

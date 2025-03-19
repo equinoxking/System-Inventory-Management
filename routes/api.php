@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Access\RegisterController;
+use App\Http\Controllers\Access\LoginController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -19,3 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     
 });
 Route::post('/register-user', [RegisterController::class, 'registration'])->name('register-user');
+
+Route::controller(LoginController::class)->group(function(){
+    Route::post('/login-user', 'loginUser');
+});

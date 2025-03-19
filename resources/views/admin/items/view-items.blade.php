@@ -131,7 +131,7 @@
                                         {{ $stockStatus }}
                                     </span>
                                 </td>                                
-                                <td>
+                                <td> 
                                     <button type="button" class="btn btn-warning" title="Item edit button" id="editItemBtn" onclick="editItem('{{ addslashes(json_encode($item)) }}')"><i class="fa-solid fa-edit" style="color: white;"></i></button>
                                     <button type="button" class="btn btn-danger"  title="Delete Item Button" id="deleteItemBtn" onclick="deleteItem('{{ addslashes(json_encode($item)) }}')"><i class="fa-solid fa-trash" style="color: white;"></i></button>
                                 </td>
