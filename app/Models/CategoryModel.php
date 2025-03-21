@@ -10,6 +10,7 @@ class CategoryModel extends Model
     use HasFactory;
     protected $table = 'categories';
     protected $fillable = [
+        'sub_category_id',
         'name',
         'description',
         'created_at',
@@ -19,4 +20,8 @@ class CategoryModel extends Model
     {
         return $this->hasMany(ItemModel::class);
     }
-}
+    public function subCategory()
+    {
+        return $this->belongsTo(SubCategoryModel::class, 'sub_category_id'); // Foreign key is sub_category_id
+    }
+}    

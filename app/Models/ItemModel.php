@@ -22,7 +22,7 @@ class ItemModel extends Model
     ];
     public function category()
     {
-        return $this->belongsTo(CategoryModel::class);
+        return $this->belongsTo(CategoryModel::class, 'category_id');
     }
     public function inventory()
     {

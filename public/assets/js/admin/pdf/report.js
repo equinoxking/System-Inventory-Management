@@ -37,6 +37,7 @@ $(document).ready(function(){
                 let newWindow = window.open(url, '_blank');
                 newWindow.focus();
                 Swal.close();
+                $('#report-submit-btn').attr('disabled', false);
             },error: function(error){
                 console.log(error);
             }

@@ -362,6 +362,10 @@
                                 <option value="November">November</option>
                                 <option value="December">December</option>
                             </select>
+                            <label for="selectedYear" class="font-weight-bold">Select Year</label>
+                            <select id="selectedYear" name="monthlySelectedYear" class="form-control">
+                                <option value="">Select a Year</option>
+                            </select>
                         </div>
                         <div class="form-group" id="quarterly-row" style="display: none">
                             <label for="quarterly" class="font-weight-bold">Quarterly</label>
@@ -371,6 +375,10 @@
                                 <option value="Apr-May-Jun">Apr-May-Jun</option>
                                 <option value="Jul-Aug-Sep">Jul-Aug-Sep</option>
                                 <option value="Oct-Nov-Dec">Oct-Nov-Dec</option>
+                            </select>
+                            <label for="selectedYear" class="font-weight-bold">Select Year</label>
+                            <select id="yearSelectQuarterly" name="selectedYear" class="form-control">
+                                <option value="">Select a Year</option>
                             </select>
                         </div>
                     </div>
@@ -413,6 +421,46 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+window.onload = function() {
+    // Monthly Select (current year on top)
+    var currentYearMonthly = new Date().getFullYear();
+    var selectMonthly = document.getElementById('selectedYear'); // Get the monthly select element
+
+    // First, add the current year at the top for monthly selection
+    let currentOptionMonthly = document.createElement('option');
+    currentOptionMonthly.value = currentYearMonthly;
+    currentOptionMonthly.text = currentYearMonthly;
+    currentOptionMonthly.selected = true;  // Set the current year as selected by default
+    selectMonthly.appendChild(currentOptionMonthly);  // Append to selectMonthly
+
+    // Then, add options for the previous 5 years
+    for (var i = currentYearMonthly - 1; i >= currentYearMonthly - 5; i--) {
+        let option = document.createElement('option');
+        option.value = i;
+        option.text = i;
+        selectMonthly.appendChild(option);  // Append to selectMonthly
+    }
+
+    // Quarterly Select (current year on top)
+    var currentYearQuarterly = new Date().getFullYear();
+    var selectQuarterly = document.getElementById('yearSelectQuarterly'); // Get the quarterly select element
+
+    // First, add the current year at the top for quarterly selection
+    let currentOptionQuarterly = document.createElement('option');
+    currentOptionQuarterly.value = currentYearQuarterly;
+    currentOptionQuarterly.text = currentYearQuarterly;
+    currentOptionQuarterly.selected = true;  // Set the current year as selected by default
+    selectQuarterly.appendChild(currentOptionQuarterly);  // Append to selectQuarterly
+
+    // Then, add options for the previous 10 years
+    for (var i = currentYearQuarterly - 1; i >= currentYearQuarterly - 10; i--) {
+        let option = document.createElement('option');
+        option.value = i;
+        option.text = i;
+        selectQuarterly.appendChild(option);  // Append to selectQuarterly
+    }
+};
+
 
 </script>
 <script src="{{ asset('assets/js/admin/items/add-item-functions/category-search.js') }}"></script>

@@ -19,57 +19,92 @@
             font-weight: bold;
             margin: 20px 0 10px;
             padding-left: 15px;
-        }
-        .slider-container {
-            position: relative;
-            overflow: hidden;
-            width: 100%;
-        }
-        .slider {
-            display: flex;
-            transition: transform 0.5s ease-in-out;
-            overflow-x: hidden;
+            cursor: pointer;
         }
         .chart-card {
             flex: 0 0 20%;
             padding: 10px;
             min-width: 300px;
+            margin-bottom: 20px; /* Add space between charts */
         }
         .chart-container {
             width: 100%;
             height: 250px;
-        }
-        .arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            padding: 10px;
-            cursor: pointer;
-            z-index: 10;
-        }
-        .arrow-left {
-            left: 0;
-        }
-        .arrow-right {
-            right: 0;
         }
     </style>
 </head>
 <body>
 
 <div class="container-fluid mt-4">
-    @for ($cat = 1; $cat <= 10; $cat++) <!-- Loop for Multiple Categories -->
-        <div class="category-title">Category {{ $cat }}</div>
-        
-        <div class="slider-container">
-            <button class="arrow arrow-left" onclick="slide(-1, {{ $cat }})">&#9665;</button>
-            <div class="slider" id="graphSlider{{ $cat }}">
-                <!-- Graphs will be injected here -->
+    <!-- Month Filter for selection -->
+    <div class="mb-3">
+        <label for="monthSelect" class="form-label">Select Month</label>
+        <select class="form-select" id="monthSelect" onchange="showCategoryGraphs()">
+            <option value="">Select Month</option>
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+        </select>
+    </div>
+
+    <!-- Category Dropdown for selection -->
+    <div class="mb-3">
+        <label for="categorySelect" class="form-label">Select Category</label>
+        <select class="form-select" id="categorySelect" onchange="showCategoryGraphs()">
+            @php
+                $month = session('selected_month', null);
+                $categoryUsage = session('category_usage', []);
+                $categories = range(1, 10);
+
+                if ($month && isset($categoryUsage[$month])) {
+                    // Sort categories based on usage for the selected month
+                    usort($categories, function ($a, $b) use ($categoryUsage, $month) {
+                        $usageA = $categoryUsage[$month][$a] ?? 0;
+                        $usageB = $categoryUsage[$month][$b] ?? 0;
+                        return $usageB - $usageA; // Sort in descending order (most used first)
+                    });
+                }
+            @endphp
+
+            @foreach ($categories as $cat)
+                <option value="{{ $cat }}" @if ($loop->first) selected @endif>Category {{ $cat }}</option>
+            @endforeach
+        </select>
+    </div>
+
+    <!-- Graphs will be shown after selecting a category -->
+    @for ($cat = 1; $cat <= 10; $cat++) <!-- Loop for Graph Containers -->
+        <div class="slider-container" id="sliderContainer{{ $cat }}" style="display: none;">
+            <div class="row">
+                <div class="col-12">
+                    <h3>Category {{ $cat }}</h3>
+                </div>
+                <!-- Graphs for selected category -->
+                <div class="col-12">
+                    <div class="d-flex flex-wrap">
+                        @for ($i = 1; $i <= 10; $i++) <!-- Loop for graphs inside each category -->
+                            <div class="chart-card">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="chart-container">
+                                            <canvas id="chart{{ $cat }}_{{ $i }}"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endfor
+                    </div>
+                </div>
             </div>
-            <button class="arrow arrow-right" onclick="slide(1, {{ $cat }})">&#9655;</button>
         </div>
     @endfor
 </div>
@@ -79,28 +114,13 @@
         const categories = 10; // Total number of categories
         const chartsPerCategory = 10; // Number of charts per category
 
-        for (let cat = 1; cat <= categories; cat++) {
-            const slider = document.getElementById(`graphSlider${cat}`);
-
-            for (let i = 1; i <= chartsPerCategory; i++) {
-                let chartCard = document.createElement("div");
-                chartCard.className = "chart-card";
-                chartCard.innerHTML = `
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="chart-container">
-                                <canvas id="chart${cat}_${i}"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                slider.appendChild(chartCard);
-            }
-        }
-
         // Initialize Charts
         for (let cat = 1; cat <= categories; cat++) {
+            const slider = document.getElementById(`sliderContainer${cat}`);
+
+            // Create chart cards dynamically
             for (let i = 1; i <= chartsPerCategory; i++) {
+                // Initialize Chart.js for each chart
                 new Chart(document.getElementById(`chart${cat}_${i}`), {
                     type: 'bar',
                     data: {
@@ -118,21 +138,72 @@
                 });
             }
         }
+
+        // Show the most commonly used category by default
+        const categorySelect = document.getElementById("categorySelect");
+        categorySelect.value = categorySelect.options[0].value; // Automatically select the most used category (first in sorted list)
+        showCategoryGraphs(); // Display graphs for the first selected category
     });
 
-    let currentIndex = {};
-    function slide(direction, cat) {
-        const slider = document.getElementById(`graphSlider${cat}`);
-        const cards = document.querySelectorAll(`#graphSlider${cat} .chart-card`);
-        const cardWidth = cards[0].offsetWidth + 20; // Width + padding
-        const maxIndex = cards.length - 5; // Show 5 at a time
+    // Show selected category graphs
+    function showCategoryGraphs() {
+        const selectedCategory = document.getElementById("categorySelect").value;
+        const selectedMonth = document.getElementById("monthSelect").value;
 
-        if (!currentIndex[cat]) currentIndex[cat] = 0;
-        currentIndex[cat] += direction;
-        if (currentIndex[cat] < 0) currentIndex[cat] = 0;
-        if (currentIndex[cat] > maxIndex) currentIndex[cat] = maxIndex;
+        // Update the selected month in session storage
+        updateSelectedMonth(selectedMonth);
 
-        slider.style.transform = `translateX(-${currentIndex[cat] * cardWidth}px)`;
+        // Update category usage for the selected month
+        updateCategoryUsage(selectedCategory, selectedMonth);
+
+        // Hide all sliders initially
+        for (let i = 1; i <= 10; i++) {
+            document.getElementById(`sliderContainer${i}`).style.display = 'none';
+        }
+
+        // If a category is selected, show its corresponding graphs
+        if (selectedCategory) {
+            document.getElementById(`sliderContainer${selectedCategory}`).style.display = 'block';
+        }
+    }
+
+    // Update the selected month in session storage
+    function updateSelectedMonth(month) {
+        fetch('/update-selected-month', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ month: month })
+        });
+    }
+
+    // Update the usage frequency of selected categories for the selected month in session storage
+    function updateCategoryUsage(categoryId, month) {
+        // Get the current usage data from the session
+        let categoryUsage = @json(session('category_usage', [])); // Pass session data to JavaScript
+
+        // Increment the usage for the selected category for the selected month
+        if (!categoryUsage[month]) {
+            categoryUsage[month] = {};
+        }
+
+        if (!categoryUsage[month][categoryId]) {
+            categoryUsage[month][categoryId] = 0;
+        }
+
+        categoryUsage[month][categoryId]++;
+
+        // Update the session with the new usage data
+        fetch('/update-category-usage', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ category_usage: categoryUsage })
+        });
     }
 </script>
 
