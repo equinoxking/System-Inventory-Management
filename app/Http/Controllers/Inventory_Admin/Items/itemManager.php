@@ -68,14 +68,29 @@ class itemManager extends Controller
                 $inventory->max_quantity = $request->maxQuantity[$index];
                 $inventory->save();
 
+                $monthToInt = [
+                    'January' => 1,
+                    'February' => 2,
+                    'March' => 3,
+                    'April' => 4,
+                    'May' => 5,
+                    'June' => 6,
+                    'July' => 7,
+                    'August' => 8,
+                    'September' => 9,
+                    'October' => 10,
+                    'November' => 11,
+                    'December' => 12,
+                ];
                 $day = Carbon::now('Asia/Manila')->format('d');
                 $month = Carbon::now('Asia/Manila')->format('F');
                 $year = Carbon::now('Asia/Manila')->format('Y');
+                $monthInt = $monthToInt[$month];
                 $receive = new ReceiveModel();
                 $receive->item_id = $item->id;
                 $receive->received_quantity = $request->quantity[$index];
                 $receive->received_day = $day;
-                $receive->received_month = $month;
+                $receive->received_month = $monthInt;
                 $receive->received_year = $year;
                 $receive->save();
                 

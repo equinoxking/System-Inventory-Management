@@ -10,6 +10,8 @@ use App\Models\ItemModel;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\ClientModel;
+use Error;
+use Illuminate\Support\Facades\Log;
 class ReportManager extends Controller
 {
     public function generateReport(Request $request){
@@ -26,10 +28,11 @@ class ReportManager extends Controller
             switch ($response) {
                 case 'Monthly':
                     $month = $request->get('month');  
-
+                    $year = $request->get('monthlySelectedYear');
                     $itemsPart1 = ItemModel::with([
-                        'receives' => function ($query) use ($month) {
-                            $query->where('received_month', $month);
+                        'receives' => function ($query) use ($month, $year) {
+                            $query->where('received_month', '=', $month)
+                            ->where('received_year', '=' ,  $year);
                         },
                         'inventory.unit',
                         'category.subCategory'
@@ -49,26 +52,63 @@ class ReportManager extends Controller
                         $query->where('id', 2);  // Filter where sub_category_id is 1
                     })
                     ->get();
-                    // $items = $items->sortBy(function ($item) {
-                    //     return $item->category->subCategory ? $item->category->subCategory->id : 999;  // Place subcategories that don't exist last
-                    // });
-                    $selectedYear = $request->input('monthlySelectedYear');
-                    $date = Carbon::createFromFormat('Y-F', "$selectedYear-$month");   
-                    $subDate = Carbon::createFromFormat('Y-F', "$selectedYear-$month");   
+
+                    $itemsPart1->each(function ($item) use ($month, $year) {
+                        $item->total_received_quantity = $item->receives()
+                            ->where(function ($query) use ($month, $year) {
+                                $query->where('received_year', '<', $year)  // For years before the selected year, include all months
+                                      ->orWhere(function ($query) use ($month, $year) {
+                                          // For the selected year, include all months up to and including the selected month
+                                          $query->where('received_year', '=', $year)
+                                                ->where('received_month', '<=', $month);
+                                      });
+                            })
+                            ->sum('received_quantity');
+                    });
+                    
+                    $itemsPart2->each(function ($item) use ($month, $year) {
+                        $item->total_received_quantity = $item->receives()
+                            ->where(function ($query) use ($month, $year) {
+                                $query->where('received_year', '<', $year)  // For years before the selected year, include all months
+                                      ->orWhere(function ($query) use ($month, $year) {
+                                          // For the selected year, include all months up to and including the selected month
+                                          $query->where('received_year', '=', $year)
+                                                ->where('received_month', '<=', $month);
+                                      });
+                            })
+                            ->sum('received_quantity');
+                    });
+                    $date = Carbon::createFromFormat('Y-m', "$year-$month");   
+                    $subDate = Carbon::createFromFormat('Y-m', "$year-$month");   
                     $currentDate = $date->endOfMonth();
                     $subMonth = $subDate->subMonths(1);
                     $modifiedDate = $subMonth->endOfMonth(); 
                     $formattedDate = $modifiedDate->format('m/d/Y');
                     $formattedCurrentDate = $currentDate->format('m/d/Y');
                     $formatLegalCurrentDate = $currentDate->format('F d, Y');
-
+                    $monthToName = [
+                        1 => 'January',
+                        2 => 'February',
+                        3 => 'March',
+                        4 => 'April',
+                        5 => 'May',
+                        6 => 'June',
+                        7 => 'July',
+                        8 => 'August',
+                        9 => 'September',
+                        10 => 'October',
+                        11 => 'November',
+                        12 => 'December',
+                    ];
+                    $monthName = $monthToName[$month] ?? 'Invalid month';
+                    $formattedDateNow = Carbon::createFromFormat('F', $monthName)->format('F');
                     $inventories = InventoryModel::all();
                     $capsMonth = strtoupper($month);
                     $sessionLogin = session()->get('loggedInInventoryAdmin')['id'];
                     $client = ClientModel::where('id', $sessionLogin)->first();
                     $now = Carbon::now('Asia/Manila')->format('F j, Y h:i A');
                     $data = [
-                        'title' => 'INVENTORY REPORT OF SUPPLIES FOR THE MONTH OF ' . $capsMonth,
+                        'title' => 'INVENTORY REPORT OF SUPPLIES FOR THE MONTH OF ' . strtoupper($formattedDateNow),
                         'itemsPart1' => $itemsPart1,
                         'itemsPart2' => $itemsPart2,
                         'inventories' => $inventories,
@@ -77,6 +117,7 @@ class ReportManager extends Controller
                         'formatLegalCurrentDate' => $formatLegalCurrentDate,
                         'client' => $client,
                         'now' => $now,
+                        'formattedDateNow' => $formattedDateNow
                     ];
     
                     $pdf = PDF::loadView('admin.pdf.monthly-report', $data)
@@ -97,41 +138,149 @@ class ReportManager extends Controller
                 break;
                 case "Quarterly":
                     $selectedQuarter = $request->input('quarterly'); 
-                    $explodeQuarters = explode('-', $selectedQuarter);
                     $quarters = [
-                        'Jan-Feb-Mar' => ['January', 'February', 'March'],
-                        'Apr-May-Jun' => ['April', 'May', 'June'],
-                        'Jul-Aug-Sep' => ['July', 'August', 'September'],
-                        'Oct-Nov-Dec' => ['October', 'November', 'December'],
+                        '1-2-3' => ['January', 'February', 'March'],
+                        '4-5-6' => ['April', 'May', 'June'],
+                        '7-8-9' => ['July', 'August', 'September'],
+                        '10-11-12' => ['October', 'November', 'December'],
                     ];
+                    if (!array_key_exists($selectedQuarter, $quarters)) {
+                        // Handle error: Invalid quarter input
+                        return response()->json(['error' => 'Invalid quarter selected'], 400);
+                    }
                     $storeQuarter = '';
                     if (isset($quarters[$selectedQuarter])) {
-                       
                         $months = $quarters[$selectedQuarter];
                         $year = Carbon::now('Asia/Manila')->year;  
                         $selectedYear = $request->input('selectedYear');
-                        $items = ItemModel::with(['receives' => function($query) use ($months, $selectedYear) {
+                        $itemsPart1 = ItemModel::with(['receives' => function($query) use ($months, $selectedYear) {
                             $query->whereIn('received_month', $months)
                             ->where('received_year', $selectedYear); 
-                        }])->get();
-
+                        }])
+                        ->whereHas('category.subCategory', function ($query) {
+                            $query->where('id', 1);  // Filter where sub_category_id is 1
+                        })
+                        ->get();
+                        $itemsPart2 = ItemModel::with(['receives' => function($query) use ($months, $selectedYear) {
+                            $query->whereIn('received_month', $months)
+                            ->where('received_year', $selectedYear); 
+                        }])
+                        ->whereHas('category.subCategory', function ($query) {
+                            $query->where('id', 2);  // Filter where sub_category_id is 1
+                        })
+                        ->get();
+                        $monthToInt = [
+                            'January' => 1,
+                            'February' => 2,
+                            'March' => 3,
+                            'April' => 4,
+                            'May' => 5,
+                            'June' => 6,
+                            'July' => 7,
+                            'August' => 8,
+                            'September' => 9,
+                            'October' => 10,
+                            'November' => 11,
+                            'December' => 12,
+                        ];
                         $getMonth = $quarters[$selectedQuarter][0];
-                        $subDate = Carbon::createFromFormat('Y-F', "$selectedYear-$getMonth");   
+                        $numericMonths = array_map(function ($month) use ($monthToInt) {
+                            return $monthToInt[$month];
+                        }, $months);
+                        $numericMonth = $monthToInt[$getMonth];
+                        $firstMonthName = $quarters[$selectedQuarter][0];
+                        $firstMonthNumeric = (int) $monthToInt[$firstMonthName];
+                        $itemsPart1->each(function ($item) use ($numericMonths, $year) {
+                            // Sum the received quantities for the selected quarter and year
+                            $item->total_received_quantity = $item->receives()
+                                ->where(function ($query) use ($numericMonths, $year) {
+                                    $query->where('received_year', '<', $year)  // For years before the selected year, include all months
+                                        ->orWhere(function ($query) use ($numericMonths, $year) {
+                                            // For the selected year, include all months up to and including the selected month
+                                            $query->where('received_year', '=', $year)
+                                                ->whereIn('received_month', $numericMonths);  // Use whereIn to filter by multiple months
+                                        });
+                                })
+                            ->sum('received_quantity');
+                            });
+                        $itemsPart1->each(function ($item) use ($firstMonthNumeric, $year) {
+                            $item->total_balances = $item->receives()
+                                ->where(function ($query) use ($firstMonthNumeric, $year) {
+                                    $query->where('received_year', '<', $year)  // For years before the selected year, include all months
+                                        ->orWhere(function ($query) use ($firstMonthNumeric, $year) {
+                                            // For the selected year, include all months up to and including the selected month
+                                            $query->where('received_year', '=', $year)
+                                                    ->where('received_month', '<=', $firstMonthNumeric);
+                                        });
+                                })
+                            ->sum('received_quantity');
+                            });
+                        $itemsPart2->each(function ($item) use ($numericMonths, $year) {
+                            // Sum the received quantities for the selected quarter and year
+                            $item->total_received_quantity = $item->receives()
+                                ->where(function ($query) use ($numericMonths, $year) {
+                                    $query->where('received_year', '<', $year)  // For years before the selected year, include all months
+                                        ->orWhere(function ($query) use ($numericMonths, $year) {
+                                            // For the selected year, include all months up to and including the selected month
+                                            $query->where('received_year', '=', $year)
+                                                ->whereIn('received_month', $numericMonths);  // Use whereIn to filter by multiple months
+                                        });
+                                })
+                            ->sum('received_quantity');
+                            });
+                        $itemsPart2->each(function ($item) use ($firstMonthNumeric, $year) {
+                            $item->total_balances = $item->receives()
+                                ->where(function ($query) use ($firstMonthNumeric, $year) {
+                                    $query->where('received_year', '<', $year)  // For years before the selected year, include all months
+                                        ->orWhere(function ($query) use ($firstMonthNumeric, $year) {
+                                            // For the selected year, include all months up to and including the selected month
+                                            $query->where('received_year', '=', $year)
+                                                    ->where('received_month', '<=', $firstMonthNumeric);
+                                        });
+                                })
+                            ->sum('received_quantity');
+                            });
+                        $monthAbbreviations = [
+                            'January' => 'Jan',
+                            'February' => 'Feb',
+                            'March' => 'Mar',
+                            'April' => 'Apr',
+                            'May' => 'May',
+                            'June' => 'Jun',
+                            'July' => 'Jul',
+                            'August' => 'Aug',
+                            'September' => 'Sep',
+                            'October' => 'Oct',
+                            'November' => 'Nov',
+                            'December' => 'Dec',
+                        ];
+                        $explodeQuarters = [$selectedQuarter];
+                        $subDate = Carbon::createFromFormat('Y-m', "$selectedYear-$numericMonth");   
                         $subMonth = $subDate->subMonths(1);
                         $finalSubMonth = $subMonth->endOfMonth(); 
-                        $currentDate = Carbon::createFromFormat('Y-F', "$selectedYear-$getMonth");  
+                        $currentDate = Carbon::createFromFormat('Y-m', "$selectedYear-$numericMonth");  
                         $addMonth = $currentDate->addMonth(2);
                         $finalMonth =  $addMonth->endOfMonth(); 
                         $formatFinalSubMonth = $finalSubMonth->format('m/d/Y');
                         $formatFinalMonth = $finalMonth->format('m/d/Y');
+                        $getMonth = $quarters[$selectedQuarter][2];
+                        $numericMonthNow = $monthToInt[$getMonth];
+                        $endOfMonth = Carbon::createFromFormat('Y-m', "$selectedYear-$numericMonthNow")->endOfMonth();
+                        $endOfMonthFormatted = $endOfMonth->format('F d, Y');
                     } else {
                         $items = collect();  
                     }
                     $data = [
-                        'items' => $items,
+                        'title' => "PROVINCIAL HUMAN RESOURCE MANAGEMENT OFFICE",
+                        'sub_title' => "SUPPLIES UTILIZATION REPORT",
+                        'itemsPart1' => $itemsPart1,
+                        'itemsPart2' => $itemsPart2,
                         'explodeQuarters' => $explodeQuarters,
                         'formatFinalSubMonth' => $formatFinalSubMonth,
-                        'formatFinalMonth' => $formatFinalMonth
+                        'formatFinalMonth' => $formatFinalMonth,
+                        'quarters' => $quarters,
+                        'monthAbbreviations' => $monthAbbreviations,
+                        'endOfMonthFormatted' => $endOfMonthFormatted
                         
                     ];
                     $pdf = PDF::loadView('admin.pdf.quarterly-report', $data)
@@ -151,3 +300,19 @@ class ReportManager extends Controller
         }
     }
 }
+// $itemsPart1->each(function ($item) use ($month, $year) {
+//     $item->total_received_quantity = $item->transactions()
+//         ->where(function ($query) use ($month, $year) {
+//             // Filter transactions where the released year and month are before the user input year and month
+//             $query->where(function ($query) use ($month, $year) {
+//                 // Include transactions with released_year less than the input year (all months before the input year)
+//                 $query->where('released_year', '<', $year)
+//                       ->orWhere(function ($query) use ($month, $year) {
+//                           // Include transactions for the selected year, but only up to the input month
+//                           $query->where('released_year', '=', $year)
+//                                 ->where('released_month', '<', $month);  // Exclude the input month
+//                       });
+//             });
+//         })
+//         ->sum('received_quantity');
+// });

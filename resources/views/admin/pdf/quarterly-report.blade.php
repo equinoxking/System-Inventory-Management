@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Quarterly Report Generation</title>
     <style>
         body{
-            font-size: 10px;
+            font-size: 11px;
         }
         .centerText{
             text-align: center;
@@ -29,13 +29,10 @@
             margin-bottom: 30px; 
         }
         table {
-            width: 100%;
+            border-collapse: collapse;
         }
-
         th, td {
-            border: 2px solid #000;
-            padding: 8px;
-            text-align: left;
+            padding: 0; 
         }
         .content {
             margin-bottom: 50px;
@@ -49,82 +46,147 @@
             font-size: 10px;
             padding: 10px;
         }
+        .title{
+            text-align: center;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
-    <table border="2" width="100%" class="table table-responsive">
+    <div class="title">
+        <strong>{{ $title }}</strong><br>
+        <strong>{{ $sub_title }}</strong> <br>
+        <strong>As of {{ $endOfMonthFormatted }}</strong>
+    </div>
+    <table border="2" class="table table-responsive">
         <thead>
-            <tr>
-                <th colspan="2">No.</th>
-                <th colspan="2">Item Description</th>
-                <th colspan="2">Units</th>
-                <th colspan="2">Balance as of {{ $formatFinalSubMonth }}</th>
-                <th colspan="2">Delivered</th>
-                <th colspan="4">MONTHLY UTILIZATION WITHDRAWAL</th>
-                <th colspan="2">Available Stock as of {{ $formatFinalMonth }}</th>
-              </tr>
-              <tr>
-                <th colspan="10"></th>
+            <tr style="background-color:lightgrey">
+                <th width="5%" colspan="2" rowspan="2">No.</th>
+                <th style="text-align: center; width: 50%;" colspan="2" rowspan="2">Item Description</th>
+                <th width="5%" colspan="2" rowspan="2">Units</th>
+                <th width="5%" colspan="2" rowspan="2">Balance as of {{ $formatFinalSubMonth }}</th>
+                <th width="5%" colspan="2" rowspan="2">Delivery</th>
+                <th width="5%" colspan="4">MONTHLY UTILIZATION WITHDRAWAL</th>
+                <th width="5%" colspan="2" rowspan="2">Available Stock as of {{ $formatFinalMonth }}</th>
+            </tr>
+            <!-- Second Header Row -->
+            <tr style="background-color:lightgrey">
                 @foreach ($explodeQuarters as $quarter)
-                    <td>{{ $quarter }}</td>
+                    @foreach ($quarters[$quarter] as $month)
+                        <!-- Convert month name to numeric value -->
+                        <th>{{ $monthAbbreviations[$month] }}</th>
+                    @endforeach
                 @endforeach
-                <td>Total</td>
-                <th colspan="2"></th>
-              </tr>
+                <th >Total</th>
+            </tr>
+            <tr>
+                <th  style="text-align: center;" colspan="4">(A)</th>
+                <th  style="text-align: center;" colspan="2">(B)</th>
+                <th  style="text-align: center;" colspan="2">(C)</th>
+                <th  style="text-align: center;" colspan="2">(D)</th>
+                <th  style="text-align: center;" colspan="1">(E)</th>
+                <th  style="text-align: center;" colspan="1">(F)</th>
+                <th  style="text-align: center;" colspan="1">(G)</th>
+                <th  style="text-align: center;" colspan="1">(H=E+F+G)</th>
+                <th  style="text-align: center;" colspan="2">(I=C+D-H)</th>
+            </tr>
         </thead>
         <tbody>
             @php
-                $groupedItems = $items->groupBy('category.name');
+                $groupedItemsPart1 = $itemsPart1->groupBy('category.name');
+                $groupedItemsPart2 = $itemsPart2->groupBy('category.name');
                 $count = 1;
                 $printedParts = []; 
             @endphp
-            @foreach ($groupedItems as $categoryName => $itemsInCategory)
+            <tr>
+                <td colspan="6" style="font-weight: bold">Part I. Available at procurement services stores</td>
+                <td colspan="2" style="font-weight: bold"></td>
+                <td colspan="2" style="font-weight: bold"></td>
+                <td colspan="1" style="font-weight: bold"></td>
+                <td colspan="1" style="font-weight: bold"></td>
+                <td colspan="1" style="font-weight: bold"></td>
+                <td colspan="1" style="font-weight: bold"></td>
+                <td colspan="2" style="font-weight: bold"></td>
+            </tr>
+            @foreach ($groupedItemsPart1 as $categoryName => $itemsInCategory)
                 @php
                     $subCategories = $itemsInCategory->groupBy(function ($item) {
                         return $item->category->sub_category ? $item->category->sub_category->name : 'No Sub-Category'; 
                     });
                 @endphp
                 @foreach ($subCategories as $subCategoryName => $itemsInSubCategory)
-                    @php
-                        if ($subCategoryName == 'Part I. Available at procurement services stores') {
-                            $partName = 'Part I. Available at procurement services stores';
-                        } else {
-                            $partName = 'Part II. Other items not available at ps but regularly purchased from other sources';
-                        }
-                    @endphp
-                    @if (!isset($printedParts[$subCategoryName]))
-                        <tr>
-                            <td colspan="16"><strong>{{ $partName }}</strong></td>
-                        </tr>
-                        @php
-                            $printedParts[$subCategoryName] = true; 
-                        @endphp
-                    @endif
-                    {{-- <tr>
-                        <td colspan="16"><strong>{{ $subCategoryName }}</strong></td>
-                    </tr> --}}
                     <tr>
-                        <td colspan="16"><strong>{{ $categoryName }}</strong></td>
+                        <td colspan="4"><strong>{{ $categoryName }}</strong></td>
+                        <td colspan="2" style="font-weight: bold"></td>
+                        <td colspan="2" style="font-weight: bold"></td>
+                        <td colspan="2" style="font-weight: bold"></td>
+                        <td colspan="1" style="font-weight: bold"></td>
+                        <td colspan="1" style="font-weight: bold"></td>
+                        <td colspan="1" style="font-weight: bold"></td>
+                        <td colspan="1" style="font-weight: bold"></td>
+                        <td colspan="2" style="font-weight: bold"></td>
                     </tr>
                     @foreach ($itemsInCategory as $item)
                         <tr class="text-center">
-                            <td colspan="2">{{ $count++ }}.</td>
+                            <td colspan="2" style="text-align: center">{{ $count++ }}.</td>
                             <td colspan="2">{{ $item->name }}</td>
-                            <td colspan="2">{{ $item->inventory->unit->name }}</td>
-                            <td colspan="2">{{ $item->inventory->quantity }}</td>
-                            <td colspan="2">{{ $item->receives->sum('received_quantity') }}</td>
-                            <td colspan="1">0</td>
-                            <td colspan="1">0</td>
-                            <td colspan="1">0</td>
-                            <td colspan="1">0</td>
-                            <td colspan="2">{{ $item->inventory->quantity + $item->receives->sum('received_quantity') }}</td>
+                            <td colspan="2" style="text-align: center">{{ $item->inventory->unit->name }}</td>
+                            <td colspan="2" style="text-align: center">{{ $item->total_balances }}</td>
+                            <td colspan="2" style="text-align: center">{{ $item->total_received_quantity }}</td>
+                            <td colspan="1" style="text-align: center">0</td>
+                            <td colspan="1" style="text-align: center">0</td>
+                            <td colspan="1" style="text-align: center">0</td>
+                            <td colspan="1" style="text-align: center">0</td>
+                            <td colspan="2" style="text-align: center">{{ $item->inventory->quantity + $item->receives->sum('received_quantity') }}</td>
                         </tr>
                     @endforeach
                 @endforeach
             @endforeach
+            <tr>
+                <td colspan="6" style="font-weight: bold">Part II. Other items not available at ps but regularly purchased from other sources</td>
+                <td colspan="2" style="font-weight: bold"></td>
+                <td colspan="2" style="font-weight: bold"></td>
+                <td colspan="1" style="font-weight: bold"></td>
+                <td colspan="1" style="font-weight: bold"></td>
+                <td colspan="1" style="font-weight: bold"></td>
+                <td colspan="1" style="font-weight: bold"></td>
+                <td colspan="2" style="font-weight: bold"></td>
+            </tr>
+            @foreach ($groupedItemsPart2 as $categoryName => $itemsInCategory)
+                @php
+                    $subCategories = $itemsInCategory->groupBy(function ($item) {
+                        return $item->category->subCategory ? $item->category->subCategory->id : 'No Sub-Category';
+                    });
+                @endphp
+                @foreach ($subCategories as $subCategoryId => $itemsInSubCategory)
+                    <tr>
+                        <td colspan="4"><strong>{{ $categoryName }}</strong></td>
+                        <td colspan="2" style="font-weight: bold"></td>
+                        <td colspan="2" style="font-weight: bold"></td>
+                        <td colspan="2" style="font-weight: bold"></td>
+                        <td colspan="1" style="font-weight: bold"></td>
+                        <td colspan="1" style="font-weight: bold"></td>
+                        <td colspan="1" style="font-weight: bold"></td>
+                        <td colspan="1" style="font-weight: bold"></td>
+                        <td colspan="2" style="font-weight: bold"></td>
+                    </tr>
+                    @foreach ($itemsInCategory as $item)
+                            <tr class="text-center">
+                                <td colspan="2" style="text-align: center">{{ $count++ }}.</td>
+                                <td colspan="2">{{ $item->name }}</td>
+                                <td colspan="2" style="text-align: center">{{ $item->inventory->unit->name }}</td>
+                                <td colspan="2" style="text-align: center">{{ $item->total_balances }}</td>
+                                <td colspan="2" style="text-align: center">{{ $item->total_received_quantity }}</td>
+                                <td colspan="1" style="text-align: center">0</td>
+                                <td colspan="1" style="text-align: center">0</td>
+                                <td colspan="1" style="text-align: center">0</td>
+                                <td colspan="1" style="text-align: center">0</td>
+                                <td colspan="2" style="text-align: center">{{ $item->inventory->quantity + $item->receives->sum('received_quantity') }}</td>
+                            </tr>
+                        @endforeach
+                @endforeach
+            @endforeach
         </tbody>
-        <tfoot>
-        </tfoot>
     </table>
 </body>
 </html>

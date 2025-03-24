@@ -72,6 +72,8 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     });
     Route::controller(AccountManager::class)->group(function(){
         Route::get('/admin/account', 'goToAccounts');
+        Route::patch('/set-user-role', 'setUserRole');
+        Route::patch('/change-user-status', 'changeUserStatus');
     });
     Route::controller(ReportManager::class)->group(function(){
         Route::post('/generate-report', 'generateReport');

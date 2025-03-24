@@ -349,18 +349,18 @@
                             <label for="month" class="font-weight-bold">Month</label>
                             <select name="month" id="month" class="form-control">
                                 <option value="">Select month</option>
-                                <option value="January">January</option>
-                                <option value="February">February</option>
-                                <option value="March">March</option>
-                                <option value="April">April</option>
-                                <option value="May">May</option>
-                                <option value="June">June</option>
-                                <option value="July">July</option>
-                                <option value="August">August</option>
-                                <option value="September">September</option>
-                                <option value="October">October</option>
-                                <option value="November">November</option>
-                                <option value="December">December</option>
+                                <option value="1">January</option>
+                                <option value="2">February</option>
+                                <option value="3">March</option>
+                                <option value="4">April</option>
+                                <option value="5">May</option>
+                                <option value="6">June</option>
+                                <option value="7">July</option>
+                                <option value="8">August</option>
+                                <option value="9">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
                             </select>
                             <label for="selectedYear" class="font-weight-bold">Select Year</label>
                             <select id="selectedYear" name="monthlySelectedYear" class="form-control">
@@ -371,10 +371,10 @@
                             <label for="quarterly" class="font-weight-bold">Quarterly</label>
                             <select name="quarterly" id="quarterly" class="form-control">
                                 <option value="">Select quarterly</option>
-                                <option value="Jan-Feb-Mar">Jan-Feb-Mar</option>
-                                <option value="Apr-May-Jun">Apr-May-Jun</option>
-                                <option value="Jul-Aug-Sep">Jul-Aug-Sep</option>
-                                <option value="Oct-Nov-Dec">Oct-Nov-Dec</option>
+                                <option value="1-2-3">Jan-Feb-Mar</option>
+                                <option value="4-5-6">Apr-May-Jun</option>
+                                <option value="7-8-9">Jul-Aug-Sep</option>
+                                <option value="10-11-12">Oct-Nov-Dec</option>
                             </select>
                             <label for="selectedYear" class="font-weight-bold">Select Year</label>
                             <select id="yearSelectQuarterly" name="selectedYear" class="form-control">

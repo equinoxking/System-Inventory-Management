@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Monthly Report</title>
+    <title>Monthly Report Generation</title>
     <style>
         .rightText{
             text-align: right;
@@ -23,12 +23,12 @@
         }
         table {
             width: 100%;
+            border-collapse: collapse;
         }
 
         th, td {
             border: 0.5px solid #000;
             padding: 8px;
-            text-align: left;
         }
         .content {
             margin-bottom: 50px;
@@ -81,7 +81,14 @@
             $groupedItemsPart2 = $itemsPart2->groupBy('category.name');
             $count = 1;
         @endphp
-        <tr><td colspan="7" style="font-weight: bold">Part I. Available at procurement services stores</td></tr>
+        <tr>
+            <td colspan="2" style="font-weight: bold">Part I. Available at procurement services stores</td>
+            <td colspan=""></td>
+            <td colspan=""></td>
+            <td colspan=""></td>
+            <td colspan=""></td>
+            <td colspan=""></td>
+        </tr>
         @foreach ($groupedItems as $categoryName => $itemsInCategory)
             @php
                 $subCategories = $itemsInCategory->groupBy(function ($item) {
@@ -90,14 +97,19 @@
             @endphp
             @foreach ($subCategories as $subCategoryId => $itemsInSubCategory)
                 <tr>
-                    <td colspan="7"><strong>{{ $categoryName }}</strong></td>
+                    <td colspan="2"><strong>{{ $categoryName }}</strong></td>
+                    <td colspan=""></td>
+                    <td colspan=""></td>
+                    <td colspan=""></td>
+                    <td colspan=""></td>
+                    <td colspan=""></td>
                 </tr>
                 @foreach ($itemsInSubCategory as $item)
                     <tr>
                         <td class="rightText">{{ $count++ }}.</td>
                         <td>{{ $item->name }}</td>
                         <td class="rightText">{{ $item->inventory->unit->name }}</td>
-                        <td class="rightText">{{ $item->inventory->quantity }}</td>
+                        <td class="rightText">{{ $item->total_received_quantity }}</td>
                         <td class="rightText">{{ $item->receives->sum('received_quantity') }}</td>
                         <td class="rightText">{{ $item->inventory->quantity }}</td>
                         <td class="rightText">{{ $item->receives->sum('received_quantity') - $item->inventory->quantity }}</td>
@@ -105,7 +117,14 @@
                 @endforeach
             @endforeach
         @endforeach
-        <tr><td colspan="7" style="font-weight: bold">Part II. Other items not available at ps but regularly purchased from other sources</td></tr>
+        <tr>
+            <td colspan="2" style="font-weight: bold">Part II. Other items not available at ps but regularly purchased from other sources</td>
+            <td colspan=""></td>
+            <td colspan=""></td>
+            <td colspan=""></td>
+            <td colspan=""></td>
+            <td colspan=""></td>
+        </tr>
         @foreach ($groupedItemsPart2 as $categoryName => $itemsInCategory)
             @php
                 $subCategories = $itemsInCategory->groupBy(function ($item) {
@@ -114,14 +133,19 @@
             @endphp
             @foreach ($subCategories as $subCategoryId => $itemsInSubCategory)
                 <tr>
-                    <td colspan="7"><strong>{{ $categoryName }}</strong></td>
+                    <td colspan="2"><strong>{{ $categoryName }}</strong></td>
+                    <td colspan=""></td>
+                    <td colspan=""></td>
+                    <td colspan=""></td>
+                    <td colspan=""></td>
+                    <td colspan=""></td>
                 </tr>
                 @foreach ($itemsInSubCategory as $item)
                     <tr>
                         <td class="rightText">{{ $count++ }}.</td>
                         <td>{{ $item->name }}</td>
                         <td class="rightText">{{ $item->inventory->unit->name }}</td>
-                        <td class="rightText">{{ $item->inventory->quantity }}</td>
+                        <td class="rightText">{{ $item->total_received_quantity }}</td>
                         <td class="rightText">{{ $item->receives->sum('received_quantity') }}</td>
                         <td class="rightText">{{ $item->inventory->quantity }}</td>
                         <td class="rightText">{{ $item->receives->sum('received_quantity') - $item->inventory->quantity }}</td>
