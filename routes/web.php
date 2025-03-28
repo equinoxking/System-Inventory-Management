@@ -14,9 +14,13 @@ use App\Http\Controllers\Inventory_Admin\Items\UnitManager;
 use App\Http\Controllers\Inventory_Admin\Items\itemManager;
 use App\Http\Controllers\Inventory_Admin\Items\InventoryManager;
 use App\Http\Controllers\Inventory_Admin\Items\ReceivedManager;
+use App\Http\Controllers\Inventory_Admin\Transactions\AdminTransactionManager;
 use App\Http\Controllers\Inventory_Admin\Accounts\AccountManager;
 use App\Http\Controllers\Inventory_Admin\Pdf\ReportManager;
-
+use App\Http\Controllers\Inventory_Admin\Accounts\ProfileManager;
+use App\Http\Controllers\User\Transactions\TransactionsManager;
+use App\Http\Controllers\User\User_functionController;
+use App\Http\Controllers\User\Account\UserProfileManager;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -40,11 +44,9 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     //Route for Main Controller or Navigation
     Route::controller(IA_mainController::class)->group(function(){
         Route::get('admin/', 'goToDashboard');
-        Route::get('admin/transaction', 'goToTransactions');
         Route::get('admin/request', 'goToRequest');
         Route::get('admin/report', 'goToReport');
         Route::get('admin/audit', 'goToAudits');
-        Route::get('admin/profile', 'goToProfile');
     });
     Route::controller(CategoryManager::class)->group(function() {
         Route::get('/search-categories', 'searchCategory')->name('search.categories');
@@ -70,6 +72,10 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::get('/submit-item', 'storeItem');
         Route::patch('/received-item', 'receivedItem');
     });
+    Route::controller(AdminTransactionManager::class)->group(function(){
+        Route::get('admin/transaction', 'goToTransactions');
+        Route::patch('/change-transaction-status', 'updateTransactionStatus');
+    });
     Route::controller(AccountManager::class)->group(function(){
         Route::get('/admin/account', 'goToAccounts');
         Route::patch('/set-user-role', 'setUserRole');
@@ -77,6 +83,10 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     });
     Route::controller(ReportManager::class)->group(function(){
         Route::post('/generate-report', 'generateReport');
+    });
+    Route::controller(ProfileManager::class)->group(function(){
+        Route::get('/admin/profile', 'goToProfile');
+        Route::patch('update-admin-account', 'updateProfile');
     });
     Route::controller(IA_functionController::class)->group(function() {
         Route::get('logoutAdmin', 'logoutAdmin');
@@ -86,10 +96,19 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
 Route::group(['middleware' => 'loginCheckUser'], function () {
     //Route for Main Controller or Navigation
     Route::controller(User_mainController::class)->group(function() {
-        Route::get('user/dashboard', 'goToDashboard');
-        Route::get('user/request', 'goToRequest');
+        Route::get('user/', 'goToDashboard');
+    });
+    Route::controller(TransactionsManager::class)->group(function() {
+        Route::get('user/transactions', 'goToTransactions');
+        Route::get('/searchRequestItem', 'searchItem');
+        Route::post('/request-item', 'requestItem');
         Route::get('user/history', 'goToHistory');
+    });
+    Route::controller(UserProfileManager::class)->group(function(){
         Route::get('user/profile', 'goToProfile');
+    });
+    Route::controller(User_functionController::class)->group(function(){
+        Route::get('/logoutUser', 'logoutUser');
     });
 });
 /* -- ADMIN HEAD -- */

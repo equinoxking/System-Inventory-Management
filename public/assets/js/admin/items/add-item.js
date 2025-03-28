@@ -14,7 +14,7 @@ $(document).ready(function() {
     })
 });
 $(document).ready(function(){
-  $(document).on('submit', '#createItem-form', function(event){
+    $(document).on('submit', '#createItem-form', function(event){
         event.preventDefault();
         var formData = $('#createItem-form').serialize();
        

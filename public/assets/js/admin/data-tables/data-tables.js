@@ -50,8 +50,8 @@ $(document).ready(function () {
 });
 $(function () {
     var table = $('#transactionTable').dataTable({
-        "aLengthMenu": [[10, 15, 25, 50, 75 , 100, -1],[10, 15, 25, 50, 75 , 100, "All"]],
-        "pageLength": 10,
+       "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
+        "pageLength": 5,
         "responsive": {
             breakpoints: [
                 { name: 'xl', width: Infinity },
@@ -60,7 +60,8 @@ $(function () {
                 { name: 'sm', width: 768 },
                 { name: 'xs', width: 576 }
             ]
-        }
+        },
+        "order": [[0, 'desc']]
     });
 });
 $(function () {

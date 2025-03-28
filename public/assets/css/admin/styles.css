@@ -58,32 +58,122 @@ th {
 }
 /* Custom Stock Status Styles */
 .stock-low {
-    color: white;
-    background-color: #f44336; /* Red background for Low Stock */
+    color: ffffff;
+    background-color: #f44336; 
     padding: 5px;
     border-radius: 3px;
+    display: inline-block; 
+    width: 10rem; 
+    white-space: nowrap; 
 }
 
 .stock-moderate {
-    color: black;
-    background-color: #ff9800; /* Orange background for Moderate Stock */
+    color: ffffff;
+    background-color: #ff9800; 
     padding: 5px;
     border-radius: 3px;
+    display: inline-block; 
+    width: 10rem; 
+    white-space: nowrap; 
 }
 
 .stock-high {
-    color: white;
-    background-color: #4caf50; /* Green background for High Stock */
+    color: ffffff;
+    background-color: #4caf50; 
     padding: 5px;
     border-radius: 3px;
+    display: inline-block; 
+    width: 10rem; 
+    white-space: nowrap; 
 }
 .badge-success {
-    background-color: #28a745;
-    color: white;
+    color: ffffff;
+    background-color: #28a745; 
+    padding: 5px;
+    border-radius: 3px;
+    display: inline-block; 
+    width: 6rem; 
+    white-space: nowrap; 
 }
 
 .badge-danger {
-    background-color: #dc3545;
-    color: white;
+    color: ffffff;
+    background-color: #dc3545; 
+    padding: 5px;
+    border-radius: 3px;
+    display: inline-block; 
+    width: 6rem; 
+    white-space: nowrap;
 }
-
+.badge-pending {
+    color: ffffff;
+    background-color: #FF9800; 
+    padding: 5px;
+    border-radius: 3px;
+    display: inline-block; 
+    width: 6rem; 
+    white-space: nowrap;
+}
+.badge-forReview {
+    color: ffffff;
+    background-color: #2196F3; 
+    padding: 5px;
+    border-radius: 3px;
+    display: inline-block; 
+    width: 6rem; 
+    white-space: nowrap;
+}
+.badge-release {
+    color: ffffff;
+    background-color: #4CAF50; 
+    padding: 5px;
+    border-radius: 3px;
+    display: inline-block; 
+    width: 6rem; 
+    white-space: nowrap;
+}
+.badge-completed {
+    color: ffffff;
+    background-color: #009688; 
+    padding: 5px;
+    border-radius: 3px;
+    display: inline-block; 
+    width: 6rem; 
+    white-space: nowrap;
+}
+.badge-noStock {
+    color: ffffff;
+    background-color: #dc3545 ; 
+    padding: 5px;
+    border-radius: 3px;
+    display: inline-block; 
+    width: 8rem; 
+    white-space: nowrap;
+}
+.badge-lowStock {
+    color: ffffff;
+    background-color: #FF9800 ; 
+    padding: 5px;
+    border-radius: 3px;
+    display: inline-block; 
+    width: 8rem; 
+    white-space: nowrap;
+}
+.badge-moderateStock {
+    color: ffffff;
+    background-color: #FFC107 ; 
+    padding: 5px;
+    border-radius: 3px;
+    display: inline-block; 
+    width: 8rem; 
+    white-space: nowrap;
+}
+.badge-highStock {
+    color: ffffff;
+    background-color: #28a745 ; 
+    padding: 5px;
+    border-radius: 3px;
+    display: inline-block; 
+    width: 8rem; 
+    white-space: nowrap;
+}

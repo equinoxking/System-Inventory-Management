@@ -1,22 +1,16 @@
-function changeUserStatus(client){
-    $('#changeUserStatusModal').modal('show');
-    let data = JSON.parse(client);
-    $('#change-user-status-id').val(data.id);
-    $('#change-user-full-name').val(data.full_name);
-}
 $(document).ready(function(){
-    $(document).on('submit', '#change-user-status-form' ,function(event){
+    $(document).on('submit', '#update-account-form' ,function(event){
         event.preventDefault();
-        var formData = $('#change-user-status-form').serialize();
+        var formData = $('#update-account-form').serialize();
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            url: '/change-user-status',
+            url: '/update-admin-account',
             type: 'PATCH',
             data: formData,
             beforeSend: function() {
-                $('#change-user-status-submit-btn').attr('disabled', true);
+                $('#update-account-btn').attr('disabled', true);
                 Swal.fire({
                     title: 'Loading...',
                     text: 'Please wait while we process your request.',
@@ -33,16 +27,27 @@ $(document).ready(function(){
                         title: "Error!",
                         text: response.message,
                         showConfirmButton: true,
-                    })
+                    }).then(function() {
+                        $('#update-account-btn').attr('disabled', false);
+                    });
+                }else if(response.status === 404){
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error!",
+                        text: response.message,
+                        showConfirmButton: true,
+                    }).then(function() {
+                        $('#update-account-btn').attr('disabled', false);
+                    });
                 }else if(response.status === 400){
                         var errorMessages = Object.values(response.message).join('<br>');
                         Swal.fire({
                             icon: 'error',
                             title: 'Error!',
-                            html: errorMessages,
+                            html: "Old password is incorrect!",
                             showConfirmButton: true,
                         }).then(function() {
-                            $('#change-user-status-submit-btn').attr('disabled', false);
+                            $('#update-account-btn').attr('disabled', false);
                         });
                 }else if(response.status === 200){
                     Swal.fire({
@@ -59,16 +64,4 @@ $(document).ready(function(){
             }
         });
     });
-});
-$(document).ready(function() {
-    var userStatusElement = $('#status-badge');
-    var statusDropdown = $('#status');
-    if (userStatusElement.hasClass('badge-success')) {
-        statusDropdown.html('<option value="">Select Role</option><option value="Inactive">Deactivate</option>');
-    } else if (userStatusElement.hasClass('badge-danger')) {
-        statusDropdown.html('<option value="">Select Role</option><option value="Active">Activate</option>');
-    }
-});
-$('#change-user-status-close-btn').click(function(){
-    $('#changeUserStatusModal').modal('hide');
 });

@@ -95,7 +95,6 @@ class itemManager extends Controller
                 $receive->save();
                 
             }
-            Log::info('Request Data:', $request->all());
             return response()->json([
                 'message' => 'Item successfully added!',
                 'status' => 200

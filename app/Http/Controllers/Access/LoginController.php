@@ -51,7 +51,7 @@ class LoginController extends Controller
                     1 => 'loggedInInventoryAdmin',
                     2 => 'loggedInCheckerAdmin',
                     3 => 'loggedInHeadAdmin',
-                    4 => 'loggedInUser',
+                    4 => 'loginCheckUser',
                 ];
     
                 $roleKey = $client->role_id;

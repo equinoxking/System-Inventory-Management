@@ -12,8 +12,7 @@ class ClientModel extends Model
     use HasApiTokens, HasFactory, Notifiable;
     protected $table = 'clients';
     protected $fillable = [
-        'first_name',
-        'last_name',
+        'full_name',
         'email',
         'department',
         'username',
@@ -26,5 +25,13 @@ class ClientModel extends Model
     public function role()
     {
         return $this->belongsTo(RoleModel::class);
+    }
+    public function transaction()
+    {
+        return $this->hasMany(TransactionModel::class, 'user_id', 'id');
+    }
+    public function releasedBy()
+    {
+        return $this->hasMany(TransactionModel::class, 'released_by');
     }
 }

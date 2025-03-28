@@ -36,4 +36,8 @@ class ItemModel extends Model
     {
         return $this->hasMany(ReceiveModel::class, 'item_id');
     }
+    public function transacts()
+    {
+        return $this->hasMany(TransactionModel::class, 'item_id');
+    }
 }

@@ -1,22 +1,26 @@
-function changeUserStatus(client){
-    $('#changeUserStatusModal').modal('show');
-    let data = JSON.parse(client);
-    $('#change-user-status-id').val(data.id);
-    $('#change-user-full-name').val(data.full_name);
+function changeStatus(transaction){
+    $('#transactionStatusModal').modal('show');
+    let data = JSON.parse(transaction);
+    $('#transaction-status-id').val(data.id)
 }
+$('#transaction-status-close-btn').click(function(){
+    $('#transactionStatusModal').modal('hide');
+});
 $(document).ready(function(){
-    $(document).on('submit', '#change-user-status-form' ,function(event){
-        event.preventDefault();
-        var formData = $('#change-user-status-form').serialize();
+    $(document).on('submit', '#transaction-status-form', function(event){
+      event.preventDefault();
+      var formData = $('#transaction-status-form').serialize();
+      var time = $('#time').val();
+      console.log(time);
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            url: '/change-user-status',
+            url: '/change-transaction-status',
             type: 'PATCH',
             data: formData,
             beforeSend: function() {
-                $('#change-user-status-submit-btn').attr('disabled', true);
+                $('#transaction-status-submit-btn').attr('disabled', true);
                 Swal.fire({
                     title: 'Loading...',
                     text: 'Please wait while we process your request.',
@@ -38,11 +42,11 @@ $(document).ready(function(){
                         var errorMessages = Object.values(response.message).join('<br>');
                         Swal.fire({
                             icon: 'error',
-                            title: 'Error!',
+                            title: 'Adding an item validation failed!',
                             html: errorMessages,
                             showConfirmButton: true,
                         }).then(function() {
-                            $('#change-user-status-submit-btn').attr('disabled', false);
+                            $('#transaction-status-submit-btn').attr('disabled', false);
                         });
                 }else if(response.status === 200){
                     Swal.fire({
@@ -59,16 +63,4 @@ $(document).ready(function(){
             }
         });
     });
-});
-$(document).ready(function() {
-    var userStatusElement = $('#status-badge');
-    var statusDropdown = $('#status');
-    if (userStatusElement.hasClass('badge-success')) {
-        statusDropdown.html('<option value="">Select Role</option><option value="Inactive">Deactivate</option>');
-    } else if (userStatusElement.hasClass('badge-danger')) {
-        statusDropdown.html('<option value="">Select Role</option><option value="Active">Activate</option>');
-    }
-});
-$('#change-user-status-close-btn').click(function(){
-    $('#changeUserStatusModal').modal('hide');
 });

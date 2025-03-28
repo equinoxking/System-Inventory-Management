@@ -9,13 +9,10 @@ class User_mainController extends Controller
 {
     public function goToDashboard()
     {
-        return view('user.dashboard');
+        return view('user.index');
     }
 
-    public function goToRequest()
-    {
-        return view('user.request');
-    }
+   
 
     public function goToHistory()
     {

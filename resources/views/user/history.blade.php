@@ -1,78 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMS History</title>
-    <link rel="icon" href="{{ asset('assets/images/LOGO.webp') }}" type="image/png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-        <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PGIS Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        .navbar {
-            background: #3a5a9a;
-        }
-        .navbar a {
-            color: white;
-            text-decoration: none;
-        }
-        .navbar a:hover {
-            background: #2d4373;
-        }
-        .content {
-            padding: 20px;
-        }
-        .navbar-brand img {
-            height: 40px;
-            margin-right: 10px;
-        }
-        .navbar-nav {
-            margin: auto;
-        }
-        .logout {
-            margin-left: auto;
-            position: absolute;
-            right: 20px;
-        }
-    </style>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <img src="{{ asset('assets/images/LOGO.webp') }}" alt="Logo"> Supplies Management System
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/user/dashboard') }}" >Dashboard</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/user/request') }}" >Request</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/user/history') }}" style="background-color: #2d4373;">History</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/user/profile') }}">Profile</a></li>
-                    
-                </ul>
-                <ul class="navbar-nav logout">
-                    <li class="nav-item"><a class="nav-link" href="{{ url('/') }}">Log Out</a></li>
-                </ul>
-            </div>
+@extends('user.layout.layout')
+@section('content')
+<div class="container-fluid mt-3">
+    <div class="row align-items-center">
+        <div class="col-md-2">
+            <!-- Breadcrumb Navigation -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{{ url('user/') }}">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">History</li>
+                </ol>
+            </nav>
         </div>
-    </nav>
-    
-    
-
-        
-</body>
-</html>
+    </div>
+</div>
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-md-12" style="text-align: left">
+            <h4><strong>TRANSACTION HISTORY</strong></h4>
+        </div>
+    </div>
+</div>
+<div class="container-fluid" style="background-color: whitesmoke">
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-hover table-striped" id="transactionsTable">
+                <thead>
+                    <th>Transaction Number</th>
+                    <th>Item Name</th>
+                    <th>Requested Quantity</th>
+                    <th>Status</th>
+                    <th>Remarks</th>
+                </thead>
+                <tbody>
+                    @foreach ($transactions as $transaction)
+                        <tr>
+                            <td style="text-align: left">{{ $transaction->transaction_number }}</td>
+                            <td style="text-align: left">{{ $transaction->item->name }}</td>
+                            <td>{{ $transaction->transactionDetail->request_quantity }}</td>
+                            <td>
+                                @if($transaction->status && $transaction->status->name == 'Accepted')
+                                    <span class="badge badge-success">
+                                        <i class="fas fa-check-circle"></i> Accepted
+                                    </span>
+                                @elseif($transaction->status && $transaction->status->name == 'Pending')
+                                    <span class="badge badge-pending">
+                                        <i class="fas fa-clock"></i> Pending
+                                    </span>
+                                @else
+                                    <span class="badge badge-danger">
+                                        <i class="fas fa-times-circle"></i> Rejected
+                                    </span>
+                                @endif
+                            </td>
+                            <td>
+                                {{-- {{ $transaction->remark }} --}}
+                                @if($transaction->remark && $transaction->remark == 'For Review')
+                                    <span class="badge badge-forReview">
+                                        <i class="fas fa-search"></i> For Review
+                                    </span>
+                                @elseif($transaction->remark && $transaction->remark == 'For Release')
+                                    <span class="badge badge-release">
+                                        <i class="fas fa-cloud-upload-alt"></i> For Release
+                                    </span>
+                                @else
+                                    <span class="badge badge-completed">
+                                        <i class="fas fa-check-circle"></i> Completed
+                                    </span>
+                                @endif
+                            </td>       
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+@endsection
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>

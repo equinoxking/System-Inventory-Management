@@ -1,25 +1,24 @@
 $(document).ready(function() {
-    $('#receivedItemReceived-btn').click(function() {
-        var newRow = $('.receive-item-row:first').clone(); 
+    $('#requestItemReceived-btn').click(function() {
+        var newRow = $('.request-item-row:first').clone(); 
         newRow.find('input').val(''); 
-        $('#receivedItem-container').append(newRow); 
+        $('#requestItem-container').append(newRow); 
     });
-
-    $(document).on('keyup', '.search-items', function() {
+    $(document).on('keyup', '.search-request-items', function() {
         var query = $(this).val();
         var $itemNameResults = $(this).siblings('.item-results');
         if (query.length > 0) {
             $.ajax({
-                url: '/searchItem',
+                url: '/searchRequestItem',
                 method: 'GET',
                 data: { query: query },
                 success: function(data) {
                     $itemNameResults.empty();
                     if (data.length > 0) {
-                        data.forEach(function(itemName) {
+                        data.forEach(function(item) {
                             $itemNameResults.append(`
-                                <li class="list-group-item itemName-item" data-id="${itemName.id}">
-                                    <strong>${itemName.name}</strong>
+                                <li class="list-group-item requestItemName" data-id="${item.id}" data-quantity="${item.inventory.quantity || 0}"">
+                                    <strong>${item.name}</strong>
                                 </li>
                             `);
                         });
@@ -37,19 +36,20 @@ $(document).ready(function() {
             $itemNameResults.hide();
         }
     });
-    $(document).on('click', '.itemName-item', function() {
+    $(document).on('click', '.requestItemName', function() {
         var itemName = $(this).text().trim();
         var itemId = $(this).data('id');
-        var $parentRow = $(this).closest('.receive-item-row'); 
-        $parentRow.find('.search-items').val(itemName); 
+        var quantity = $(this).data('quantity');
+        var $parentRow = $(this).closest('.request-item-row'); 
+        var requestQuantity = parseInt($(this).val()) || 0; 
+        $parentRow.find('.search-request-items').val(itemName); 
         $parentRow.find('.selected-item-id').val(itemId); 
+        $parentRow.find('.quantity').val(quantity)
         $parentRow.find('.item-results').hide();
     });
-
-    $(document).on('click', '.remove-received-item', function() {
-        if ($('.receive-item-row').length > 1) {
-            $(this).closest('.receive-item-row').remove();
+    $(document).on('click', '.remove-request-item', function() {
+        if ($('.request-item-row').length > 1) {
+            $(this).closest('.request-item-row').remove();
         }
     });
-    
 });
