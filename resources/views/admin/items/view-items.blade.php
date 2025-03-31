@@ -105,32 +105,26 @@
                                     @php
                                         $quantity = $item->inventory->quantity;
                                         $maxQuantity = $item->inventory->max_quantity;
-                                        $stockStatus = '';
-                                        $statusClass = '';
-                                        $icon = '';
-                                
                                         $percentage = ($quantity / $maxQuantity) * 100;
-
-                                        if ($percentage <= 20) {
-                                            $stockStatus = 'Low Stock';
-                                            $statusClass = 'stock-low';
-                                            $icon = 'fa-exclamation-triangle';
-                                        } elseif ($percentage <= 50) {
-                                            $stockStatus = 'Moderate Stock';
-                                            $statusClass = 'stock-moderate';
-                                            $icon = 'fa-exclamation-circle';
-                                        } else {
-                                            $stockStatus = 'High Stock';
-                                            $statusClass = 'stock-high';
-                                            $icon = 'fa-check-circle';
-                                        }
                                     @endphp
-                                
-                                    <span class="{{ $statusClass }}">
-                                        <i class="fa {{ $icon }}"></i>
-                                        {{ $stockStatus }}
-                                    </span>
-                                </td>                                
+                                    @if($item->inventory->quantity == 0)
+                                        <span class="badge badge-noStock">
+                                            <i class="fas fa-times-circle"></i> No Stock
+                                        </span>
+                                    @elseif($percentage <= 20)
+                                        <span class="badge badge-lowStock">
+                                            <i class="fas fa-triangle-exclamation"></i> Low Stock
+                                        </span>
+                                    @elseif($percentage <= 50)
+                                        <span class="badge badge-moderateStock">
+                                            <i class="fas fa-info-circle"></i> Moderate Stock
+                                        </span>
+                                    @else
+                                        <span class="badge badge-highStock">
+                                            <i class="fas fa-check-circle"></i> High Stock
+                                        </span>
+                                    @endif
+                                </td>                                           
                                 <td> 
                                     <button type="button" class="btn btn-warning" title="Item edit button" id="editItemBtn" onclick="editItem('{{ addslashes(json_encode($item)) }}')"><i class="fa-solid fa-edit" style="color: white;"></i></button>
                                     <button type="button" class="btn btn-danger"  title="Delete Item Button" id="deleteItemBtn" onclick="deleteItem('{{ addslashes(json_encode($item)) }}')"><i class="fa-solid fa-trash" style="color: white;"></i></button>

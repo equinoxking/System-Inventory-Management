@@ -1,7 +1,6 @@
 function changeStatus(transaction){
     $('#transactionStatusModal').modal('show');
-    let data = JSON.parse(transaction);
-    $('#transaction-status-id').val(data.id)
+    $('#transaction-status-id').val(transaction.id);
 }
 $('#transaction-status-close-btn').click(function(){
     $('#transactionStatusModal').modal('hide');
@@ -10,8 +9,8 @@ $(document).ready(function(){
     $(document).on('submit', '#transaction-status-form', function(event){
       event.preventDefault();
       var formData = $('#transaction-status-form').serialize();
-      var time = $('#time').val();
-      console.log(time);
+      var status = $('#status').val();
+      console.log(status);
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -42,7 +41,7 @@ $(document).ready(function(){
                         var errorMessages = Object.values(response.message).join('<br>');
                         Swal.fire({
                             icon: 'error',
-                            title: 'Adding an item validation failed!',
+                            title: 'Error!',
                             html: errorMessages,
                             showConfirmButton: true,
                         }).then(function() {

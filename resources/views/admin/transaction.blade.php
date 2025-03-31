@@ -39,25 +39,6 @@
                         <th>Action</th>
                     </thead>
                     <tbody>
-                        @foreach ($transactions as $transaction)
-                            <tr>
-                                <td>{{ \Carbon\Carbon::parse($transaction->created_at)->format('F d, Y h:i A') }}</td>
-                                <td>{{ $transaction->transaction_number }}</td>
-                                <td>{{ $transaction->client ? $transaction->client->full_name : 'No client' }}</td>
-                                <td>{{ $transaction->item->name }}</td>
-                                <td>{{ $transaction->item->inventory->unit->name }}</td>
-                                <td>{{ $transaction->transactionDetail->request_quantity }}</td>
-                                <td>{{ $transaction->clientBy ? $transaction->clientBy->full_name : '' }}</td>
-                                <td>{{ $transaction->released_time ? \Carbon\Carbon::parse($transaction->released_time)->format('h:i A') : '' }}</td>
-                                <td>{{ $transaction->approved_time ? \Carbon\Carbon::parse($transaction->approved_time)->format('h:i A') : ''}}</td>
-                                <td>{{ $transaction->approved_date ? \Carbon\Carbon::parse($transaction->approved_date)->format('F d, Y') : ''}}</td>
-                                <td>{{ $transaction->status->name }}</td>
-                                <td>{{ $transaction->remark }}</td>
-                                <td>
-                                    <button type="button" class="btn btn-warning" title="Edit status button"  onclick="changeStatus('{{ addslashes(json_encode($transaction)) }}')"><i class="fa fa-edit"></i></button>
-                                </td>
-                            </tr>
-                        @endforeach
                     </tbody>
                     <tfoot>
 

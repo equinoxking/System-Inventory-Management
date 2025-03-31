@@ -75,6 +75,7 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     Route::controller(AdminTransactionManager::class)->group(function(){
         Route::get('admin/transaction', 'goToTransactions');
         Route::patch('/change-transaction-status', 'updateTransactionStatus');
+        Route::get('/admin/refreshTransactions', 'getTransactions');
     });
     Route::controller(AccountManager::class)->group(function(){
         Route::get('/admin/account', 'goToAccounts');
