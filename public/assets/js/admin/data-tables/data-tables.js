@@ -1,52 +1,90 @@
 $(document).ready(function () {
-    // Initialize DataTable
     var table = $('#itemsTable').DataTable({
-        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
+        "aLengthMenu": [[5, 10, 25, 50, 75, 100], [5, 10, 25, 50, 75, 100]],
         "pageLength": 5,
-        "responsive": {
-            breakpoints: [
-                { name: 'xl', width: Infinity },
-                { name: 'lg', width: 1200 },
-                { name: 'md', width: 992 },
-                { name: 'sm', width: 768 },
-                { name: 'xs', width: 576 }
-            ]
-        },
-        "order": [[0, 'desc']]
-    });
-    $('#category-filter').on('change', function () {
-        var category = this.value;
-        table.column(1).search(category).draw();  
-    });
-    $('#unit-filter').on('change', function () {
-        var unit = this.value;
-        table.column(4).search(unit).draw();  
-    });
-    $('#min-quantity-filter, #max-quantity-filter').on('change', function() {
-        var minQuantity = parseInt($('#min-quantity-filter').val()) || 0; 
-        var maxQuantity = parseInt($('#max-quantity-filter').val()) || Infinity; 
-    
-        table.rows().every(function() {
-            var row = this.node();
-            var quantity = parseInt($(row).find('td').eq(3).text()); 
-    
-            if ((minQuantity && quantity < minQuantity) || (maxQuantity && quantity > maxQuantity)) {
-                $(row).hide();
-            } else {
-                $(row).show(); 
+        "responsive": true,
+        "autoWidth": false,
+        "processing": true,
+        "serverSide": true,
+        "ajax": {
+            url: '/admin/refreshItems',
+            type: 'GET',
+            data: function(d) {
+                // Add the filter values to the data sent to the server
+                d.category = $('#category-filter').val();
+                d.unit = $('#unit-filter').val();
+                d.status = $('#status-filter').val();
+                d.minQuantity = $('#min-quantity-filter').val();
+                d.maxQuantity = $('#max-quantity-filter').val();
+                d.level = $('#level-filter').val();
+            },
+            "dataSrc": function (json) {
+                return json.data; // Return the data from the JSON response
             }
-        });
+        },
+        "columns": [
+            { "data": "control_number" },
+            { "data": "category_name" },
+            { "data": "item_name" },
+            { "data": "quantity" },
+            { "data": "max_quantity" },
+            { "data": "unit_name" },
+            { "data": "created_at" },
+            { "data": "updated_at" },
+            {
+                "data": "status_name",
+                "render": function(data, type, row) {
+                    if (data === 'Available') {
+                        return '<span class="badge badge-success"><i class="fas fa-check-circle"></i> Available</span>';
+                    } else {
+                        return '<span class="badge badge-danger"><i class="fas fa-times-circle"></i> Unavailable</span>';
+                    }
+                }
+            },
+            {
+                "data": "percentage",
+                "render": function(data, type, row) {
+                    if(data == 0){
+                        return '<span class="badge badge-noStock"><i class="fas fa-times-circle"></i> No Stock</span>';
+                    } else if (data <= 20) {
+                        return '<span class="badge badge-lowStock"><i class="fas fa-times-circle"></i> Low Stock</span>';
+                    } else if (data <= 50) {
+                        return '<span class="badge badge-moderateStock"><i class="fas fa-times-circle"></i> Moderate Stock</span>';
+                    } else {
+                        return '<span class="badge badge-highStock"><i class="fas fa-check-circle"></i> High Stock</span>';
+                    }
+                }
+            },
+            {
+                "data": null,
+                "render": function(data, type, row) {
+                    return '<button type="button" class="btn btn-warning edit-btn" title="Item edit button" id="editItemBtn"><i class="fa fa-edit"></i></button>' + 
+                        '<button type="button" class="btn btn-danger delete-btn ml-2" title="Item delete button" id="deleteItemBtn"><i class="fa fa-trash"></i></button>';
+                },
+                "orderable": false,
+                "class": "text-center"
+            }
+        ],
+        "order": [[1, 'desc']],   
+    });
+    setInterval(function() {
+        table.ajax.reload();  // This reloads the data from the server
+    }, 1000);
+    $('#category-filter, #unit-filter, #status-filter, #level-filter').on('change', function () {
+        table.ajax.reload();  // Reload the table data based on new filters
+    });
     
-        table.draw(); 
-    });
-    $('#status-filter').on('change', function () {
-        var status = this.value;
-        table.column(5).search(status).draw();  
-    });
-    $('#level-filter').on('change', function () {
-        var level = this.value;
-        table.column(6).search(level).draw();  
-    });
+    $('#min-quantity-filter, #max-quantity-filter').on('change', function() {
+        table.ajax.reload();  // Reload the table data based on new quantity filters
+    });  
+    $('#itemsTable').on('click', '.edit-btn', function() {
+        var data = table.row($(this).closest('tr')).data();
+        editItem(data);
+    });  
+    $('#itemsTable').on('click', '.delete-btn', function() {
+        var data = table.row($(this).closest('tr')).data();
+        deleteItem(data);
+    });  
 });
 $(function () {
     var table = $('#transactionTable').DataTable({
@@ -61,7 +99,7 @@ $(function () {
                 { name: 'xs', width: 576 }
             ]
         },
-        "order": [[0, 'desc']],
+        "order": [[1, 'desc']],
         "autoWidth": false,
         "processing": true,
         "serverSide": false,
@@ -69,8 +107,6 @@ $(function () {
             url: '/admin/refreshTransactions',  // Replace with your actual endpoint
             type: 'GET',
             "dataSrc": function (json) {
-                console.log('Full Response:', json);
-                console.log('Data:', json.data);
                 return json.data;
             } // Ensure that 'data' is the key where the array of rows is located
         },
@@ -81,10 +117,10 @@ $(function () {
             { "data": "item_name" },
             { "data": "unit" },
             { "data": "quantity" },
-            { "data": "released_by" },
-            { "data": "time_released" },
             { "data": "time_approved" },
             { "data": "date_approved" },
+            { "data": "released_by" },
+            { "data": "time_released" },
             {
                 "data": "status",
                 "render": function(data, type, row) {
@@ -111,22 +147,25 @@ $(function () {
             },
             {
                 "data": null,  // This column will have the action buttons
-                "defaultContent": '<button type="button" class="btn btn-warning edit-btn"><i class="fa fa-edit"></i></button>',
+                "render": function(data, type, row) {
+                    if (row.status === 'Pending') {
+                        return '<button type="button" class="btn btn-warning edit-btn"><i class="fa fa-edit"></i></button>';
+                    } else {
+                        return ''; 
+                    }
+                },
                 "orderable": false,
                 "class": "text-center"
             }
         ],
     });
     $('#transactionTable').on('click', '.edit-btn', function() {
-        // Get the data for the clicked row
         var data = table.row($(this).closest('tr')).data();
-        // Call the changeStatus function with the transaction data
         changeStatus(data);
     });
-    // Refresh table data every minute
     setInterval(function() {
-        table.ajax.reload(null, false);  // Reload the data without resetting pagination
-    }, 6000); // Refresh every 60 seconds (1 minute)
+        table.ajax.reload(null, false);  
+    }, 6000);
 });
 
 
@@ -144,6 +183,23 @@ $(function () {
             ]
         }
     });
+});
+$(function () {
+    var table = $('#transactionHistoryTable').dataTable({
+        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
+        "pageLength": 5,
+        "responsive": {
+            breakpoints: [
+                { name: 'xl', width: Infinity },
+                { name: 'lg', width: 1200 },
+                { name: 'md', width: 992 },
+                { name: 'sm', width: 768 },
+                { name: 'xs', width: 576 }
+            ]
+        },
+        "order": [[1, 'desc']]
+    });
+    
 });
 $(function () {
     var table = $('#auditTable').dataTable({
@@ -174,4 +230,49 @@ $(function () {
             ]
         }
     });
+});
+$(function () {
+    var table = $('#receivesTable').DataTable({
+        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
+        "pageLength": 5,
+        "responsive": true,
+        "order": [[0, 'desc']],
+        "autoWidth": false,
+        "processing": true,
+        "serverSide": false,  // Use true if you want server-side processing
+        "ajax": {
+            url: '/admin/refreshReceivables',  
+            type: 'GET',
+            "dataSrc": function (json) {
+                return json.data;  // Ensure the response has a "data" key
+            }
+        },
+        "columns": [
+            { "data": "control_number" },
+            { "data": "item_name" },
+            { "data": "unit_name" },
+            { "data": "received_quantity" },
+            { "data": "created_at" },
+            { "data": "updated_at" },
+            {
+                "data": null,
+                "render": function(data, type, row) {
+                    return '<button type="button" class="btn btn-warning" id="editReceivedItem" title="Supply received edit button"><i class="fa fa-edit"></i></button>';
+                },
+                "orderable": false,
+                "class": "text-center"
+            }
+        ]
+    });
+
+    // Click event for edit button
+    $('#receivesTable').on('click', '#editReceivedItem', function() {
+        var data = table.row($(this).closest('tr')).data();
+        editReceivedItem(data);
+    });
+
+    // Automatically reload the data every 6 seconds
+    setInterval(function() {
+        table.ajax.reload(null, false);  // Reload the table without resetting pagination
+    }, 6000);
 });

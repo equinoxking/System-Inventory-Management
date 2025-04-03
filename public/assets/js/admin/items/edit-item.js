@@ -1,8 +1,7 @@
-function editItem(item){
-    $('#editItemModal').modal('show');
-    var data = JSON.parse(item); 
-    $('#edit-item-id').val(data.id);
-    $('#edit-item-name').val(data.name);
+function editItem(data){
+    $('#editItemModal').modal('show'); 
+    $('#edit-item-id').val(data.item_id);
+    $('#edit-item-name').val(data.item_name);
 }
 $('#edit-item-close-btn').click(function(){
     $('#editItemModal').modal('hide');

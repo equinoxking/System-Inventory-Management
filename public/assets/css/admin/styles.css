@@ -177,3 +177,15 @@ th {
     width: 8rem; 
     white-space: nowrap;
 }
+/* Highlight class for selected category */
+.category-item.highlighted {
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    transition: none !important; /* Ensure no fade effect */
+}
+
+/* Optional: Mouse hover effect for better UX */
+.category-item:hover {
+    background-color: #0056b3;
+    color: white;
+}

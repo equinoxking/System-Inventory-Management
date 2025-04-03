@@ -18,4 +18,5 @@ class TransactionStatusModel extends Model
     {
         return $this->hasMany(TransactionModel::class);
     }
+
 }

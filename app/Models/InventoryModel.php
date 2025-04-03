@@ -14,6 +14,7 @@ class InventoryModel extends Model
         'item_id',
         'unit_id',
         'quantity',
+        'max_quantity',
         'unit',
         'created_at',
         'updated_at'

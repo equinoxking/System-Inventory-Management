@@ -40,4 +40,28 @@ class ItemModel extends Model
     {
         return $this->hasMany(TransactionModel::class, 'item_id');
     }
+    public function receivesUpToMonth()
+    {
+        return $this->hasMany(ReceiveModel::class, 'item_id', 'id');
+    }
+    public function receivesInSelectedMonth()
+    {
+        return $this->hasMany(ReceiveModel::class , 'item_id' ,'id') ;
+    }
+    public function requestedUpToMonth()
+    {
+        return $this->hasMany(TransactionDetailModel::class , 'item_id' , 'id');
+    }
+
+    // Define the 'receivesInSelectedMonth' method
+    public function requestedInSelectedMonth()
+    {
+        return $this->hasMany(TransactionDetailModel::class , 'item_id') // Replace `Receive::class` with the actual model name if it's different
+                    ->where('request_month', '=', request()->month)
+                    ->where('request_year', '=', request()->year);
+    }
+    public function details()
+    {
+        return $this->hasMany(TransactionDetailModel::class, 'item_id');
+    }
 }

@@ -17,36 +17,121 @@
                 <i class="fa-solid fa-file-pdf"></i> 
             </button>
         </div>
-    </div>
-</div>
-    <div class="container-fluid card w-100">
-        <div class="row">
-            <div class="col-md-12">
-                <table id="transactionTable">
-                    <thead>
-                        <th>Time Request</th>
-                        <th>Transaction Number</th>
-                        <th>Name</th>
-                        <th>Item Name</th>
-                        <th>Unit</th>
-                        <th>Quantity</th>
-                        <th>Released by</th>
-                        <th>Time Released</th>
-                        <th>Time Approved</th>
-                        <th>Date Approved</th>
-                        <th>Status</th>
-                        <th>Remarks</th>
-                        <th>Action</th>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                    <tfoot>
-
-                    </tfoot>
-                </table>
+        <div class="row mt-2">
+            <div class="col-md-12" style="text-align: left">
+                <h4><strong >CURRENT TRANSACTIONS</strong></h4>
             </div>
         </div>
     </div>
+</div>
+<div class="container-fluid card w-100">
+    <div class="row">
+        <div class="col-md-12">
+            <table id="transactionTable">
+                <thead>
+                    <th>Time Request</th>
+                    <th>Transaction Number</th>
+                    <th>Name</th>
+                    <th>Item Name</th>
+                    <th>Unit</th>
+                    <th>Quantity</th>
+                    <th>Time Approved</th>
+                    <th>Date Approved</th>
+                    <th>Released by</th>
+                    <th>Time Released</th>
+                    <th>Status</th>
+                    <th>Remarks</th>
+                    <th>Action</th>
+                </thead>
+                <tbody>
+                </tbody>
+                <tfoot>
+
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-md-12" style="text-align: left">
+            <h4><strong>TRANSACTION RECORDS</strong></h4>
+        </div>
+    </div>
+</div>
+<div class="container-fluid card w-100">
+    <div class="row">
+        <div class='col-md-12'>
+            <table id="transactionHistoryTable">
+                <thead>
+                    <th>Time Request</th>
+                    <th>Transaction Number</th>
+                    <th>Name</th>
+                    <th>Item Name</th>
+                    <th>Unit</th>
+                    <th>Quantity</th>
+                    <th>Time Approved</th>
+                    <th>Date Approved</th>
+                    <th>Released by</th>
+                    <th>Time Released</th>
+                    <th>Status</th>
+                    <th>Remarks</th>
+                </thead>
+                <tbody>
+                    @foreach ($transactionHistories as $transaction)
+                    <tr>
+                        <td>{{ \Carbon\Carbon::parse($transaction->created_at)->format('F d, Y h:i A') }}</td>
+                        <td>{{ $transaction->transaction_number }}</td>
+                        <td>{{ $transaction->client->full_name }}</td>
+                        <td>{{ $transaction->item->name }}</td>
+                        <td>{{ $transaction->item->inventory->unit->name }}</td>
+                        <td>{{ $transaction->transactionDetail->request_quantity }}</td>
+                        <td>{{ $transaction->approved_time ? \Carbon\Carbon::parse($transaction->approved_time)->format('h:i A') : '' }}</td>
+                        <td>{{ $transaction->approved_date ? \Carbon\Carbon::parse($transaction->approved_date)->format('F d, Y') : '' }}</td>
+                        <td>{{ $transaction->clientBy->full_name }}</td>
+                        <td>{{ $transaction->released_time ? \Carbon\Carbon::parse($transaction->released_time)->format('h:i A') : '' }}</td>
+                        <td>
+                            {{-- {{ $transaction->status->name }} --}}
+                            @if($transaction->status && $transaction->status->name == 'Accepted')
+                                <span class="badge badge-success">
+                                    <i class="fas fa-check-circle"></i> Accepted
+                                </span>
+                            @elseif($transaction->status && $transaction->status->name == 'Pending')
+                                <span class="badge badge-pending">
+                                    <i class="fas fa-clock"></i> Pending
+                                </span>
+                            @else
+                                <span class="badge badge-danger">
+                                    <i class="fas fa-times-circle"></i> Rejected
+                                </span>
+                            @endif
+                        </td>
+                        <td>
+                            {{-- {{ $transaction->remark }} --}}
+                            @if($transaction->remark && $transaction->remark == 'For Review')
+                                <span class="badge badge-forReview">
+                                    <i class="fas fa-search"></i> For Review
+                                </span>
+                            @elseif($transaction->remark && $transaction->remark == 'For Release')
+                                <span class="badge badge-release">
+                                    <i class="fas fa-cloud-upload-alt"></i> For Release
+                                </span>
+                            @else
+                                <span class="badge badge-completed">
+                                    <i class="fas fa-check-circle"></i> Completed
+                                </span>
+                            @endif
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+                <tfoot>
+
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
 @endsection
 <div class="modal fade" id="transactionStatusModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">

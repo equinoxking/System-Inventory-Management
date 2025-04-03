@@ -17,8 +17,6 @@ $(document).ready(function(){
     $(document).on('submit', '#createItem-form', function(event){
         event.preventDefault();
         var formData = $('#createItem-form').serialize();
-       
-        
       $.ajax({
           headers: {
               'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -61,9 +59,7 @@ $(document).ready(function(){
                   title: "All set!",
                   html: response.message,
                   showConfirmButton: true,
-                  }).then(function(){
-                      window.location.reload();
-                  });
+                  })
               }
           },error: function(error){
               console.log(error);

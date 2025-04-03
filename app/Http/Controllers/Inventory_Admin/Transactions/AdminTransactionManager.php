@@ -11,6 +11,7 @@ use App\Models\TransactionModel;
 use App\Models\TransactionStatusModel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class AdminTransactionManager extends Controller
 {
@@ -25,12 +26,22 @@ class AdminTransactionManager extends Controller
         ])
         ->where('remark', '!=' , 'Completed')
         ->get();
-        
+        $transactionHistories = TransactionModel::with([
+            'transactionDetail',
+            'client',
+            'item',
+            'item.inventory.unit',
+            'status',
+            'clientBy'
+        ])
+        ->where('remark', 'Completed')
+        ->get();
         $statuses = TransactionStatusModel::all();
 
         return view('admin.transaction' ,[
             'transactions' => $transactions,
             'statuses' => $statuses,
+            'transactionHistories' => $transactionHistories
         ]);
     }
         public function updateTransactionStatus(Request $request){
@@ -130,7 +141,7 @@ class AdminTransactionManager extends Controller
             ->where('remark', "!=", 'Completed')
             ->orderBy('created_at', 'desc')
             ->get();
-    
+
         $formattedTransactions = $transactions->map(function ($transaction) {
             return [
                 'id' => $transaction->id,

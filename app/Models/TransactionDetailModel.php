@@ -11,6 +11,7 @@ class TransactionDetailModel extends Model
     protected $table = 'transaction_details';
     protected $fillable = [
         'id',
+        'item_id',
         'transaction_id',
         'request_quantity',
         'request_item',
@@ -22,6 +23,10 @@ class TransactionDetailModel extends Model
     ];
     public function transacts()
     {
-        return $this->belongsTo(TransactionModel::class);
+        return $this->belongsTo(TransactionModel::class, 'transaction_id');
+    }
+    public function item()
+    {
+        return $this->belongsTo(ItemModel::class, 'item_id');
     }
 }

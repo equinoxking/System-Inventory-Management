@@ -70,7 +70,7 @@
                 <th width="5%">No.</th>
                 <th width="50%">Item Description</th>
                 <th width="5%">Units</th>
-                <th width="10%">Balance as of {{ $formattedDate }}</th>
+                <th width="10%">Balance as of {{ $formattedSubDate }}</th>
                 <th width="10%">Total Supply Received</th>
                 <th width="10%">Total Supply Withdrawn</th>
                 <th width="10%">Balance as of {{ $formattedCurrentDate }}</th>
@@ -109,10 +109,14 @@
                         <td class="rightText">{{ $count++ }}.</td>
                         <td>{{ $item->name }}</td>
                         <td class="rightText">{{ $item->inventory->unit->name }}</td>
-                        <td class="rightText">{{ $item->total_received_quantity }}</td>
-                        <td class="rightText">{{ $item->receives->sum('received_quantity') }}</td>
-                        <td class="rightText">{{ $item->inventory->quantity }}</td>
-                        <td class="rightText">{{ $item->receives->sum('received_quantity') - $item->inventory->quantity }}</td>
+                        <td class="rightText"> {{  $item->remaining_quantity }}</td>
+                        <td class="rightText">{{ $item->total_received_in_selected_month }}</td>
+                        <td class="rightText">{{ $item->total_transactions_in_selected_month }}</td>
+                        <td class="rightText">
+                            {{ 
+                                $item->remaining_quantity + $item->total_received_in_selected_month - $item->total_transactions_in_selected_month
+                            }}
+                        </td>
                     </tr>
                 @endforeach
             @endforeach
@@ -145,10 +149,14 @@
                         <td class="rightText">{{ $count++ }}.</td>
                         <td>{{ $item->name }}</td>
                         <td class="rightText">{{ $item->inventory->unit->name }}</td>
-                        <td class="rightText">{{ $item->total_received_quantity }}</td>
-                        <td class="rightText">{{ $item->receives->sum('received_quantity') }}</td>
-                        <td class="rightText">{{ $item->inventory->quantity }}</td>
-                        <td class="rightText">{{ $item->receives->sum('received_quantity') - $item->inventory->quantity }}</td>
+                        <td class="rightText"> {{  $item->remaining_quantity }}</td>
+                        <td class="rightText">{{ $item->total_received_in_selected_month }}</td>
+                        <td class="rightText">{{ $item->total_transactions_in_selected_month }}</td>
+                        <td class="rightText">
+                            {{ 
+                                $item->remaining_quantity + $item->total_received_in_selected_month - $item->total_transactions_in_selected_month
+                            }}
+                        </td>
                     </tr>
                 @endforeach
             @endforeach

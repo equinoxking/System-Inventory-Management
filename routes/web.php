@@ -63,6 +63,7 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::post('/add-item', 'addItem');
         Route::post('/delete-item', 'deleteItem');
         Route::patch('/update-item', 'editItem');
+        Route::get('/admin/refreshItems', 'getItem');
     });
     Route::controller(InventoryManager::class)->group(function() {
         Route::get('admin/items/view-items', 'showItems');
@@ -71,6 +72,8 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::get('/searchItem', 'searchItem')->name('search.itemName');
         Route::get('/submit-item', 'storeItem');
         Route::patch('/received-item', 'receivedItem');
+        Route::get('/admin/refreshReceivables', 'refreshReceivables');
+        Route::patch('/edit-received-item', 'updateReceivedQuantity');
     });
     Route::controller(AdminTransactionManager::class)->group(function(){
         Route::get('admin/transaction', 'goToTransactions');

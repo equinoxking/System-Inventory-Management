@@ -16,10 +16,10 @@ $(document).ready(function() {
                 success: function(data) {
                     $itemNameResults.empty();
                     if (data.length > 0) {
-                        data.forEach(function(itemName) {
+                        data.forEach(function(item) {
                             $itemNameResults.append(`
-                                <li class="list-group-item itemName-item" data-id="${itemName.id}">
-                                    <strong>${itemName.name}</strong>
+                                <li class="list-group-item itemName-item" data-id="${item.id}" data-max_quantity="${item.inventory.max_quantity || 0}"  data-quantity="${item.inventory.quantity || 0}">
+                                    <strong>${item.name}</strong>
                                 </li>
                             `);
                         });
@@ -41,8 +41,12 @@ $(document).ready(function() {
         var itemName = $(this).text().trim();
         var itemId = $(this).data('id');
         var $parentRow = $(this).closest('.receive-item-row'); 
+        var remaining_quantity = $(this).data('quantity');
+        var max_quantity = $(this).data('max_quantity');
         $parentRow.find('.search-items').val(itemName); 
         $parentRow.find('.selected-item-id').val(itemId); 
+        $parentRow.find('#max_quantity').val(max_quantity);
+        $parentRow.find('.remaining_quantity').val(remaining_quantity);
         $parentRow.find('.item-results').hide();
     });
 

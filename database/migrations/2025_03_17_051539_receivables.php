@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('receivables', function (Blueprint $table) {
             $table->id();
             $table->foreignId('item_id')->references('id')->on('items')->onDelete('cascade');
+            $table->string('control_number')->unique();
             $table->integer('received_quantity');
-            $table->string('received_day', 5);
-            $table->string('received_month', 30);
-            $table->string('received_year', 10);
+            $table->integer('received_day', 5);
+            $table->integer('received_month', 30);
+            $table->integer('received_year', 10);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
         });

@@ -10,11 +10,13 @@ use Illuminate\Support\Facades\Log;
 use App\Models\ItemModel;
 use App\Models\InventoryModel;
 use App\Models\ReceiveModel;
+use App\Models\TransactionModel;
+use App\Models\TransactionDetailModel;
 class ReceivedManager extends Controller
 {
     public function searchItem(Request $request){
         $query = $request->input('query'); 
-        $items = ItemModel::where('name', 'like', '%' . $query . '%')
+        $items = ItemModel::with('inventory')->where('name', 'like', '%' . $query . '%')
         ->get();
         return response()->json($items);
     }
@@ -63,8 +65,10 @@ class ReceivedManager extends Controller
                     $month = Carbon::now('Asia/Manila')->format('F');
                     $year = Carbon::now('Asia/Manila')->format('Y');
                     $monthInt = $monthToInt[$month];
+
                     $receive = new ReceiveModel();
                     $receive->item_id = $item->id;
+                    $receive->control_number = $this->generateControlNumber();
                     $receive->received_quantity = $request->receivedQuantity[$index];
                     $receive->received_day = $day;
                     $receive->received_month = $monthInt;
@@ -104,4 +108,116 @@ class ReceivedManager extends Controller
                         
                 }
             }
+    private function generateControlNumber() {
+        $currentYearAndMonth = Carbon::now()->format('Y-m');
+        $controlNumber = ReceiveModel::whereYear('created_at', Carbon::now()->year)
+                                ->whereMonth('created_at', Carbon::now()->month)
+                                ->orderBy('control_number', 'desc')
+                                ->pluck('control_number')
+                                ->first();
+    
+        if (!$controlNumber) {
+            return $currentYearAndMonth . '-00001';
+        }
+    
+        $numberPart = intval(substr($controlNumber, -5)) + 1; 
+        $paddedNumber = str_pad($numberPart, 5, '0', STR_PAD_LEFT);
+    
+        return $currentYearAndMonth . '-' . $paddedNumber;
+    }
+    public function refreshReceivables(Request $request)
+    {
+        // Fetch all items with their associated 'receives' and 'inventory.unit' relationships.
+        $items = ItemModel::with(['receives', 'inventory.unit', 'inventory'])->get();
+    
+        // Map each item and its related receives to the data array.
+        $data = $items->map(function ($item) {
+            return $item->receives->map(function ($receive) use ($item) {
+                return [
+                    'item_id' => $item->id,
+                    'received_id' => $receive->id,
+                    'max_quantity' => $item->inventory->max_quantity,
+                    'control_number' => $receive->control_number ?? '',
+                    'item_name' => $item->name,
+                    'unit_name' => $item->inventory->unit->name ?? '',
+                    'received_quantity' => $receive->received_quantity ?? 0,
+                    'created_at' => $item->created_at->format('F d, Y H:i A'),
+                    'updated_at' => $item->updated_at->format('F d, Y H:i A'),
+                ];
+            });
+        });
+    
+        // Flatten the array of arrays into a single array of data.
+        $flattenedData = $data->collapse();
+    
+        // Return the response as JSON.
+        return response()->json([
+            'draw' => $request->draw,  // Ensure this matches the draw parameter sent by DataTable
+            'recordsTotal' => $flattenedData->count(),
+            'recordsFiltered' => $flattenedData->count(),
+            'data' => $flattenedData
+        ]);
+    }
+    public function updateReceivedQuantity(Request $request)
+    {
+        // Validate the incoming request data
+        $validator = Validator::make($request->all(), [
+            'edit-received-quantity' => 'required|numeric', // Ensure the quantity is numeric
+            'edit-received-id' => 'required|exists:receivables,id', // Ensure the receive exists
+            'item_id' => 'required|exists:items,id', // Ensure the item exists
+        ]);
+        
+        // If validation fails, return errors
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'message' => $validator->errors()
+            ]);
+        }
+    
+        // Find the receive by ID
+        $receive = ReceiveModel::where('id', $request->get('edit-received-id'))->first();
+    
+        if ($receive) {
+            // Update the received quantity for the receive record
+            $receive->received_quantity = $request->get('edit-received-quantity');
+            $receive->save();
+    
+            // Calculate the total received quantity for the item
+            $totalReceivedQuantity = ReceiveModel::where('item_id', $request->item_id)
+                ->sum('received_quantity');
+    
+            // Calculate the total transaction quantity for the item (using TransactionDetailModel)
+            $totalTransactionQuantity = TransactionDetailModel::where('item_id', $request->item_id)
+                ->sum('request_quantity');  // Assumes 'quantity' is stored in the transaction_details table
+    
+            // Calculate the final inventory quantity
+            $finalInventoryQuantity = $totalReceivedQuantity - $totalTransactionQuantity;
+    
+            // Find the inventory associated with the item
+            $inventory = InventoryModel::where('item_id', $request->item_id)->first();
+    
+            if ($inventory) {
+                // Update the inventory quantity
+                $inventory->quantity = $finalInventoryQuantity;
+                $inventory->save();
+    
+                return response()->json([
+                    'message' => "Edit receivables and inventory update success!",
+                    'status' => 200
+                ]);
+            } else {
+                return response()->json([
+                    'message' => "Inventory not found for the given item.",
+                    'status' => 404
+                ]);
+            }
+    
+        } else {
+            return response()->json([
+                'message' => "Received record not found.",
+                'status' => 404
+            ]);
+        }
+    }    
 }

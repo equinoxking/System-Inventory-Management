@@ -12,7 +12,7 @@ use App\Models\ItemStatusModel;
 class InventoryManager extends Controller
 {
     public function showItems(){
-        $items = ItemModel::with(['category', 'inventory', 'status'])
+        $items = ItemModel::with(['category', 'inventory', 'status' , 'receives'])
         ->get();
         $categories = CategoryModel::all();
         $units = UnitModel::all();

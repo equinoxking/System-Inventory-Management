@@ -86,8 +86,10 @@ class itemManager extends Controller
                 $month = Carbon::now('Asia/Manila')->format('F');
                 $year = Carbon::now('Asia/Manila')->format('Y');
                 $monthInt = $monthToInt[$month];
+
                 $receive = new ReceiveModel();
                 $receive->item_id = $item->id;
+                $receive->control_number = $this->generateControlNumberReceived();
                 $receive->received_quantity = $request->quantity[$index];
                 $receive->received_day = $day;
                 $receive->received_month = $monthInt;
@@ -105,20 +107,40 @@ class itemManager extends Controller
             'status' => 500
         ]);
     }
-    private function generateControlNumber(){
+    private function generateControlNumber() {
         $currentYearAndMonth = Carbon::now()->format('Y-m');
         $controlNumber = ItemModel::whereYear('created_at', Carbon::now()->year)
-                            ->whereMonth('created_at', Carbon::now()->month)
-                            ->orderBy('controlNumber', 'desc')
-                            ->pluck('controlNumber')
-                            ->first();
+                                ->whereMonth('created_at', Carbon::now()->month)
+                                ->orderBy('controlNumber', 'desc')
+                                ->pluck('controlNumber')
+                                ->first();
+    
         if (!$controlNumber) {
-            return $currentYearAndMonth . '-0001';
+            return $currentYearAndMonth . '-00001';
         }
-        $numberPart = intval(substr($controlNumber, -4)) + 1;
-        $paddedNumber = str_pad($numberPart, 4, '0', STR_PAD_LEFT);
+    
+        $numberPart = intval(substr($controlNumber, -5)) + 1; 
+        $paddedNumber = str_pad($numberPart, 5, '0', STR_PAD_LEFT);
+    
         return $currentYearAndMonth . '-' . $paddedNumber;
     }
+    private function generateControlNumberReceived() {
+        $currentYearAndMonth = Carbon::now()->format('Y-m');
+        $controlNumber = ReceiveModel::whereYear('created_at', Carbon::now()->year)
+                                ->whereMonth('created_at', Carbon::now()->month)
+                                ->orderBy('control_number', 'desc')
+                                ->pluck('control_number')
+                                ->first();
+    
+        if (!$controlNumber) {
+            return $currentYearAndMonth . '-00001';
+        }
+    
+        $numberPart = intval(substr($controlNumber, -5)) + 1; 
+        $paddedNumber = str_pad($numberPart, 5, '0', STR_PAD_LEFT);
+    
+        return $currentYearAndMonth . '-' . $paddedNumber;
+    }        
     public function deleteItem(Request $request){
         $validator = Validator::make($request->all(), [
             'delete-item-id' => 'required'
@@ -157,10 +179,6 @@ class itemManager extends Controller
             'edit-unit.*' => 'required',
             'edit-unitId' => 'required|array',
             'edit-unitId.*' => 'required|exists:units,id',
-            'edit-quantity' => 'required|array',
-            'edit-quantity.*' => 'required|numeric|min:0',
-            'edit-maxQuantity' => 'required|array',
-            'edit-maxQuantity.*' => 'required|numeric|min:1',
         ]);
         
         if ($validator->fails()) {
@@ -184,7 +202,6 @@ class itemManager extends Controller
                     $item->category_id = $selectedCategory->id;
                     $item->status_id = $status->id;
                     $item->name = ucwords($request->get('edit-itemName')[$index]);  
-                    Log::info("Updating item: ", [$item]);
                 } else {
      
                     $item = new ItemModel();
@@ -192,7 +209,6 @@ class itemManager extends Controller
                     $item->status_id = $status->id;
                     $item->name = ucwords($request->get('edit-itemName')[$index]);
                     $item->controlNumber = $this->generateControlNumber();  
-                    Log::info("Saving new item: ", [$item]);
                 }
         
                 try {
@@ -200,23 +216,16 @@ class itemManager extends Controller
                 } catch (\Exception $e) {
                     continue;  
                 }
-        
                 $inventory = InventoryModel::where('item_id', $item->id)->first();
         
                 if (!$inventory) {
                     $inventory = new InventoryModel();
                     $inventory->item_id = $item->id;
                 }
-        
-                $inventory->quantity = $request->get('edit-quantity')[$index];
                 $inventory->unit_id = $selectedUnit->id;
-                $inventory->max_quantity = $request->get('edit-maxQuantity')[$index];
-                Log::info("Saving inventory: ", [$inventory]);
-        
                 try {
                     $inventory->save();
                 } catch (\Exception $e) {
-                    Log::error("Error saving inventory: " . $e->getMessage());
                     continue;  
                 }
             }
@@ -228,4 +237,126 @@ class itemManager extends Controller
         }
         
     }
+    public function getItem(Request $request){
+    // Start the query with eager loading
+    $itemsQuery = ItemModel::with(['category', 'category.subCategory', 'inventory', 'inventory.unit', 'status']);
+    
+    // Handle search filter (if present)
+    if ($request->has('search') && $request->search['value']) {
+        $search = $request->search['value'];
+        $itemsQuery->where(function ($query) use ($search) {
+            $query->where('name', 'like', "%$search%")
+                  ->orWhereHas('category', function ($query) use ($search) {
+                      $query->where('name', 'like', "%$search%");
+                  })
+                  ->orWhereHas('status', function ($query) use ($search) {
+                      $query->where('name', 'like', "%$search%");
+                  });
+        });
+    }
+
+    // Apply category filter if specified
+    if ($request->category) {
+        $itemsQuery->whereHas('category', function ($query) use ($request) {
+            $query->where('name', $request->category); // Filter based on the category name
+        });
+    }
+
+
+    // Apply unit filter if specified
+    if ($request->minQuantity) {
+        $itemsQuery->whereHas('inventory', function ($query) use ($request) {
+            $query->where('quantity', '>=', $request->minQuantity); // Filter by minimum quantity in inventory
+        });
+    }
+    // Apply status filter if specified
+    if ($request->unit) {
+        $itemsQuery->whereHas('inventory', function ($query) use ($request) {
+            $query->whereHas('unit', function ($query) use ($request) {
+                $query->where('name', $request->unit); // Filter by unit name inside inventory
+            });
+        });
+    }
+
+    // Apply quantity filters
+    if ($request->minQuantity) {
+        $itemsQuery->whereHas('inventory', function ($query) use ($request) {
+            $query->where('quantity', '>=', $request->minQuantity); // Filter by minimum quantity in inventory
+        });
+    }
+    if ($request->maxQuantity) {
+        $itemsQuery->whereHas('inventory', function ($query) use ($request) {
+            $query->where('quantity', '<=', $request->maxQuantity); // Filter by maximum quantity in inventory
+        });
+    }
+    if ($request->status) {
+        $itemsQuery->whereHas('status', function ($query) use ($request) {
+            $query->where('name', $request->status); // Filter by maximum quantity in inventory
+        });
+    }
+    $items = $itemsQuery
+    ->orderBy('controlNumber', 'desc')
+    ->get();
+
+    // Handle stock level filtering in memory
+    if ($request->level) {
+        $items = $items->filter(function ($item) use ($request) {
+            // Calculate the percentage based on quantity and max_quantity
+            $quantity = $item->inventory ? $item->inventory->quantity : 0;
+            $maxQuantity = $item->inventory ? $item->inventory->max_quantity : 0;
+            $percentage = $maxQuantity > 0 ? ($quantity / $maxQuantity) * 100 : 0;
+
+            // Filter based on the level requested
+            if ($request->level == 'No Stock' && $percentage == 0) {
+                return true;  // No stock condition
+            } elseif ($request->level == 'Low Stock' && $percentage <= 20) {
+                return true;  // Low stock condition
+            } elseif ($request->level == 'Moderate Stock' && $percentage > 20 && $percentage <= 50) {
+                return true;  // Moderate stock condition
+            } elseif ($request->level == 'High Stock' && $percentage > 50) {
+                return true;  // High stock condition
+            }
+
+            return false;  // Exclude items that don't match the level condition
+        });
+    }
+
+
+
+    // Get the filtered records count (for recordsFiltered)
+    $totalFilteredRecords = $itemsQuery->count();
+
+    // Apply pagination (skip and take) for the DataTable
+    $items = $items->slice($request->start, $request->length);
+
+    // Map the items to the required format
+    $formatItem = $items->map(function ($item) {
+        $quantity = $item->inventory ? $item->inventory->quantity : 0;
+        $maxQuantity = $item->inventory ? $item->inventory->max_quantity : 0;
+        $percentage = $maxQuantity > 0 ? ($quantity / $maxQuantity) * 100 : 0;
+
+        return [
+            'item_id' => $item->id,
+            'category_name' => $item->category ? $item->category->name : null,
+            'item_name' => $item->name,
+            'quantity' => $quantity,
+            'max_quantity' => $item->inventory->max_quantity,
+            'unit_name' => $item->inventory && $item->inventory->unit ? $item->inventory->unit->name : null,
+            'status_name' => $item->status ? $item->status->name : null,
+            'percentage' => $percentage,
+            'control_number' => $item->controlNumber,
+            'created_at' => \Carbon\Carbon::parse($item->created_at)->format('F d, Y H:i A'),
+            'updated_at' => \Carbon\Carbon::parse($item->updated_at)->format('F d, Y H:i A')
+        ];
+    });
+
+    // Return the response in the DataTable expected format
+    return response()->json([
+        'draw' => (int)$request->draw, // Echo the draw count from the request
+        'recordsTotal' => $totalFilteredRecords, // Total records after filtering
+        'recordsFiltered' => $totalFilteredRecords, // Records after applying filter
+        'data' => $formatItem // Data to populate the table
+    ]);
+}
+
 }
