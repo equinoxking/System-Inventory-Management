@@ -30,11 +30,13 @@ class AdminTransactionManager extends Controller
             'transactionDetail',
             'client',
             'item',
+            'item.inventory',
             'item.inventory.unit',
             'status',
             'clientBy'
         ])
         ->where('remark', 'Completed')
+        ->orWhere('remark', 'Rejected')
         ->get();
         $statuses = TransactionStatusModel::all();
 
@@ -69,6 +71,12 @@ class AdminTransactionManager extends Controller
             // Retrieve client and transaction objects
             $client = ClientModel::where('id', $client_id)->first();
             $transaction = TransactionModel::find($transact_id);
+            $createdAt = $transaction->created_at;
+            $diffInSeconds = $createdAt->diffInSeconds($currentDateTime);
+            $days = floor($diffInSeconds / 86400); // 1 day = 86400 seconds
+            $minutes = floor(($diffInSeconds % 86400) / 60); // Remaining minutes after dividing by days
+            $seconds = $diffInSeconds % 60; // Remaining seconds after dividing by minutes
+            $agingString = "{$days} days, {$minutes} minutes, {$seconds} seconds";
 
             if ($transaction) {
                 switch ($data) {
@@ -80,16 +88,8 @@ class AdminTransactionManager extends Controller
                         $transaction->released_time = $formattedTime;
                         $transaction->approved_date = $formattedDateNow;
                         $transaction->approved_time = $formattedTimeNow;
-                        
-                        // Compare the release time with the current time
-                        if ($formattedTime->isBefore($currentDateTime)) {
-                            // If release time is in the past, mark as "Completed"
-                            $transaction->remark = 'Completed';
-                        } else {
-                            // Otherwise, mark it as "For Release"
-                            $transaction->remark = 'For Release';
-                        }
-                        
+                        $transaction->remark = 'For Release';
+                        $transaction->request_aging = $agingString;
                         $transaction->status_id = $status->id;
                         
                         $transaction->save();
@@ -137,7 +137,7 @@ class AdminTransactionManager extends Controller
     }
     public function getTransactions(Request $request)
     {
-        $transactions = TransactionModel::with(['client', 'item', 'transactionDetail', 'status'])
+        $transactions = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory'])
             ->where('remark', "!=", 'Completed')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -150,11 +150,14 @@ class AdminTransactionManager extends Controller
                 'client_name' => $transaction->client ? $transaction->client->full_name : 'No client',
                 'item_name' => $transaction->item->name,
                 'unit' => $transaction->item->inventory->unit->name,
+                'stock_on_hand' => $transaction->item->inventory->quantity,
                 'quantity' => $transaction->transactionDetail->request_quantity,
                 'released_by' => $transaction->clientBy ? $transaction->clientBy->full_name : '',
+                'request_aging' => $transaction->request_aging,
                 'time_released' => $transaction->released_time ? \Carbon\Carbon::parse($transaction->released_time)->format('h:i A') : '',
                 'time_approved' => $transaction->approved_time ? \Carbon\Carbon::parse($transaction->approved_time)->format('h:i A') : '',
                 'date_approved' => $transaction->approved_date ? \Carbon\Carbon::parse($transaction->approved_date)->format('F d, Y') : '',
+                'released_aging' => $transaction->released_aging,
                 'status' => $transaction->status ? $transaction->status->name : '',
                 'remarks' => $transaction->remark,
             ];

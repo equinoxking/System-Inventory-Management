@@ -22,7 +22,7 @@ class itemManager extends Controller
             'category.*' => 'required|exists:categories,name', 
             'categoryId' => 'required|array', 
             'categoryId.*' => 'required|exists:categories,id', 
-            'itemName' => 'required|array', 
+            'itemName' => 'required|array|unique:items,name', 
             'itemName.*' => 'required|min:3|max:60', 
             'unit' => 'required|array', 
             'unit.*' => 'required', 
@@ -30,8 +30,6 @@ class itemManager extends Controller
             'unitId.*' => 'required|exists:units,id', 
             'quantity' => 'required|array', 
             'quantity.*' => 'required|numeric|min:0', 
-            'maxQuantity' => 'required|array',
-            'maxQuantity.*' => 'required|numeric|min:1'
         ]);
         //if validator fails it will send information to the user
         if ($validator->fails()) {
@@ -65,7 +63,6 @@ class itemManager extends Controller
                 $inventory->item_id = $item->id;
                 $inventory->quantity = $request->quantity[$index];
                 $inventory->unit_id = $selectedUnit->id;
-                $inventory->max_quantity = $request->maxQuantity[$index];
                 $inventory->save();
 
                 $monthToInt = [
@@ -89,7 +86,6 @@ class itemManager extends Controller
 
                 $receive = new ReceiveModel();
                 $receive->item_id = $item->id;
-                $receive->control_number = $this->generateControlNumberReceived();
                 $receive->received_quantity = $request->quantity[$index];
                 $receive->received_day = $day;
                 $receive->received_month = $monthInt;
@@ -169,18 +165,17 @@ class itemManager extends Controller
         $validator = Validator::make($request->all(), [
             'edit-item-id' => 'required|array', 
             'edit-item-id.*' => 'required|exists:items,id', 
-            'edit-category' => 'required|array',
-            'edit-category.*' => 'required|exists:categories,name',
-            'edit-categoryId' => 'required|array',
-            'edit-categoryId.*' => 'required|exists:categories,id',
-            'edit-itemName' => 'required|array',
-            'edit-itemName.*' => 'required|min:3|max:60',
-            'edit-unit' => 'required|array',
-            'edit-unit.*' => 'required',
-            'edit-unitId' => 'required|array',
-            'edit-unitId.*' => 'required|exists:units,id',
+            'category' => 'required|array',
+            'category.*' => 'required|exists:categories,name',
+            'categoryId' => 'required|array',
+            'categoryId.*' => 'required|exists:categories,id',
+            'item_name' => 'required|array',
+            'item_name.*' => 'required|min:3|max:60',
+            'unit' => 'required|array',
+            'unit.*' => 'required',
+            'unitId' => 'required|array',
+            'unitId.*' => 'required|exists:units,id',
         ]);
-        
         if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
@@ -189,8 +184,8 @@ class itemManager extends Controller
         } else {
             foreach ($request->get('edit-item-id') as $index => $editItemId) {
                 $status = ItemStatusModel::where('name', 'Available')->first();
-                $selectedCategory = CategoryModel::findOrFail($request->get('edit-categoryId')[$index]);
-                $selectedUnit = UnitModel::findOrFail($request->get('edit-unitId')[$index]);
+                $selectedCategory = CategoryModel::findOrFail($request->get('categoryId')[$index]);
+                $selectedUnit = UnitModel::findOrFail($request->get('unitId')[$index]);
         
                 if (!$selectedCategory || !$selectedUnit) {
                     continue; 
@@ -201,13 +196,13 @@ class itemManager extends Controller
                 if ($item) {
                     $item->category_id = $selectedCategory->id;
                     $item->status_id = $status->id;
-                    $item->name = ucwords($request->get('edit-itemName')[$index]);  
+                    $item->name = ucwords($request->get('item_name')[$index]);  
                 } else {
      
                     $item = new ItemModel();
                     $item->category_id = $selectedCategory->id;
                     $item->status_id = $status->id;
-                    $item->name = ucwords($request->get('edit-itemName')[$index]);
+                    $item->name = ucwords($request->get('item_name')[$index]);
                     $item->controlNumber = $this->generateControlNumber();  
                 }
         
@@ -246,12 +241,12 @@ class itemManager extends Controller
         $search = $request->search['value'];
         $itemsQuery->where(function ($query) use ($search) {
             $query->where('name', 'like', "%$search%")
-                  ->orWhereHas('category', function ($query) use ($search) {
-                      $query->where('name', 'like', "%$search%");
+                ->orWhereHas('category', function ($query) use ($search) {
+                    $query->where('name', 'like', "%$search%");
                   })
-                  ->orWhereHas('status', function ($query) use ($search) {
-                      $query->where('name', 'like', "%$search%");
-                  });
+                ->orWhereHas('status', function ($query) use ($search) {
+                    $query->where('name', 'like', "%$search%");
+                });
         });
     }
 
@@ -299,51 +294,26 @@ class itemManager extends Controller
     ->get();
 
     // Handle stock level filtering in memory
-    if ($request->level) {
-        $items = $items->filter(function ($item) use ($request) {
-            // Calculate the percentage based on quantity and max_quantity
-            $quantity = $item->inventory ? $item->inventory->quantity : 0;
-            $maxQuantity = $item->inventory ? $item->inventory->max_quantity : 0;
-            $percentage = $maxQuantity > 0 ? ($quantity / $maxQuantity) * 100 : 0;
-
-            // Filter based on the level requested
-            if ($request->level == 'No Stock' && $percentage == 0) {
-                return true;  // No stock condition
-            } elseif ($request->level == 'Low Stock' && $percentage <= 20) {
-                return true;  // Low stock condition
-            } elseif ($request->level == 'Moderate Stock' && $percentage > 20 && $percentage <= 50) {
-                return true;  // Moderate stock condition
-            } elseif ($request->level == 'High Stock' && $percentage > 50) {
-                return true;  // High stock condition
-            }
-
-            return false;  // Exclude items that don't match the level condition
-        });
-    }
-
-
 
     // Get the filtered records count (for recordsFiltered)
     $totalFilteredRecords = $itemsQuery->count();
 
     // Apply pagination (skip and take) for the DataTable
     $items = $items->slice($request->start, $request->length);
-
     // Map the items to the required format
     $formatItem = $items->map(function ($item) {
         $quantity = $item->inventory ? $item->inventory->quantity : 0;
-        $maxQuantity = $item->inventory ? $item->inventory->max_quantity : 0;
-        $percentage = $maxQuantity > 0 ? ($quantity / $maxQuantity) * 100 : 0;
+        // $maxQuantity = $item->inventory ? $item->inventory->max_quantity : 0;
+        // $percentage = $maxQuantity > 0 ? ($quantity / $maxQuantity) * 100 : 0;
 
         return [
             'item_id' => $item->id,
             'category_name' => $item->category ? $item->category->name : null,
             'item_name' => $item->name,
             'quantity' => $quantity,
-            'max_quantity' => $item->inventory->max_quantity,
             'unit_name' => $item->inventory && $item->inventory->unit ? $item->inventory->unit->name : null,
             'status_name' => $item->status ? $item->status->name : null,
-            'percentage' => $percentage,
+            // 'percentage' => $percentage,
             'control_number' => $item->controlNumber,
             'created_at' => \Carbon\Carbon::parse($item->created_at)->format('F d, Y H:i A'),
             'updated_at' => \Carbon\Carbon::parse($item->updated_at)->format('F d, Y H:i A')

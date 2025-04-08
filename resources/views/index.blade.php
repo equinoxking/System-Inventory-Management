@@ -193,3 +193,19 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="interfaceModal" tabindex="-1" role="dialog"
+     data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color: #3a5a9a">
+                <h5 class="modal-title" id="registerLabel">Interface Form</h5>
+            </div>
+            <div class="modal-body">
+                <strong>Select your interface</strong><br>
+                <button id="goToAdminInterface" class="btn btn-info" type="button">Admin Interface</button>
+                <button id="goToUserInterface" class="btn btn-success" type="button">User Interface</button>
+            </div>
+        </div>
+    </div>
+</div>
+

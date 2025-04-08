@@ -34,7 +34,11 @@ class ReceivedManager extends Controller
             'receivedItemName' => 'required|array', 
             'receivedItemName.*' => 'required', 
             'receivedQuantity' => 'required|array',
-            'receivedQuantity.*' => 'required|numeric|min:1'
+            'receivedQuantity.*' => 'required|numeric|min:1',
+            'delivery_types' => 'required|array',
+            'delivery_types.*' => 'required',
+            'control_number' => 'required|array', 
+            'control_number.*' => 'required', 
         ]);
         
         if ($validator->fails()) {
@@ -44,6 +48,7 @@ class ReceivedManager extends Controller
             ]);
         } else {
             $allItemsProcessed = true;
+            $deliveryTypes = $request->input('delivery_types'); 
             foreach ($request->receivedItemId as $index => $receivedItemId) {
                 try {
                     $item = ItemModel::findOrFail($receivedItemId);
@@ -68,16 +73,21 @@ class ReceivedManager extends Controller
 
                     $receive = new ReceiveModel();
                     $receive->item_id = $item->id;
-                    $receive->control_number = $this->generateControlNumber();
+                    $receive->control_number = $request->get('control_number')[$index];
+                    $receive->delivery_type = $deliveryTypes[$index];
                     $receive->received_quantity = $request->receivedQuantity[$index];
                     $receive->received_day = $day;
                     $receive->received_month = $monthInt;
                     $receive->received_year = $year;
+                    if($deliveryTypes[$index] === "Inspection Delivery"){
+                        $receive->remark = "For Inspection";
+                    }else{
+                         $receive->remark = "Completed";
+                    }
                     $receive->save();
 
                     $inventory = InventoryModel::where('item_id', $receivedItemId)->first();
-
-                    if ($inventory) {
+                    if ($deliveryTypes[$index] === "Receipt for Stock" && $inventory) {
                         $newQuantity = $inventory->quantity + $receive->received_quantity;
                         $inventory->quantity = $newQuantity;
                         $inventory->save();
@@ -86,7 +96,6 @@ class ReceivedManager extends Controller
                         $allItemsProcessed = false;
                         break;
                     }
-
                 } catch (\Exception $e) {
                     $allItemsProcessed = false;
                     break;
@@ -103,30 +112,10 @@ class ReceivedManager extends Controller
                     'message' => "Error in receiving an item!",
                     'status' => 500
                 ]);
-            }
-
-                        
-                }
-            }
-    private function generateControlNumber() {
-        $currentYearAndMonth = Carbon::now()->format('Y-m');
-        $controlNumber = ReceiveModel::whereYear('created_at', Carbon::now()->year)
-                                ->whereMonth('created_at', Carbon::now()->month)
-                                ->orderBy('control_number', 'desc')
-                                ->pluck('control_number')
-                                ->first();
-    
-        if (!$controlNumber) {
-            return $currentYearAndMonth . '-00001';
+            }            
         }
-    
-        $numberPart = intval(substr($controlNumber, -5)) + 1; 
-        $paddedNumber = str_pad($numberPart, 5, '0', STR_PAD_LEFT);
-    
-        return $currentYearAndMonth . '-' . $paddedNumber;
     }
-    public function refreshReceivables(Request $request)
-    {
+    public function refreshReceivables(Request $request){
         // Fetch all items with their associated 'receives' and 'inventory.unit' relationships.
         $items = ItemModel::with(['receives', 'inventory.unit', 'inventory'])->get();
     
@@ -135,14 +124,17 @@ class ReceivedManager extends Controller
             return $item->receives->map(function ($receive) use ($item) {
                 return [
                     'item_id' => $item->id,
+                    'type' => $receive->delivery_type,
+                    'remaining_quantity' => $item->inventory->quantity,
                     'received_id' => $receive->id,
+                    'remark' => $receive->remark,
                     'max_quantity' => $item->inventory->max_quantity,
                     'control_number' => $receive->control_number ?? '',
                     'item_name' => $item->name,
                     'unit_name' => $item->inventory->unit->name ?? '',
                     'received_quantity' => $receive->received_quantity ?? 0,
-                    'created_at' => $item->created_at->format('F d, Y H:i A'),
-                    'updated_at' => $item->updated_at->format('F d, Y H:i A'),
+                    'created_at' => $receive->created_at->format('F d, Y H:i A'),
+                    'updated_at' => $receive->updated_at->format('F d, Y H:i A'),
                 ];
             });
         });
@@ -158,48 +150,27 @@ class ReceivedManager extends Controller
             'data' => $flattenedData
         ]);
     }
-    public function updateReceivedQuantity(Request $request)
-    {
-        // Validate the incoming request data
+    public function updateReceivedQuantity(Request $request){
         $validator = Validator::make($request->all(), [
-            'edit-received-quantity' => 'required|numeric', // Ensure the quantity is numeric
-            'edit-received-id' => 'required|exists:receivables,id', // Ensure the receive exists
-            'item_id' => 'required|exists:items,id', // Ensure the item exists
+            'edit-received-quantity' => 'required|numeric',
+            'edit-received-id' => 'required|exists:receivables,id', 
+            'item_id' => 'required|exists:items,id', 
         ]);
-        
-        // If validation fails, return errors
         if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
                 'message' => $validator->errors()
             ]);
         }
-    
-        // Find the receive by ID
-        $receive = ReceiveModel::where('id', $request->get('edit-received-id'))->first();
-    
+        $receive = ReceiveModel::findOrFail($request->get('edit-received-id'));
         if ($receive) {
-            // Update the received quantity for the receive record
-            $receive->received_quantity = $request->get('edit-received-quantity');
+            $receive->delivery_type = "Receipt for Stock";
             $receive->save();
-    
-            // Calculate the total received quantity for the item
-            $totalReceivedQuantity = ReceiveModel::where('item_id', $request->item_id)
-                ->sum('received_quantity');
-    
-            // Calculate the total transaction quantity for the item (using TransactionDetailModel)
-            $totalTransactionQuantity = TransactionDetailModel::where('item_id', $request->item_id)
-                ->sum('request_quantity');  // Assumes 'quantity' is stored in the transaction_details table
-    
-            // Calculate the final inventory quantity
-            $finalInventoryQuantity = $totalReceivedQuantity - $totalTransactionQuantity;
-    
-            // Find the inventory associated with the item
+            
             $inventory = InventoryModel::where('item_id', $request->item_id)->first();
-    
             if ($inventory) {
                 // Update the inventory quantity
-                $inventory->quantity = $finalInventoryQuantity;
+                $inventory->quantity += $request->get('edit-received-quantity');
                 $inventory->save();
     
                 return response()->json([

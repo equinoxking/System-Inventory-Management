@@ -15,7 +15,7 @@ class LoginCheckUser
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!session()->has('loginCheckUser')) {
+        if (!session()->has('loginCheckUser') && !session()->has('loggedInInventoryAdmin')) {
             if ($request->path() != '/') {
                 return redirect('/');
             }
@@ -24,6 +24,7 @@ class LoginCheckUser
                 return back();
             }
         }
-        return $next($request);
+        
+        return $next($request);        
     }
 }

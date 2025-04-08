@@ -27,16 +27,17 @@
 <div class="container-fluid card w-100">
     <div class="row">
         <div class="col-md-12">
-            <table id="transactionTable">
+            <table id="transactionTable" style="font-size: 11px">
                 <thead>
                     <th>Time Request</th>
                     <th>Transaction Number</th>
-                    <th>Name</th>
-                    <th>Item Name</th>
-                    <th>Unit</th>
+                    <th>Stock On Hand</th>
                     <th>Quantity</th>
-                    <th>Time Approved</th>
-                    <th>Date Approved</th>
+                    <th>UoM</th>
+                    <th>Item Name</th>
+                    <th>Requestor</th>
+                    <th>Date/Time Acted</th>
+                    <th>Request Aging</th>
                     <th>Released by</th>
                     <th>Time Released</th>
                     <th>Status</th>
@@ -55,25 +56,27 @@
 <div class="container-fluid mt-3">
     <div class="row">
         <div class="col-md-12" style="text-align: left">
-            <h4><strong>TRANSACTION RECORDS</strong></h4>
+            <h4><strong>ACTED TRANSACTIONS</strong></h4>
         </div>
     </div>
 </div>
 <div class="container-fluid card w-100">
     <div class="row">
         <div class='col-md-12'>
-            <table id="transactionHistoryTable">
+            <table id="transactionHistoryTable" style="font-size: 11px">
                 <thead>
                     <th>Time Request</th>
                     <th>Transaction Number</th>
-                    <th>Name</th>
-                    <th>Item Name</th>
-                    <th>Unit</th>
+                    <th>Stock On Hand</th>
                     <th>Quantity</th>
-                    <th>Time Approved</th>
-                    <th>Date Approved</th>
+                    <th>UoM</th>
+                    <th>Item Name</th>
+                    <th>Requestor</th>
+                    <th>Date/Time Acted</th>
+                    <th>Request Aging</th>
                     <th>Released by</th>
                     <th>Time Released</th>
+                    <th>Acceptance Aging</th>
                     <th>Status</th>
                     <th>Remarks</th>
                 </thead>
@@ -82,16 +85,17 @@
                     <tr>
                         <td>{{ \Carbon\Carbon::parse($transaction->created_at)->format('F d, Y h:i A') }}</td>
                         <td>{{ $transaction->transaction_number }}</td>
-                        <td>{{ $transaction->client->full_name }}</td>
-                        <td>{{ $transaction->item->name }}</td>
-                        <td>{{ $transaction->item->inventory->unit->name }}</td>
+                        <td>{{ $transaction->item->inventory->quantity }}</td>
                         <td>{{ $transaction->transactionDetail->request_quantity }}</td>
-                        <td>{{ $transaction->approved_time ? \Carbon\Carbon::parse($transaction->approved_time)->format('h:i A') : '' }}</td>
-                        <td>{{ $transaction->approved_date ? \Carbon\Carbon::parse($transaction->approved_date)->format('F d, Y') : '' }}</td>
+                        <td>{{ $transaction->item->inventory->unit->name }}</td>
+                        <td>{{ $transaction->item->name }}</td>
+                        <td>{{ $transaction->client->full_name }}</td>
+                        <td>{{ $transaction->approved_time ? \Carbon\Carbon::parse($transaction->approved_date)->format('F d, Y') . ' ' . \Carbon\Carbon::parse($transaction->approved_time)->format('h:i A')  : '' }}</td>
+                        <td>{{ $transaction->request_aging }}</td>
                         <td>{{ $transaction->clientBy->full_name }}</td>
                         <td>{{ $transaction->released_time ? \Carbon\Carbon::parse($transaction->released_time)->format('h:i A') : '' }}</td>
+                        <td>{{ $transaction->released_aging }}</td>
                         <td>
-                            {{-- {{ $transaction->status->name }} --}}
                             @if($transaction->status && $transaction->status->name == 'Accepted')
                                 <span class="badge badge-success">
                                     <i class="fas fa-check-circle"></i> Accepted
@@ -107,7 +111,6 @@
                             @endif
                         </td>
                         <td>
-                            {{-- {{ $transaction->remark }} --}}
                             @if($transaction->remark && $transaction->remark == 'For Review')
                                 <span class="badge badge-forReview">
                                     <i class="fas fa-search"></i> For Review
@@ -164,10 +167,6 @@
                             <label for="releaseTime">Release Time</label><br>
                             <input type="time" class="form-control" id="time" value="" name="time">
                         </div>
-                        {{-- <div class="form-group" id="dateDivision" style="display:none;">
-                            <label for="releasedDate">Release Date</label><br>
-                            <input type="date" class="form-control" id="date" value="" name="date">
-                        </div> --}}
                         <div class="form-group" style="display:none;" id="reasonDivision">
                             <label for="reason">Reason</label><br>
                             <textarea name="reason" id="reason" cols="5" rows="5" class="form-control"></textarea>

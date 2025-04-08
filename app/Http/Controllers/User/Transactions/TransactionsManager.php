@@ -15,18 +15,39 @@ use Illuminate\Support\Carbon;
 
 class TransactionsManager extends Controller
 {
-    public function goToTransactions()
-    {
-        $client_id = session()->get('loginCheckUser')['id'];
-        $items = ItemModel::all();
-        $transactions = TransactionModel::with('transactionDetail')
-        ->where('user_id' , $client_id)
-        ->orderBy('transaction_number', 'desc')
-        ->get();
-        return view('user.transactions', [
-            'items' => $items,
-            'transactions' => $transactions
-        ]);
+    public function goToTransactions(){
+        if (session()->has('loginCheckUser') || session()->has('loggedInInventoryAdmin')) {
+            $user = session()->get('loginCheckUser');
+            $client_id = null;
+            if ($user) {
+                $client_id = $user['id'];
+            }
+            $items = ItemModel::all();
+            if ($client_id) {
+                $currentTransactions = TransactionModel::with('transactionDetail')
+                    ->where('user_id', $client_id)
+                    ->where('remark', '!=', 'Completed')
+                    ->orderBy('transaction_number', 'desc')
+                    ->get();
+                $actedTransactions = TransactionModel::with('transactionDetail')
+                ->where('user_id', $client_id,)
+                ->where('remark', 'Completed')
+                ->orderBy('transaction_number', 'desc')
+                ->get();
+            } else {
+                // If no user (or admin), fetch all transactions (admin or global transactions)
+                $transactions = TransactionModel::with('transactionDetail')
+                    ->orderBy('transaction_number', 'desc')
+                    ->get();
+            }
+
+            // Return the view with both items and transactions
+            return view('user.transactions', [
+                'items' => $items,
+                'currentTransactions' => $currentTransactions,
+                'actedTransactions' => $actedTransactions,
+            ]);
+        } 
     }
     public function searchItem(Request $request){
         $query = $request->input('query'); 
@@ -56,9 +77,25 @@ class TransactionsManager extends Controller
         // Process the requestItemId array
         foreach ($request->requestItemId as $index => $requestItemId) {
             $selectedItemId = ItemModel::findOrFail($requestItemId);
-            $client_id = session()->get('loginCheckUser')['id'];
             $status = TransactionStatusModel::where('name', 'Pending')->first();
+
+            $client_id = null;
+
+            // Determine the client ID from session
+            if (session()->has('loginCheckUser')) {
+                $client_id = session()->get('loginCheckUser')['id'];
+            } elseif (session()->has('loggedInInventoryAdmin')) {
+                $client_id = session()->get('loggedInInventoryAdmin')['id'];
+            }
+
+            // Optional: handle missing session or client_id
+            if (!$client_id) {
+                abort(403, 'Unauthorized access.');
+            }
+
+            // Now fetch client based on resolved ID
             $client = ClientModel::where('id', $client_id)->first();
+
             
             if (!$selectedItemId) {
                 continue;  
@@ -95,6 +132,7 @@ class TransactionsManager extends Controller
     
             $detail = new TransactionDetailModel();
             $detail->transaction_id = $transaction->id;
+            $detail->item_id = $item->id;
             $detail->request_item = $item->name;
             $detail->request_quantity = $request->requestQuantity[$index];
             $detail->request_day = $day;
@@ -159,5 +197,60 @@ class TransactionsManager extends Controller
         return view('user.history', [
             'transactions' => $transactions
         ]);
+    }
+    public function updateTransaction(Request $request){
+        $validator = Validator::make($request->all(), [
+            'transaction-acceptance-id' => 'required|exists:transactions,id', 
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'message' => $validator->errors()
+            ]);
+        }else{
+            $transaction = TransactionModel::findOrFail($request->get('transaction-acceptance-id'));
+
+            // Get the date and time from the transaction
+            $date = $transaction->approved_date; // Example: '2025-04-07'
+            $time = $transaction->approved_time; // Example: '09:37:00'
+
+            // Combine the date and time into a single string
+            $completeDateTimeString = $date . ' ' . $time; // Example: '2025-04-07 09:37:00'
+
+            // Create a Carbon instance from the combined date and time string
+            $completeTime = Carbon::createFromFormat('Y-m-d H:i:s', $completeDateTimeString);
+
+            // Get the current time in your desired timezone (e.g., Asia/Manila)
+            $currentDateTime = Carbon::now('Asia/Manila');
+
+            // Calculate the difference in seconds between the two dates
+            $diffInSeconds = $completeTime->diffInSeconds($currentDateTime);
+
+            // Break down the difference into days, minutes, and seconds
+            $days = floor($diffInSeconds / 86400); // 1 day = 86400 seconds
+            $minutes = floor(($diffInSeconds % 86400) / 60); // Remaining minutes after dividing by days
+            $seconds = $diffInSeconds % 60; // Remaining seconds after dividing by minutes
+
+            // Format the result as 'X days, Y minutes, Z seconds'
+            $agingString = "{$days} days, {$minutes} minutes, {$seconds} seconds";
+
+            // Check if the transaction is valid and save the updated data
+            if($transaction){
+                $transaction->remark = "Completed";
+                $transaction->released_aging = $agingString;
+                $transaction->save();
+
+                return response()->json([
+                    'message' => "Transaction successfully updated!",
+                    'status' => 200
+                ]);
+            }else{
+                return response()->json([
+                    'message' => "Check your internet connection!",
+                    'status' => 500
+                ]);
+            }
+
+        }
     }
 }

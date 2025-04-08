@@ -4,7 +4,7 @@ $(document).ready(function () {
         "pageLength": 5,
         "responsive": true,
         "autoWidth": false,
-        "processing": true,
+        "processing": false,
         "serverSide": true,
         "ajax": {
             url: '/admin/refreshItems',
@@ -16,21 +16,20 @@ $(document).ready(function () {
                 d.status = $('#status-filter').val();
                 d.minQuantity = $('#min-quantity-filter').val();
                 d.maxQuantity = $('#max-quantity-filter').val();
-                d.level = $('#level-filter').val();
             },
             "dataSrc": function (json) {
                 return json.data; // Return the data from the JSON response
             }
+            
         },
         "columns": [
-            { "data": "control_number" },
-            { "data": "category_name" },
-            { "data": "item_name" },
-            { "data": "quantity" },
-            { "data": "max_quantity" },
-            { "data": "unit_name" },
             { "data": "created_at" },
             { "data": "updated_at" },
+            { "data": "control_number" },
+            { "data": "quantity" },
+            { "data": "unit_name" },
+            { "data": "category_name" },
+            { "data": "item_name" },
             {
                 "data": "status_name",
                 "render": function(data, type, row) {
@@ -42,16 +41,14 @@ $(document).ready(function () {
                 }
             },
             {
-                "data": "percentage",
+                "data": null,
                 "render": function(data, type, row) {
-                    if(data == 0){
+                    if(row.quantity == 0){
                         return '<span class="badge badge-noStock"><i class="fas fa-times-circle"></i> No Stock</span>';
-                    } else if (data <= 20) {
-                        return '<span class="badge badge-lowStock"><i class="fas fa-times-circle"></i> Low Stock</span>';
-                    } else if (data <= 50) {
-                        return '<span class="badge badge-moderateStock"><i class="fas fa-times-circle"></i> Moderate Stock</span>';
+                    } else if (row.quantity <= 20) {
+                        return '<span class="badge badge-noStock"><i class="fas fa-times-circle"></i> Critical</span>';
                     } else {
-                        return '<span class="badge badge-highStock"><i class="fas fa-check-circle"></i> High Stock</span>';
+                        return '<span class="badge badge-highStock"><i class="fas fa-check-circle"></i> Normal</span>';
                     }
                 }
             },
@@ -70,7 +67,7 @@ $(document).ready(function () {
     setInterval(function() {
         table.ajax.reload();  // This reloads the data from the server
     }, 1000);
-    $('#category-filter, #unit-filter, #status-filter, #level-filter').on('change', function () {
+    $('#category-filter, #unit-filter, #status-filter').on('change', function () {
         table.ajax.reload();  // Reload the table data based on new filters
     });
     
@@ -113,12 +110,19 @@ $(function () {
         "columns": [
             { "data": "time_request" },
             { "data": "transaction_number" },
-            { "data": "client_name" },
-            { "data": "item_name" },
-            { "data": "unit" },
+            { "data": "stock_on_hand"},
             { "data": "quantity" },
-            { "data": "time_approved" },
-            { "data": "date_approved" },
+            { "data": "unit" },
+            { "data": "item_name" },
+            { "data": "client_name" },
+            {
+                data: null, // No direct data
+                render: function(data, type, row) {
+                    return row.date_approved + ' ' + row.time_approved;
+                },
+                title: 'Date/Time Acted' // Title for the merged column
+            },
+            { "data": "request_aging" },
             { "data": "released_by" },
             { "data": "time_released" },
             {
@@ -238,7 +242,7 @@ $(function () {
         "responsive": true,
         "order": [[0, 'desc']],
         "autoWidth": false,
-        "processing": true,
+        "processing": false,
         "serverSide": false,  // Use true if you want server-side processing
         "ajax": {
             url: '/admin/refreshReceivables',  
@@ -248,16 +252,34 @@ $(function () {
             }
         },
         "columns": [
-            { "data": "control_number" },
-            { "data": "item_name" },
-            { "data": "unit_name" },
-            { "data": "received_quantity" },
             { "data": "created_at" },
             { "data": "updated_at" },
+            { "data": "type"},
+            { "data": "control_number" },
+            { "data": "remaining_quantity" },
+            { "data": "received_quantity" },   
+            { "data": "unit_name" },
+            { "data": "item_name" }, 
             {
                 "data": null,
                 "render": function(data, type, row) {
-                    return '<button type="button" class="btn btn-warning" id="editReceivedItem" title="Supply received edit button"><i class="fa fa-edit"></i></button>';
+                    if(row.type === "Inspection Delivery"){
+                        return '<span class="badge badge-forReview"><i class="fas fa-search"></i> For Inspection</span>';
+                    }else{
+                        return '<span class="badge badge-completed"><i class="fas fa-check-circle"></i> Completed</span>';
+                    }
+                },
+                "orderable": false,
+                "class": "text-center"
+            },        
+            {
+                "data": null,
+                "render": function(data, type, row) {
+                    if(row.type === "Inspection Delivery"){
+                        return '<button type="button" class="btn btn-warning" id="editReceivedItem" title="Supply received edit button"><i class="fa fa-edit"></i></button>';
+                    }else{
+                        return ''
+                    }
                 },
                 "orderable": false,
                 "class": "text-center"
@@ -274,5 +296,5 @@ $(function () {
     // Automatically reload the data every 6 seconds
     setInterval(function() {
         table.ajax.reload(null, false);  // Reload the table without resetting pagination
-    }, 6000);
+    }, 1000);
 });

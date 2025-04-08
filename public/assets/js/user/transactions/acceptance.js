@@ -1,27 +1,24 @@
-function deleteItem(data){
-    $('#delete-item-id').val(data.item_id);
-    $('#deleteItemModal').modal('show');
+function userAcceptance(transaction){
+    $('#acceptanceTransactionModal').modal('show');
+    let data = JSON.parse(transaction);
+    $('#transaction-acceptance-id').val(data.id);
 }
-$('#delete-item-close-btn').click(function(){
-    $('#deleteItemModal').modal('hide');
-});
 $(document).ready(function(){
-    $(document).on('submit', '#delete-item-form', function(event){
-      event.preventDefault();
-      var formData = $('#delete-item-form').serialize();
-      console.log(formData);
+    $(document).on('submit', '#transaction-acceptance-form', function(event){
+        event.preventDefault();
+        var formData = $('#transaction-acceptance-form').serialize();
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            url: '/delete-item',
-            type: 'POST',
+            url: '/user/acceptance-transactions',
+            type: 'PATCH',
             data: formData,
             beforeSend: function() {
-                $('#delete-submit-btn').attr('disabled', true);
+                $('#register-btn').attr('disabled', true);
                 Swal.fire({
                     title: 'Loading...',
-                    text: 'Please wait while we process your request.',
+                    text: 'Please wait while we process your registration.',
                     allowOutsideClick: false,
                     didOpen: () => {
                         Swal.showLoading();
@@ -37,14 +34,13 @@ $(document).ready(function(){
                         showConfirmButton: true,
                     })
                 }else if(response.status === 400){
-                        var errorMessages = Object.values(response.message).join('<br>');
                         Swal.fire({
                             icon: 'error',
                             title: 'Error!',
-                            html: errorMessages,
+                            html: response.message,
                             showConfirmButton: true,
                         }).then(function() {
-                            $('#delete-submit-btn').attr('disabled', false);
+                            $('#transaction-acceptance-submit-btn').attr('disabled', false);
                         });
                 }else if(response.status === 200){
                     Swal.fire({
@@ -53,9 +49,8 @@ $(document).ready(function(){
                     html: response.message,
                     showConfirmButton: true,
                     }).then(function(){
-                        $('#delete-submit-btn').attr('disabled', false);
-                        swal.close();
-                        $('#deleteItemModal').modal('hide');
+                        window.location.reload();
+                        $('#acceptanceTransactionModal').modal('hide');
                     });
                 }
             },error: function(error){

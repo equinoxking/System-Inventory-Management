@@ -66,14 +66,14 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::get('/admin/refreshItems', 'getItem');
     });
     Route::controller(InventoryManager::class)->group(function() {
-        Route::get('admin/items/view-items', 'showItems');
+        Route::get('/admin/lookup-tables', 'showItems');
     });
     Route::controller(ReceivedManager::class)->group(function(){
         Route::get('/searchItem', 'searchItem')->name('search.itemName');
         Route::get('/submit-item', 'storeItem');
         Route::patch('/received-item', 'receivedItem');
         Route::get('/admin/refreshReceivables', 'refreshReceivables');
-        Route::patch('/edit-received-item', 'updateReceivedQuantity');
+        Route::patch('/update-received-item', 'updateReceivedQuantity');
     });
     Route::controller(AdminTransactionManager::class)->group(function(){
         Route::get('admin/transaction', 'goToTransactions');
@@ -87,10 +87,6 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     });
     Route::controller(ReportManager::class)->group(function(){
         Route::post('/generate-report', 'generateReport');
-    });
-    Route::controller(ProfileManager::class)->group(function(){
-        Route::get('/admin/profile', 'goToProfile');
-        Route::patch('update-admin-account', 'updateProfile');
     });
     Route::controller(IA_functionController::class)->group(function() {
         Route::get('logoutAdmin', 'logoutAdmin');
@@ -107,6 +103,7 @@ Route::group(['middleware' => 'loginCheckUser'], function () {
         Route::get('/searchRequestItem', 'searchItem');
         Route::post('/request-item', 'requestItem');
         Route::get('user/history', 'goToHistory');
+        Route::patch('/user/acceptance-transactions', 'updateTransaction');
     });
     Route::controller(UserProfileManager::class)->group(function(){
         Route::get('user/profile', 'goToProfile');

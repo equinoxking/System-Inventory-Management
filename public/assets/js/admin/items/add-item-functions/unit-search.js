@@ -1,74 +1,100 @@
- // Search for units in each dynamically added unit field
- $(document).on('keyup', '.search-unit', function() {
-    var query = $(this).val();
-    var $unitResults = $(this).siblings('.unit-results');
+let currentIndex = -1;
+
+$(document).on('keyup', '.search-unit', function(e) {
+    const $input = $(this);
+    const query = $input.val();
+    const $results = $input.siblings('.unit-results');
+
+    if (['ArrowUp', 'ArrowDown', 'Enter'].includes(e.key)) {
+        return; // Let keydown handle navigation
+    }
+
     if (query.length > 0) {
         $.ajax({
             url: '/search-units',
             method: 'GET',
-            data: { query: query },
+            data: { query },
             success: function(data) {
-                $unitResults.empty();
+                $results.empty();
+                currentIndex = -1;
+
                 if (data.length > 0) {
-                    data.forEach(function(unit) {
-                        $unitResults.append(`
+                    data.forEach((unit) => {
+                        $results.append(`
                             <li class="list-group-item unit-item" data-id="${unit.id}">
                                 <strong>${unit.name}</strong>
                             </li>
                         `);
                     });
-                    $unitResults.show();
+                    $results.show();
                 } else {
-                    $unitResults.append('<li class="list-group-item">No units found</li>');
-                    $unitResults.show();
+                    $results.append('<li class="list-group-item">No units found</li>').show();
                 }
             },
-            error: function(xhr, status, error) {
-                console.error(error);
+            error: function(err) {
+                console.error('Search error:', err);
             }
         });
     } else {
-        $unitResults.hide();
+        $results.hide();
     }
+});
+
+$(document).on('keydown', '.search-unit', function(e) {
+    const $input = $(this);
+    const $results = $input.siblings('.unit-results');
+    const $items = $results.find('.unit-item');
+
+    if (!$results.is(':visible') || $items.length === 0) return;
+
+    if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        currentIndex = (currentIndex + 1) % $items.length;
+    } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        currentIndex = (currentIndex - 1 + $items.length) % $items.length;
+    } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (currentIndex >= 0) {
+            selectUnit($items.eq(currentIndex));
+        }
+        return;
+    }
+
+    $items.removeClass('highlighted');
+    if (currentIndex >= 0) {
+        $items.eq(currentIndex).addClass('highlighted');
+    }
+});
+
+$(document).on('mouseover', '.unit-item', function() {
+    $('.unit-item').removeClass('highlighted');
+    $(this).addClass('highlighted');
+    currentIndex = $(this).index();
+});
+
+$(document).on('mouseout', '.unit-item', function() {
+    $(this).removeClass('highlighted');
 });
 
 $(document).on('click', '.unit-item', function() {
-    var unitName = $(this).text().trim();
-    var unitId = $(this).data('id');
-    $(this).closest('.item-row').find('.search-unit').val(unitName);
-    $(this).closest('.item-row').find('.selected-unit-id').val(unitId);
-    $(this).closest('.item-row').find('.unit-results').hide();
-    $('#search-unit').val(unitName); // Set category name in input
-    $('#selected-unit-id').val(unitId); // Set category ID in hidden input
-
-    // Append this selected category ID to the list of selected categories
-    var selectedUnitIds = $('input[name="unitId[]"]').map(function() {
-        return $(this).val();
-    }).get();  // Get all the current category IDs in the array
-
-    // Check if the categoryId is already in the array, if not, add it
-    if (!selectedUnitIds.includes(unitId.toString())) {
-        $('<input>', {
-            type: 'text',
-            name: 'unitId[]',
-            value: unitId,
-            hidden: true
-        }).appendTo('#createItem-form'); // Append new hidden input for selected category ID
-    }
+    selectUnit($(this));
 });
 
-// Remove item row
-$(document).on('click', '.remove-item', function() {
-    if ($('.item-row').length > 1) {
-        $(this).closest('.item-row').remove();
-    }
-});
-// Hide results if clicked outside of search box
+function selectUnit($item) {
+    const unitName = $item.text().trim();
+    const unitId = $item.data('id');
+    const $row = $item.closest('.item-row');
+
+    $row.find('.search-unit').val(unitName);
+    $row.find('.selected-unit-id').val(unitId);
+    $row.find('.unit-results').hide();
+
+    currentIndex = -1;
+}
+
 $(document).on('click', function(e) {
-    if (!$(e.target).closest('.search-category').length) {
-        $('.category-results').hide();
-    }
-    if (!$(e.target).closest('.search-unit').length) {
+    if (!$(e.target).closest('.search-unit, .unit-results').length) {
         $('.unit-results').hide();
     }
 });

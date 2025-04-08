@@ -16,40 +16,21 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/admin/items/view-items') }}" 
-                       style="{{ (Request::is('admin/items/view-items')) ? 'background-color: #3d5c99;' : '' }}">
-                       Items
-                    </a>
-                </li>
-                <li class="nav-item">
                     <a class="nav-link" href="{{ url('/admin/transaction') }}" 
                        style="{{ (Request::is('admin/transaction')) ? 'background-color: #3d5c99;' : '' }}">
                        Transactions
                     </a>
                 </li>
-
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/admin/report') }}" 
-                       style="{{ (Request::is('admin/report')) ? 'background-color: #3d5c99 ;' : '' }}">
-                       Reports
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/admin/account') }}" 
-                       style="{{ (Request::is('admin/account')) ? 'background-color: #3d5c99;' : '' }}">
-                       Accounts
+                    <a class="nav-link" href="{{ url('/admin/lookup-tables') }}" 
+                       style="{{ (Request::is('admin/lookup-tables')) ? 'background-color: #3d5c99;' : '' }}">
+                       Lookup Tables
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('/admin/audit') }}" 
                        style="{{ (Request::is('admin/audit')) ? 'background-color: #3d5c99;' : '' }}">
-                       Audits
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/admin/profile') }}" 
-                       style="{{ (Request::is('admin/profile')) ? 'background-color: #3d5c99;' : '' }}">
-                       Profile
+                       Logs
                     </a>
                 </li>
             </ul>

@@ -50,7 +50,6 @@ table {
 th, td {
     border: 1px solid black;
     padding: 10px;
-    text-align: center;
 }
 th {
     background-color: #3d5c99;
@@ -185,7 +184,31 @@ th {
 }
 
 /* Optional: Mouse hover effect for better UX */
-.category-item:hover {
-    background-color: #0056b3;
+.category-item.highlighted {
+    background-color: #007bff;
     color: white;
+    cursor: pointer;
+}
+.unit-item.highlighted {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+.itemName-item.highlighted {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+.edit-category-item.highlighted {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+.edit-unit-item.highlighted {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+.table-container {
+    display: none; 
 }

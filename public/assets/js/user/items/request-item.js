@@ -12,8 +12,6 @@ $(document).ready(function() {
     $(document).on('submit', '#requestItem-form', function(event){
       event.preventDefault();
       var formData = $('#requestItem-form').serialize();
-     
-      
     $.ajax({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

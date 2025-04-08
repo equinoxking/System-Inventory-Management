@@ -20,11 +20,6 @@
             </button>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12" style="text-align: left">
-            <h4><strong >AVAILABLE ITEMS</strong></h4>
-        </div>
-    </div>
 </div>
 <div class="container-fluid card w-100 shadow rounded p-4" id="requestForm" style="max-height: 300px; overflow-y: auto; background-color: #f8f9fa; display:none; border: 2px solid #ddd;">
     <!-- Form Header -->
@@ -70,75 +65,10 @@
         </div>
     </form>
 </div>
-<div class="container-fluid mb-3" style="background-color: whitesmoke">
-    <div class="row">
-        <div class="col-md-12">
-            <table class="table table-hover table-striped" id="itemsTable">
-                <thead>
-                    <th>Category</th>
-                    <th>Item Name</th>
-                    <th>Quantity</th>
-                    <th>Unit</th>
-                    <th>Status</th>
-                    <th>Stock Level</th>
-                </thead>
-                <tbody>
-                    @foreach ($items as $item)
-                        <tr>
-                            <td style="text-align: left">{{ $item->category->name }}</td>
-                            <td style="text-align: left">{{ $item->name }}</td>
-                            <td>{{ $item->inventory->quantity }}</td>
-                            <td>{{ $item->inventory->unit->name }}</td>
-                            <td>
-                                @if($item->inventory->quantity === 0) 
-                                    <span class="badge badge-danger">
-                                        <i class="fas fa-times-circle"></i> Unavailable
-                                    </span>
-                                @elseif($item->status && $item->status->name == 'Available')
-                                    <span class="badge badge-success">
-                                        <i class="fas fa-check-circle"></i> Available
-                                    </span>
-                                @else
-                                    <span class="badge badge-danger">
-                                        <i class="fas fa-times-circle"></i> Unavailable
-                                    </span>
-                                @endif
-                            </td>
-                            <td>
-                                @php
-                                    $quantity = $item->inventory->quantity;
-                                    $maxQuantity = $item->inventory->max_quantity;
-                                    $percentage = ($quantity / $maxQuantity) * 100;
-                                @endphp
-                                @if($item->inventory->quantity == 0)
-                                    <span class="badge badge-noStock">
-                                        <i class="fas fa-times-circle"></i> No Stock
-                                    </span>
-                                @elseif($percentage <= 20)
-                                    <span class="badge badge-lowStock">
-                                        <i class="fas fa-triangle-exclamation"></i> Low Stock
-                                    </span>
-                                @elseif($percentage <= 50)
-                                    <span class="badge badge-moderateStock">
-                                        <i class="fas fa-info-circle"></i> Moderate Stock
-                                    </span>
-                                @else
-                                    <span class="badge badge-highStock">
-                                        <i class="fas fa-check-circle"></i> High Stock
-                                    </span>
-                                @endif
-                            </td>                            
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
 <div class="container-fluid mt-3">
     <div class="row">
         <div class="col-md-12" style="text-align: left">
-            <h4><strong>TRANSACTION RECORDS</strong></h4>
+            <h4><strong>CURRENT TRANSACTIONS</strong></h4>
         </div>
     </div>
 </div>
@@ -152,9 +82,10 @@
                     <th>Requested Quantity</th>
                     <th>Status</th>
                     <th>Remarks</th>
+                    <th>Action</th>
                 </thead>
                 <tbody>
-                    @foreach ($transactions as $transaction)
+                    @foreach ($currentTransactions as $transaction)
                         <tr>
                             <td style="text-align: left">{{ $transaction->transaction_number }}</td>
                             <td style="text-align: left">{{ $transaction->item->name }}</td>
@@ -189,7 +120,12 @@
                                         <i class="fas fa-check-circle"></i> Completed
                                     </span>
                                 @endif
-                            </td>       
+                            </td>     
+                            <td>
+                                @if ($transaction->remark === "For Release")
+                                    <button type="button" class="btn btn-warning edit-btn" onclick="userAcceptance('{{ addslashes(json_encode($transaction) )}}')""><i class="fa fa-edit"></i></button>
+                                @endif
+                            </td>      
                         </tr>
                     @endforeach
                 </tbody>
@@ -197,10 +133,103 @@
         </div>
     </div>
 </div>
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-md-12" style="text-align: left">
+            <h4><strong>TRANSACTION ACTED</strong></h4>
+        </div>
+    </div>
+</div>
+<div class="container-fluid" style="background-color: whitesmoke">
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-hover table-striped" id="transactionsTable">
+                <thead>
+                    <th>Transaction Number</th>
+                    <th>Item Name</th>
+                    <th>Requested Quantity</th>
+                    <th>Status</th>
+                    <th>Remarks</th>
+                </thead>
+                <tbody>
+                    @foreach ($actedTransactions as $transaction)
+                        <tr>
+                            <td style="text-align: left">{{ $transaction->transaction_number }}</td>
+                            <td style="text-align: left">{{ $transaction->item->name }}</td>
+                            <td>{{ $transaction->transactionDetail->request_quantity }}</td>
+                            <td>
+                                @if($transaction->status && $transaction->status->name == 'Accepted')
+                                    <span class="badge badge-success">
+                                        <i class="fas fa-check-circle"></i> Accepted
+                                    </span>
+                                @elseif($transaction->status && $transaction->status->name == 'Pending')
+                                    <span class="badge badge-pending">
+                                        <i class="fas fa-clock"></i> Pending
+                                    </span>
+                                @else
+                                    <span class="badge badge-danger">
+                                        <i class="fas fa-times-circle"></i> Rejected
+                                    </span>
+                                @endif
+                            </td>
+                            <td>
+                                {{-- {{ $transaction->remark }} --}}
+                                @if($transaction->remark && $transaction->remark == 'For Review')
+                                    <span class="badge badge-forReview">
+                                        <i class="fas fa-search"></i> For Review
+                                    </span>
+                                @elseif($transaction->remark && $transaction->remark == 'For Release')
+                                    <span class="badge badge-release">
+                                        <i class="fas fa-cloud-upload-alt"></i> For Release
+                                    </span>
+                                @else
+                                    <span class="badge badge-completed">
+                                        <i class="fas fa-check-circle"></i> Completed
+                                    </span>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="acceptanceTransactionModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title" style="color:white;">ACCEPTANCE TRANSACTION FORM</h5>
+                    <button type="button" id="transaction-acceptance-close-btn" data-dismiss="modal" class="btn btn-danger" aria-label="Close">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </button>
+                </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form id="transaction-acceptance-form">
+                        @csrf
+                        <div class="form-group">
+                            <label for="transactionAcceptanceID">Transaction ID</label>
+                            <input type="text" class="form-control" name="transaction-acceptance-id" id="transaction-acceptance-id">
+                        </div>                       
+                </div>
+                <div class="row">
+                    <div class="modal-footer">
+                        <div class="col-md-3 form-group">
+                            <button type="submit" class="btn btn-warning" id="transaction-acceptance-submit-btn">SUBMIT</button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="{{ asset('assets/js/user/items/request-item.js') }}"></script>
 <script src="{{ asset('assets/js/user/items/search-items.js') }}"></script>
+<script src="{{ asset('assets/js/user/transactions/acceptance.js') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const requestQuantity = document.getElementById("requestQuantity");
