@@ -1,5 +1,109 @@
 @extends('admin.layout.admin-layout')  
 @section('content')  
+<style>
+    /* Highlight class for selected category */
+.category-item.highlighted {
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    transition: none !important; /* Ensure no fade effect */
+}
+
+/* Optional: Mouse hover effect for better UX */
+.category-item.highlighted {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+.unit-item.highlighted {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+.itemName-item.highlighted {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+.edit-category-item.highlighted {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+.edit-unit-item.highlighted {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+.table-container {
+    display: none; 
+}
+body {  
+    background-color: #f8f9fa;  
+}  
+.card {  
+    text-align: center;  
+    padding: 20px;  
+    display: flex;  
+    flex-direction: column;  
+    justify-content: center;  
+    align-items: center;  
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);  
+    border-radius: 10px;  
+    height: 100%;  
+    position: relative;  
+}  
+.card-title {  
+    position: absolute;  
+    top: 10px;  
+    left: 15px;  
+    font-size: 16px;  
+    font-weight: bold;  
+    color: #6c757d;  
+    
+}  
+.icon {  
+    font-size: 45px;  
+    margin-top: 40px;  
+}  
+.table-container {  
+    max-height: 200px;  
+    overflow-y: auto;  
+}  
+.chart-container {  
+    width: 100%;  
+    height: 200%;  
+}  
+.mb-4 {  
+    margin-bottom: 1.5rem;  
+}  
+.data-table-section {  
+    margin-top: 35px;  
+    padding: 15px;  
+    background-color: #ffffff;  
+    border: 1px solid #ddd;  
+    border-radius: 5px;  
+}  
+.icon-number {
+    font-size: 30px;  
+    font-weight: bold;  
+    color: #343a40;
+    margin-top: 15px;  
+}
+.table-scroll-wrapper {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.table-scroll-wrapper table {
+    margin: 0;
+}
+
+/* Optional: Match column widths */
+#availableItemTable th,
+.table-scroll-wrapper td {
+    width: 33.33%;
+}
+</style>
 <div class="container-fluid mt-4">  
     <div class="row align-items-stretch">  
         <!-- Notifications Section -->  
@@ -107,8 +211,10 @@
     <div class="data-table-section">
         <h2 class="text-center">Item List</h2>
         <div class="d-flex align-items-center">
-            <div class="col-md-2 form-group">
-                <label for="category-filter">Filter by Category: </label>
+            <div class="col-md-2 form-group text-right">
+                <label for="category-filter">Filter By Category: </label>
+            </div>
+            <div class="col-md-2">
                 <select id="category-filter" class="form-control">
                     <option value="">All</option>
                         @foreach ($categories as $category)
@@ -117,7 +223,6 @@
                 </select>
             </div>
         </div>
-    
         <!-- Scrollable wrapper -->
         <div>
             <table id="availableItemTable" class="table table-striped table-bordered">
