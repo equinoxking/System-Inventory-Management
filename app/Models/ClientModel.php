@@ -34,4 +34,8 @@ class ClientModel extends Model
     {
         return $this->hasMany(TransactionModel::class, 'released_by');
     }
+    public function notification()
+    {
+        return $this->hasMany(NotificationModel::class, 'user_id', 'id');
+    }
 }

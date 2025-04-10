@@ -52,7 +52,18 @@ class ItemModel extends Model
     {
         return $this->hasMany(TransactionDetailModel::class , 'item_id' , 'id');
     }
-
+    public function transactsSelectedQuartersFirstMonth()
+    {
+        return $this->hasMany(TransactionDetailModel::class , 'item_id' , 'id');
+    }
+    public function transactsSelectedQuartersSecondMonth()
+    {
+        return $this->hasMany(TransactionDetailModel::class , 'item_id' , 'id');
+    }
+    public function transactsSelectedQuartersThirdMonth()
+    {
+        return $this->hasMany(TransactionDetailModel::class , 'item_id' , 'id');
+    }
     // Define the 'receivesInSelectedMonth' method
     public function requestedInSelectedMonth()
     {

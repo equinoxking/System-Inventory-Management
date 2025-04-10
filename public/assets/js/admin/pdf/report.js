@@ -34,13 +34,25 @@ $(document).ready(function(){
                 let blob = new Blob([response], { type: 'application/pdf' });
                 let link = document.createElement('a');
                 let url = window.URL.createObjectURL(blob);
+                const filename = 'inventory-report-' + new Date().toLocaleString('default', { month: 'long' }) + '-' + new Date().getFullYear() + '.pdf';
+            
+                link.href = url;
+                link.download = filename;  
+
                 let newWindow = window.open(url, '_blank');
                 newWindow.focus();
+
+                link.click();
+            
+                window.URL.revokeObjectURL(url);
+
                 Swal.close();
                 $('#report-submit-btn').attr('disabled', false);
-            },error: function(error){
+            }, 
+            error: function(error){
                 console.log(error);
             }
+            
         });
     });
   });

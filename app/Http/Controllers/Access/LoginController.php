@@ -60,8 +60,7 @@ class LoginController extends Controller
 
                 $request->session()->put($sessionKey, [
                     'id' => $client->id,
-                    'firstName' => $client->first_name,
-                    'lastName' => $client->last_name,
+                    'full_name' => $client->full_name,
                     'email' => $client->email,
                     'username' => $client->username,
                     'role' => $client->role,

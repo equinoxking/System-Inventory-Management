@@ -10,6 +10,8 @@ use App\Models\TransactionModel;
 use App\Models\TransactionStatusModel;
 use App\Models\TransactionDetailModel;
 use App\Models\InventoryModel;
+use App\Models\NotificationModel;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
 
@@ -139,9 +141,20 @@ class TransactionsManager extends Controller
             $detail->request_month = $monthInt;
             $detail->request_year = $year;
             $detail->save();
-    
+
+            $notification = new NotificationModel;
+            $notification->user_id = $client->id;
+            $notification->control_number = $this->generateNotificationNumber();
+            $message = "Requestor: " . $client->full_name . 
+            " | Transaction: " . $transaction->transaction_number . 
+            " | Item: " . $detail->request_item . 
+            " | Quantity: " . $detail->request_quantity . ".";
+            $notification->message = $message;
+            $notification->status = "Pending";
+            $notification->save();
+            
             // If anything fails during the transaction processing, mark the flag as false
-            if (!$transaction || !$detail) {
+            if (!$transaction || !$detail || !$notification) {
                 $allItemsRequested = false;
             }
         }
@@ -161,34 +174,35 @@ class TransactionsManager extends Controller
     }
     
     private function generateTransactionNumber(){
-
-        // Get the current year and month in the format YYYY-MM
         $currentYearAndMonth = Carbon::now()->format('Y-m'); 
-        
-        // Get the most recent transaction_number for the current year and month
         $lastTransactionNumber = TransactionModel::whereYear('created_at', Carbon::now()->year)
                                                   ->whereMonth('created_at', Carbon::now()->month)
                                                   ->orderBy('transaction_number', 'desc')
                                                   ->pluck('transaction_number')
                                                   ->first();
-        
-        // If no transaction number exists, start from 00001
         if (!$lastTransactionNumber) {
             return $currentYearAndMonth . '-00001';
         }
-        
-        // Extract the numeric part from the transaction_number, which is the last 5 digits
         $lastFiveDigits = substr($lastTransactionNumber, -5);
-        
-        // Increment the numeric part
         $incrementedNumber = intval($lastFiveDigits) + 1;
-        
-        // Ensure the incremented number is always 5 digits long, padding with leading zeros if necessary
         $paddedNumber = str_pad($incrementedNumber, 5, '0', STR_PAD_LEFT);
-        
-        // Return the new transaction number in the format YYYY-MM-XXXXX
         return $currentYearAndMonth . '-' . $paddedNumber;
-    }        
+    }
+    private function generateNotificationNumber(){
+        $currentYearAndMonth = Carbon::now()->format('Y-m'); 
+        $lastControlNumber = NotificationModel::whereYear('created_at', Carbon::now()->year)
+                                                  ->whereMonth('created_at', Carbon::now()->month)
+                                                  ->orderBy('control_number', 'desc')
+                                                  ->pluck('control_number')
+                                                  ->first();
+        if (!$lastControlNumber) {
+            return $currentYearAndMonth . '-00001';
+        }
+        $lastFiveDigits = substr($lastControlNumber, -5);
+        $incrementedNumber = intval($lastFiveDigits) + 1;
+        $paddedNumber = str_pad($incrementedNumber, 5, '0', STR_PAD_LEFT);
+        return $currentYearAndMonth . '-' . $paddedNumber;
+    }          
     public function goToHistory(){
         $transactions = TransactionModel::where(function ($query) {
             $query->where('remark', 'Completed')

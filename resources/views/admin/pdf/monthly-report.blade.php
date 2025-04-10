@@ -71,97 +71,82 @@
                 <th width="50%">Item Description</th>
                 <th width="5%">Units</th>
                 <th width="10%">Balance as of {{ $formattedSubDate }}</th>
-                <th width="10%">Total Supply Received</th>
-                <th width="10%">Total Supply Withdrawn</th>
+                <th width="10%">Total Month Delivered</th>
+                <th width="10%">Stock on Hand</th>
+                <th width="10%">Total Month Withdrew</th>
                 <th width="10%">Balance as of {{ $formattedCurrentDate }}</th>
             </tr>
         </thead>
-        @php
-            $groupedItems = $itemsPart1->groupBy('category.name');
-            $groupedItemsPart2 = $itemsPart2->groupBy('category.name');
-            $count = 1;
-        @endphp
-        <tr>
-            <td colspan="2" style="font-weight: bold">Part I. Available at procurement services stores</td>
-            <td colspan=""></td>
-            <td colspan=""></td>
-            <td colspan=""></td>
-            <td colspan=""></td>
-            <td colspan=""></td>
-        </tr>
-        @foreach ($groupedItems as $categoryName => $itemsInCategory)
+        <tbody>
             @php
-                $subCategories = $itemsInCategory->groupBy(function ($item) {
-                    return $item->category->subCategory ? $item->category->subCategory->id : 'No Sub-Category';
-                });
+                $groupedItems = $itemsPart1->groupBy('category.name');
+                $groupedItemsPart2 = $itemsPart2->groupBy('category.name');
+                $count = 1;
             @endphp
-            @foreach ($subCategories as $subCategoryId => $itemsInSubCategory)
-                <tr>
-                    <td colspan="2"><strong>{{ $categoryName }}</strong></td>
-                    <td colspan=""></td>
-                    <td colspan=""></td>
-                    <td colspan=""></td>
-                    <td colspan=""></td>
-                    <td colspan=""></td>
-                </tr>
-                @foreach ($itemsInSubCategory as $item)
+    
+            <tr>
+                <td colspan="8" style="font-weight: bold">Part I. Available at procurement services stores</td>
+            </tr>
+    
+            @foreach ($groupedItems as $categoryName => $itemsInCategory)
+                @php
+                    $subCategories = $itemsInCategory->groupBy(function ($item) {
+                        return $item->category->subCategory ? $item->category->subCategory->id : 'No Sub-Category';
+                    });
+                @endphp
+                @foreach ($subCategories as $subCategoryId => $itemsInSubCategory)
                     <tr>
-                        <td class="rightText">{{ $count++ }}.</td>
-                        <td>{{ $item->name }}</td>
-                        <td class="rightText">{{ $item->inventory->unit->name }}</td>
-                        <td class="rightText"> {{  $item->remaining_quantity }}</td>
-                        <td class="rightText">{{ $item->total_received_in_selected_month }}</td>
-                        <td class="rightText">{{ $item->total_transactions_in_selected_month }}</td>
-                        <td class="rightText">
-                            {{ 
-                                $item->remaining_quantity + $item->total_received_in_selected_month - $item->total_transactions_in_selected_month
-                            }}
-                        </td>
+                        <td colspan="8"><strong>{{ $categoryName }}</strong></td>
                     </tr>
+                    @foreach ($itemsInSubCategory as $item)
+                        <tr>
+                            <td class="rightText">{{ $count++ }}.</td>
+                            <td>{{ $item->name }}</td>
+                            <td>{{ $item->inventory->unit->name }}</td>
+                            <td class="rightText">{{ $item->remaining_quantity }}</td>
+                            <td class="rightText">{{ $item->remaining_quantity + $item->total_received_in_selected_month }}</td>
+                            <td class="rightText">{{ $item->total_received_in_selected_month }}</td>
+                            <td class="rightText">{{ $item->total_transactions_in_selected_month }}</td>
+                            <td class="rightText">
+                                {{ $item->remaining_quantity + $item->total_received_in_selected_month - $item->total_transactions_in_selected_month }}
+                            </td>
+                        </tr>
+                    @endforeach
                 @endforeach
             @endforeach
-        @endforeach
-        <tr>
-            <td colspan="2" style="font-weight: bold">Part II. Other items not available at ps but regularly purchased from other sources</td>
-            <td colspan=""></td>
-            <td colspan=""></td>
-            <td colspan=""></td>
-            <td colspan=""></td>
-            <td colspan=""></td>
-        </tr>
-        @foreach ($groupedItemsPart2 as $categoryName => $itemsInCategory)
-            @php
-                $subCategories = $itemsInCategory->groupBy(function ($item) {
-                    return $item->category->subCategory ? $item->category->subCategory->id : 'No Sub-Category';
-                });
-            @endphp
-            @foreach ($subCategories as $subCategoryId => $itemsInSubCategory)
-                <tr>
-                    <td colspan="2"><strong>{{ $categoryName }}</strong></td>
-                    <td colspan=""></td>
-                    <td colspan=""></td>
-                    <td colspan=""></td>
-                    <td colspan=""></td>
-                    <td colspan=""></td>
-                </tr>
-                @foreach ($itemsInSubCategory as $item)
+    
+            <tr>
+                <td colspan="8" style="font-weight: bold">Part II. Other items not available at ps but regularly purchased from other sources</td>
+            </tr>
+    
+            @foreach ($groupedItemsPart2 as $categoryName => $itemsInCategory)
+                @php
+                    $subCategories = $itemsInCategory->groupBy(function ($item) {
+                        return $item->category->subCategory ? $item->category->subCategory->id : 'No Sub-Category';
+                    });
+                @endphp
+                @foreach ($subCategories as $subCategoryId => $itemsInSubCategory)
                     <tr>
-                        <td class="rightText">{{ $count++ }}.</td>
-                        <td>{{ $item->name }}</td>
-                        <td class="rightText">{{ $item->inventory->unit->name }}</td>
-                        <td class="rightText"> {{  $item->remaining_quantity }}</td>
-                        <td class="rightText">{{ $item->total_received_in_selected_month }}</td>
-                        <td class="rightText">{{ $item->total_transactions_in_selected_month }}</td>
-                        <td class="rightText">
-                            {{ 
-                                $item->remaining_quantity + $item->total_received_in_selected_month - $item->total_transactions_in_selected_month
-                            }}
-                        </td>
+                        <td colspan="8"><strong>{{ $categoryName }}</strong></td>
                     </tr>
+                    @foreach ($itemsInSubCategory as $item)
+                        <tr>
+                            <td class="rightText">{{ $count++ }}.</td>
+                            <td>{{ $item->name }}</td>
+                            <td>{{ $item->inventory->unit->name }}</td>
+                            <td class="rightText">{{ $item->remaining_quantity }}</td>
+                            <td class="rightText">{{ $item->total_received_in_selected_month }}</td>
+                            <td class="rightText">{{ $item->remaining_quantity + $item->total_received_in_selected_month }}</td>
+                            <td class="rightText">{{ $item->total_transactions_in_selected_month }}</td>
+                            <td class="rightText">
+                                {{ $item->remaining_quantity + $item->total_received_in_selected_month - $item->total_transactions_in_selected_month }}
+                            </td>
+                        </tr>
+                    @endforeach
                 @endforeach
             @endforeach
-        @endforeach
-</table>     
+        </tbody>
+    </table>
 </table>
     <div class="container">
         <div class="row">
@@ -179,8 +164,26 @@
                         <tr>
                             <td colspan="2">
                                 <p>
-                                    <strong>{{ $client->full_name }}</strong><br>
-                                    <span style="font-style: italic">{{ $client->position }}</span>
+                                    <strong>{{ strToUpper($conductedBy->full_name)}}</strong><br>
+                                    <span style="font-style: italic">{{ $conductedBy->position }}</span>
+                                </p>
+                            </td>
+                            <td colspan="2">
+                                <p>
+                                    <strong>{{ strToUpper($preparedBy->full_name) }}</strong><br>
+                                    <span style="font-style: italic">{{ $preparedBy->position }}</span>
+                                </p>
+                            </td>
+                            <td colspan="2">
+                                <p>
+                                    <strong>CHRISTINE JOY C. BARTOLOME</strong><br>
+                                    <span style="font-style: italic">AAIV/ACTING AO</span>
+                                </p>
+                            </td>
+                            <td colspan="2">
+                                <p>
+                                    <strong>MA. CARLA LUCIA M. TORRALBA</strong><br>
+                                    <span style="font-style: italic">PHRMO</span>
                                 </p>
                             </td>
                         </tr>

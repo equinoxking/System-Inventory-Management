@@ -34,10 +34,17 @@
                     </a>
                 </li>
             </ul>
-            <ul class="navbar-nav logout">
-                <li class="nav-item"><button type="button" class="btn btn-danger" style="background-color: #FFB200 ; border-color: #FFB200;" id="signOutButton"><i class="fa-solid fa-right-from-bracket"></i></button></li>
+            <ul class="navbar-nav logout ml-3">
+                <li class="nav-item mr-3 mt-1 text-light">
+                    <strong>Hi, {{ session('loggedInInventoryAdmin')['full_name'] }}</strong>
+                </li>
+                <li class="nav-item">
+                    <button type="button" class="btn btn-danger" style="background-color: #FFB200 ; border-color: #FFB200;" id="signOutButton">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                    </button>
+                </li>
             </ul>
-        </div>
+        </div>        
     </div>
 </nav>
 <div style="background: linear-gradient(to right, #dd9f03, #eabe03, #dd9f03); height: 10px; width: 100%;"></div>

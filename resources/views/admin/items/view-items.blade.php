@@ -205,7 +205,7 @@
                     </select>
                 </div>
                 <div class="col-md-12">
-                    <table id="itemsTable" class="table-striped table-hover" style="font-size: 12px">
+                    <table id="itemsTable" class="table-striped table-hover" style="font-size: 11px">
                         <thead class="bg-info">
                             <th>Date/Time Created</th>
                             <th>Date/Time Updated</th>
@@ -434,6 +434,23 @@
                                 <option value="">Select a Year</option>
                             </select>
                         </div>
+                        <div class="form-group" id="signatories-row" style="display: none">
+                            <label for="conducted" class="font-weight-bold">Conducted By:</label>
+                            <select name="conducted" id="conducted" class="form-control">
+                                <option value="">Select Conducted By:</option>
+                                @foreach ($clients as $client)
+                                    <option value="{{ $client->id }}">{{ $client->full_name }}</option>
+                                @endforeach
+                            </select>
+                        
+                            <label for="prepared" class="font-weight-bold">Prepared By:</label>
+                            <select name="prepared" id="prepared" class="form-control">
+                                <option value="">Select Prepared By:</option>
+                                @foreach ($clients as $client)
+                                    <option value="{{ $client->id }}">{{ $client->full_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>                        
                     </div>
                 <div class="row">
                     <div class="modal-footer">
@@ -462,16 +479,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const period = document.getElementById("period");
     period.addEventListener('change', function () {
         const monthRow = document.getElementById("month-row");
-        const quarterlyRow = document.getElementById('quarterly-row')
+        const quarterlyRow = document.getElementById('quarterly-row');
+        const signatoriesRow = document.getElementById('signatories-row');
         if (period.value === "Monthly") {
             monthRow.style.display = "block"; 
             quarterlyRow.style.display = "none";
+            signatoriesRow.style.display = "block";
         } else if(period.value === "Quarterly") {
             monthRow.style.display = "none"; 
             quarterlyRow.style.display = "block";
+            signatoriesRow.style.display = "block";
         }else{
             quarterlyRow.style.display = "none";
-            monthRow.style.display = "none"; 
+            monthRow.style.display = "none";
+            signatoriesRow.style.display = "none";
         }
     });
 });

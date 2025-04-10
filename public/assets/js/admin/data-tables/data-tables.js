@@ -55,8 +55,8 @@ $(document).ready(function () {
             {
                 "data": null,
                 "render": function(data, type, row) {
-                    return '<button type="button" class="btn btn-warning edit-btn" title="Item edit button" id="editItemBtn"><i class="fa fa-edit"></i></button>' + 
-                        '<button type="button" class="btn btn-danger delete-btn ml-2" title="Item delete button" id="deleteItemBtn"><i class="fa fa-trash"></i></button>';
+                    return '<button type="button" class="btn btn-warning edit-btn" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" title="Item edit button" id="editItemBtn"><i class="fa fa-edit"></i></button>' + 
+                        '<button type="button" class="btn btn-danger delete-btn ml-2" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" title="Item delete button" id="deleteItemBtn"><i class="fa fa-trash"></i></button>';
                 },
                 "orderable": false,
                 "class": "text-center"
@@ -153,7 +153,7 @@ $(function () {
                 "data": null,  // This column will have the action buttons
                 "render": function(data, type, row) {
                     if (row.status === 'Pending') {
-                        return '<button type="button" class="btn btn-warning edit-btn"><i class="fa fa-edit"></i></button>';
+                        return '<button type="button" class="btn btn-warning edit-btn" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;"><i class="fa fa-edit"></i></button>';
                     } else {
                         return ''; 
                     }
@@ -276,7 +276,7 @@ $(function () {
                 "data": null,
                 "render": function(data, type, row) {
                     if(row.type === "Inspection Delivery"){
-                        return '<button type="button" class="btn btn-warning" id="editReceivedItem" title="Supply received edit button"><i class="fa fa-edit"></i></button>';
+                        return '<button type="button" class="btn btn-sm btn-warning" id="editReceivedItem" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" title="Supply received edit button"><i class="fa fa-edit"></i></button>';
                     }else{
                         return ''
                     }
@@ -297,4 +297,53 @@ $(function () {
     setInterval(function() {
         table.ajax.reload(null, false);  // Reload the table without resetting pagination
     }, 1000);
+});
+$(function () {
+    var table = $('#availableItemTable').DataTable({
+        "aLengthMenu": [[5, 10, 25, 50, 75, 100], [5, 10, 25, 50, 75, 100]],
+        "pageLength": 5,
+        "responsive": {
+            breakpoints: [
+                { name: 'xl', width: Infinity },
+                { name: 'lg', width: 1200 },
+                { name: 'md', width: 992 },
+                { name: 'sm', width: 768 },
+                { name: 'xs', width: 576 }
+            ]
+        }
+    });
+
+    $('#category-filter').on('change', function () {
+        var selected = $(this).val();
+        if (selected) {
+            table.column(0) // 1 = index of 'Category' column
+                 .search('^' + selected + '$', true, false)
+                 .draw();
+        } else {
+            table.column(0).search('').draw(); // Reset filter
+        }
+    });
+});
+$(function () {
+    var table = $('#notificationTable').DataTable({
+        "aLengthMenu": [[5, 10, 25, 50, 75, 100], [5, 10, 25, 50, 75, 100]],
+        "pageLength": 5,
+        "responsive": {
+            breakpoints: [
+                { name: 'xl', width: Infinity },
+                { name: 'lg', width: 1200 },
+                { name: 'md', width: 992 },
+                { name: 'sm', width: 768 },
+                { name: 'xs', width: 576 }
+            ]
+        },
+        "order": [[1, 'desc']],
+        "columnDefs": [
+            {
+                "targets": 1,
+                "visible": false,
+                "searchable": false
+            }
+        ]
+    });
 });

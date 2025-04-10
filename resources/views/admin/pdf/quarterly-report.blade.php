@@ -6,11 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Quarterly Report Generation</title>
     <style>
-        body{
-            font-size: 11px;
-        }
-        .centerText{
-            text-align: center;
+        .rightText{
+            text-align: right;
         }
         .header, .footer {
             text-align: center;
@@ -24,15 +21,14 @@
             font-size: 14px;
             font-weight: bold;
         }
-        .content {
-            margin-top: 60px; 
-            margin-bottom: 30px; 
-        }
         table {
+            width: 100%;
             border-collapse: collapse;
         }
+
         th, td {
-            padding: 0; 
+            border: 0.5px solid #000;
+            padding: 8px;
         }
         .content {
             margin-bottom: 50px;
@@ -46,9 +42,17 @@
             font-size: 10px;
             padding: 10px;
         }
+        table.signatories-table th, table.signatories-table td {
+            border: none;
+        }
+        table.date-generated th, table.date-generated td {
+            border: none;
+        }
+        body{
+            font-size: 12px;
+        }
         .title{
             text-align: center;
-            margin-bottom: 5px;
         }
     </style>
 </head>
@@ -58,14 +62,15 @@
         <strong>{{ $sub_title }}</strong> <br>
         <strong>As of {{ $endOfMonthFormatted }}</strong>
     </div>
-    <table border="2" class="table table-responsive">
+    <table class="table table-responsive" width="100%" border="2">
         <thead>
             <tr style="background-color:lightgrey">
                 <th width="5%" colspan="2" rowspan="2">No.</th>
                 <th style="text-align: center; width: 50%;" colspan="2" rowspan="2">Item Description</th>
                 <th width="5%" colspan="2" rowspan="2">Units</th>
                 <th width="5%" colspan="2" rowspan="2">Balance as of {{ $formatFinalSubMonth }}</th>
-                <th width="5%" colspan="2" rowspan="2">Delivery</th>
+                <th width="5%" colspan="2" rowspan="2">Total Quarter Delivered</th>
+                <th width="5%" colspan="2" rowspan="2">Stock on Hand</th>
                 <th width="5%" colspan="4">MONTHLY UTILIZATION WITHDRAWAL</th>
                 <th width="5%" colspan="2" rowspan="2">Available Stock as of {{ $formatFinalMonth }}</th>
             </tr>
@@ -84,11 +89,12 @@
                 <th  style="text-align: center;" colspan="2">(B)</th>
                 <th  style="text-align: center;" colspan="2">(C)</th>
                 <th  style="text-align: center;" colspan="2">(D)</th>
-                <th  style="text-align: center;" colspan="1">(E)</th>
+                <th  style="text-align: center;" colspan="2">(E=C+D)</th>
                 <th  style="text-align: center;" colspan="1">(F)</th>
                 <th  style="text-align: center;" colspan="1">(G)</th>
-                <th  style="text-align: center;" colspan="1">(H=E+F+G)</th>
-                <th  style="text-align: center;" colspan="2">(I=C+D-H)</th>
+                <th  style="text-align: center;" colspan="1">(H)</th>
+                <th  style="text-align: center;" colspan="1">(I=E+F+G)</th>
+                <th  style="text-align: center;" colspan="2">(J=E-I)</th>
             </tr>
         </thead>
         <tbody>
@@ -102,12 +108,13 @@
                 <td colspan="6" style="font-weight: bold">Part I. Available at procurement services stores</td>
                 <td colspan="2" style="font-weight: bold"></td>
                 <td colspan="2" style="font-weight: bold"></td>
+                <td colspan="2" style="font-weight: bold"></td>
                 <td colspan="1" style="font-weight: bold"></td>
                 <td colspan="1" style="font-weight: bold"></td>
                 <td colspan="1" style="font-weight: bold"></td>
                 <td colspan="1" style="font-weight: bold"></td>
                 <td colspan="2" style="font-weight: bold"></td>
-            </tr>
+            </tr>            
             @foreach ($groupedItemsPart1 as $categoryName => $itemsInCategory)
                 @php
                     $subCategories = $itemsInCategory->groupBy(function ($item) {
@@ -117,6 +124,7 @@
                 @foreach ($subCategories as $subCategoryName => $itemsInSubCategory)
                     <tr>
                         <td colspan="4"><strong>{{ $categoryName }}</strong></td>
+                        <td colspan="2" style="font-weight: bold"></td>
                         <td colspan="2" style="font-weight: bold"></td>
                         <td colspan="2" style="font-weight: bold"></td>
                         <td colspan="2" style="font-weight: bold"></td>
@@ -130,14 +138,15 @@
                         <tr class="text-center">
                             <td colspan="2" style="text-align: center">{{ $count++ }}.</td>
                             <td colspan="2">{{ $item->name }}</td>
-                            <td colspan="2" style="text-align: center">{{ $item->inventory->unit->name }}</td>
-                            <td colspan="2" style="text-align: center">{{ $item->total_balances }}</td>
-                            <td colspan="2" style="text-align: center">{{ $item->total_received_quantity }}</td>
-                            <td colspan="1" style="text-align: center">0</td>
-                            <td colspan="1" style="text-align: center">0</td>
-                            <td colspan="1" style="text-align: center">0</td>
-                            <td colspan="1" style="text-align: center">0</td>
-                            <td colspan="2" style="text-align: center">{{ $item->inventory->quantity + $item->receives->sum('received_quantity') }}</td>
+                            <td colspan="2">{{ $item->inventory->unit->name }}</td>
+                            <td colspan="2" style="text-align: center">{{ $item->remaining_quantity }}</td>
+                            <td colspan="2" style="text-align: center">{{ $item->total_received_in_selected_quarter }}</td>
+                            <td colspan="2" style="text-align: center">{{ $item->remaining_quantity + $item->total_received_in_selected_quarter }}</td>
+                            <td colspan="1" style="text-align: center">{{ $item->total_transactions_first_month }}</td>
+                            <td colspan="1" style="text-align: center">{{ $item->total_transactions_second_month }}</td>
+                            <td colspan="1" style="text-align: center">{{ $item->total_transactions_third_month }}</td>
+                            <td colspan="1" style="text-align: center">{{ $item->total_transactions_first_month + $item->total_transactions_second_month +  $item->total_transactions_third_month}}</td>
+                            <td colspan="2" style="text-align: center">{{ $item->remaining_quantity + $item->total_received_in_selected_quarter -  ($item->total_transactions_first_month + $item->total_transactions_second_month +  $item->total_transactions_third_month)}}</td>
                         </tr>
                     @endforeach
                 @endforeach
@@ -146,12 +155,13 @@
                 <td colspan="6" style="font-weight: bold">Part II. Other items not available at ps but regularly purchased from other sources</td>
                 <td colspan="2" style="font-weight: bold"></td>
                 <td colspan="2" style="font-weight: bold"></td>
+                <td colspan="2" style="font-weight: bold"></td>
                 <td colspan="1" style="font-weight: bold"></td>
                 <td colspan="1" style="font-weight: bold"></td>
                 <td colspan="1" style="font-weight: bold"></td>
                 <td colspan="1" style="font-weight: bold"></td>
                 <td colspan="2" style="font-weight: bold"></td>
-            </tr>
+            </tr>    
             @foreach ($groupedItemsPart2 as $categoryName => $itemsInCategory)
                 @php
                     $subCategories = $itemsInCategory->groupBy(function ($item) {
@@ -164,6 +174,7 @@
                         <td colspan="2" style="font-weight: bold"></td>
                         <td colspan="2" style="font-weight: bold"></td>
                         <td colspan="2" style="font-weight: bold"></td>
+                        <td colspan="2" style="font-weight: bold"></td>
                         <td colspan="1" style="font-weight: bold"></td>
                         <td colspan="1" style="font-weight: bold"></td>
                         <td colspan="1" style="font-weight: bold"></td>
@@ -171,22 +182,72 @@
                         <td colspan="2" style="font-weight: bold"></td>
                     </tr>
                     @foreach ($itemsInCategory as $item)
-                            <tr class="text-center">
-                                <td colspan="2" style="text-align: center">{{ $count++ }}.</td>
-                                <td colspan="2">{{ $item->name }}</td>
-                                <td colspan="2" style="text-align: center">{{ $item->inventory->unit->name }}</td>
-                                <td colspan="2" style="text-align: center">{{ $item->total_balances }}</td>
-                                <td colspan="2" style="text-align: center">{{ $item->total_received_quantity }}</td>
-                                <td colspan="1" style="text-align: center">0</td>
-                                <td colspan="1" style="text-align: center">0</td>
-                                <td colspan="1" style="text-align: center">0</td>
-                                <td colspan="1" style="text-align: center">0</td>
-                                <td colspan="2" style="text-align: center">{{ $item->inventory->quantity + $item->receives->sum('received_quantity') }}</td>
-                            </tr>
+                        <tr class="text-center">
+                            <td colspan="2" style="text-align: center">{{ $count++ }}.</td>
+                            <td colspan="2">{{ $item->name }}</td>
+                            <td colspan="2" >{{ $item->inventory->unit->name }}</td>
+                            <td colspan="2" style="text-align: center">{{ $item->remaining_quantity }}</td>
+                            <td colspan="2" style="text-align: center">{{ $item->total_received_in_selected_quarter }}</td>
+                            <td colspan="2" style="text-align: center">{{ $item->remaining_quantity + $item->total_received_in_selected_quarter }}</td>
+                            <td colspan="1" style="text-align: center">{{ $item->total_transactions_first_month }}</td>
+                            <td colspan="1" style="text-align: center">{{ $item->total_transactions_second_month }}</td>
+                            <td colspan="1" style="text-align: center">{{ $item->total_transactions_third_month }}</td>
+                            <td colspan="1" style="text-align: center">{{ $item->total_transactions_first_month + $item->total_transactions_second_month +  $item->total_transactions_third_month}}</td>
+                            <td colspan="2" style="text-align: center">{{ $item->remaining_quantity + $item->total_received_in_selected_quarter -  ($item->total_transactions_first_month + $item->total_transactions_second_month +  $item->total_transactions_third_month)}}</td>
+                        </tr>
                         @endforeach
                 @endforeach
             @endforeach
         </tbody>
     </table>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="signatories-table table" style="border: none;">
+                    <thead class="signatories-table">
+                        <tr>
+                            <td colspan="2">Conducted by:</td>
+                            <td colspan="2">Prepared by:</td>
+                            <td colspan="2">Reviewed by:</td>
+                            <td colspan="2">Noted by:</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="2">
+                                <p>
+                                    <strong>{{ strToUpper($conductedBy->full_name)}}</strong><br>
+                                    <span style="font-style: italic">{{ $conductedBy->position }}</span>
+                                </p>
+                            </td>
+                            <td colspan="2">
+                                <p>
+                                    <strong>{{ strToUpper($preparedBy->full_name) }}</strong><br>
+                                    <span style="font-style: italic">{{ $preparedBy->position }}</span>
+                                </p>
+                            </td>
+                            <td colspan="2">
+                                <p>
+                                    <strong>CHRISTINE JOY C. BARTOLOME</strong><br>
+                                    <span style="font-style: italic">AAIV/ACTING AO</span>
+                                </p>
+                            </td>
+                            <td colspan="2">
+                                <p>
+                                    <strong>MA. CARLA LUCIA M. TORRALBA</strong><br>
+                                    <span style="font-style: italic">PHRMO</span>
+                                </p>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td><span style="font-size: 9px " >Date Generated: {{ $now }}</span></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
