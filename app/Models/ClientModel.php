@@ -15,6 +15,7 @@ class ClientModel extends Model
         'full_name',
         'email',
         'department',
+        'employee_number',
         'username',
         'password',
         'role',

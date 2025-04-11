@@ -4,9 +4,6 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MainNavigation\MainNavigationController;
 use App\Http\Controllers\Inventory_Admin\IA_mainController;
 use App\Http\Controllers\User\User_mainController;
-use App\Http\Controllers\Head_Admin\HA_mainController;
-use App\Http\Controllers\Checker_Admin\CA_mainController;
-use App\Http\Controllers\Access\RegisterController;
 use App\Http\Controllers\Access\LoginController;
 use App\Http\Controllers\Inventory_Admin\IA_functionController;
 use App\Http\Controllers\Inventory_Admin\Items\CategoryManager;
@@ -17,8 +14,8 @@ use App\Http\Controllers\Inventory_Admin\Items\ReceivedManager;
 use App\Http\Controllers\Inventory_Admin\Transactions\AdminTransactionManager;
 use App\Http\Controllers\Inventory_Admin\Accounts\AccountManager;
 use App\Http\Controllers\Inventory_Admin\Pdf\ReportManager;
-use App\Http\Controllers\Inventory_Admin\Accounts\ProfileManager;
 use App\Http\Controllers\User\Transactions\TransactionsManager;
+use App\Http\Controllers\Inventory_Admin\Report\PdfReportManager;
 use App\Http\Controllers\User\User_functionController;
 use App\Http\Controllers\User\Account\UserProfileManager;
 /*
@@ -88,6 +85,9 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     Route::controller(ReportManager::class)->group(function(){
         Route::post('/generate-report', 'generateReport');
     });
+    Route::controller(PdfReportManager::class)->group(function(){
+        Route::post('/add-report', 'addReport');
+    });
     Route::controller(IA_functionController::class)->group(function() {
         Route::get('logoutAdmin', 'logoutAdmin');
     });
@@ -110,24 +110,5 @@ Route::group(['middleware' => 'loginCheckUser'], function () {
     });
     Route::controller(User_functionController::class)->group(function(){
         Route::get('/logoutUser', 'logoutUser');
-    });
-});
-/* -- ADMIN HEAD -- */
-Route::group(['middleware' => 'loginCheckHeadAdmin'], function () {
-    //Route for Main Controller or Navigation
-    Route::controller(HA_mainController::class)->group(function(){
-        Route::get('head_admin/dashboard', 'goToDashboard');
-        Route::get('head_admin/transaction', 'goToTransactions');
-        Route::get('head_admin/request', 'goToRequest');
-    });
-});
-
-/* -- ADMIN CHECKER */
-Route::group(['middleware' => 'loginCheckCheckerAdmin'], function () {
-    //Route for Main Controller or Navigation
-    Route::controller(CA_mainController::class)->group(function(){
-        Route::get('checker_admin/dashboard', 'goToDashboard');
-        Route::get('checker_admin/transaction', 'goToTransactions');
-        Route::get('checker_admin/request', 'goToRequest');
     });
 });

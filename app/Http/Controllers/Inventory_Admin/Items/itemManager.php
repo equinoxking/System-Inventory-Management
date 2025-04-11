@@ -99,7 +99,7 @@ class itemManager extends Controller
             ]);
         }
         return response()->json([
-            'message' => 'Error in adding an item!',
+            'message' => 'Check your internet connection!',
             'status' => 500
         ]);
     }
@@ -119,24 +119,7 @@ class itemManager extends Controller
         $paddedNumber = str_pad($numberPart, 5, '0', STR_PAD_LEFT);
     
         return $currentYearAndMonth . '-' . $paddedNumber;
-    }
-    private function generateControlNumberReceived() {
-        $currentYearAndMonth = Carbon::now()->format('Y-m');
-        $controlNumber = ReceiveModel::whereYear('created_at', Carbon::now()->year)
-                                ->whereMonth('created_at', Carbon::now()->month)
-                                ->orderBy('control_number', 'desc')
-                                ->pluck('control_number')
-                                ->first();
-    
-        if (!$controlNumber) {
-            return $currentYearAndMonth . '-00001';
-        }
-    
-        $numberPart = intval(substr($controlNumber, -5)) + 1; 
-        $paddedNumber = str_pad($numberPart, 5, '0', STR_PAD_LEFT);
-    
-        return $currentYearAndMonth . '-' . $paddedNumber;
-    }        
+    }  
     public function deleteItem(Request $request){
         $validator = Validator::make($request->all(), [
             'delete-item-id' => 'required'

@@ -9,6 +9,10 @@ use App\Models\CategoryModel;
 use App\Models\UnitModel;
 use App\Models\ItemStatusModel;
 use App\Models\ClientModel;
+use App\Models\AdminModel;
+use App\Models\ReportModel;
+use App\Models\RoleModel;
+
 class InventoryManager extends Controller
 {
     public function showItems(){
@@ -18,12 +22,18 @@ class InventoryManager extends Controller
         $units = UnitModel::all();
         $statuses = ItemStatusModel::all();
         $clients = ClientModel::all();
+        $admins = AdminModel::all();
+        $reports = ReportModel::all();
+        $roles = RoleModel::all();
         return view('admin.items.view-items', [
             'items' => $items,
             'categories' => $categories,
             'units' => $units,
             'statuses' => $statuses,
-            'clients' => $clients
+            'clients' => $clients,
+            'admins' => $admins,
+            'reports' => $reports,
+            'roles' => $roles
         ]);
     }
 }

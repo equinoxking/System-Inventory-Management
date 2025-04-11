@@ -19,4 +19,8 @@ class RoleModel extends Model
     {
         return $this->hasMany(ClientModel::class);
     }
+    public function admins()
+    {
+        return $this->hasMany(AdminModel::class);
+    }
 }

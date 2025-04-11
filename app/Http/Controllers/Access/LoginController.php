@@ -63,7 +63,7 @@ class LoginController extends Controller
                     'full_name' => $client->full_name,
                     'email' => $client->email,
                     'username' => $client->username,
-                    'role' => $client->role,
+                    'role' => $client->role->name,
                     'division' => $client->division,
                 ]);
 

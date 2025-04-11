@@ -10,37 +10,48 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/admin/') }}" 
-                       style="{{ (Request::is('admin/')) ? 'background-color: #3d5c99;' : '' }}">
-                       Dashboard
+                    <a class="nav-link d-flex align-items-center" href="{{ url('/admin/') }}" 
+                    style="{{ (Request::is('admin/')) ? 'background-color: #3d5c99;' : '' }}">
+                        <i class="fas fa-chart-line mr-1"></i>Dashboard
                     </a>
+
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('/admin/transaction') }}" 
                        style="{{ (Request::is('admin/transaction')) ? 'background-color: #3d5c99;' : '' }}">
-                       Transactions
+                       <i class="fas fa-receipt mr-1"></i>Transactions
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('/admin/lookup-tables') }}" 
                        style="{{ (Request::is('admin/lookup-tables')) ? 'background-color: #3d5c99;' : '' }}">
-                       Lookup Tables
+                       <i class="fas fa-database mr-1"></i>Lookup Tables
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('/admin/audit') }}" 
                        style="{{ (Request::is('admin/audit')) ? 'background-color: #3d5c99;' : '' }}">
-                       Logs
+                       <i class="fas fa-history mr-1"></i>Activity Logs   
                     </a>
                 </li>
             </ul>
+            @php
+                $fullName = trim(session('loggedInInventoryAdmin')['full_name']);
+                $firstName = explode(' ', $fullName)[0];
+            @endphp
             <ul class="navbar-nav logout ml-3">
                 <li class="nav-item mr-3 mt-1 text-light">
-                    <strong>Hi, {{ session('loggedInInventoryAdmin')['full_name'] }}</strong>
+                    <strong>
+                        Hi,
+                        @if (session('loggedInInventoryAdmin')['role'] === "InventoryAdmin")
+                            Admin
+                        @endif
+                        {{ $firstName }}
+                    </strong>
                 </li>
                 <li class="nav-item">
-                    <button type="button" class="btn btn-danger" style="background-color: #FFB200 ; border-color: #FFB200;" id="signOutButton">
-                        <i class="fa-solid fa-right-from-bracket"></i>
+                    <button type="button" class="btn btn-danger" id="signOutButton" title="Sign out button">
+                        <i class="fa-solid fas fa-power-off"></i>
                     </button>
                 </li>
             </ul>

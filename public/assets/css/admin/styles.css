@@ -176,3 +176,61 @@ th {
     width: 8rem; 
     white-space: nowrap;
 }
+.table-container {
+    display: none; 
+}
+.category-item.highlighted {
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    transition: none !important; /* Ensure no fade effect */
+}
+
+/* Optional: Mouse hover effect for better UX */
+.category-item.highlighted {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+.unit-item.highlighted {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+.itemName-item.highlighted {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+.edit-category-item.highlighted {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+.edit-unit-item.highlighted {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+}
+#pdfPreviewModal .modal-dialog {
+    max-width: 95vw;
+    height: 95vh;
+    margin: 1.75rem auto;
+}
+
+#pdfPreviewModal .modal-content {
+    height: 100%;
+}
+
+#pdfPreviewModal .modal-body {
+    height: 100%;
+    padding: 0;
+}
+
+#pdfPreviewModal iframe {
+    height: 100%;
+    width: 100%;
+    border: none;
+}
+a {
+    cursor: pointer;
+}

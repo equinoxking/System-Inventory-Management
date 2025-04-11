@@ -175,8 +175,8 @@ $(function () {
 
 $(function () {
     var table = $('#accountTable').dataTable({
-        "aLengthMenu": [[10, 15, 25, 50, 75 , 100, -1],[10, 15, 25, 50, 75 , 100, "All"]],
-        "pageLength": 10,
+        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
+        "pageLength": 5,
         "responsive": {
             breakpoints: [
                 { name: 'xl', width: Infinity },
@@ -345,5 +345,21 @@ $(function () {
                 "searchable": false
             }
         ]
+    });
+});
+$(function () {
+    var table = $('#reportsTable').DataTable({
+        "aLengthMenu": [[5, 10, 25, 50, 75, 100], [5, 10, 25, 50, 75, 100]],
+        "pageLength": 5,
+        "responsive": {
+            breakpoints: [
+                { name: 'xl', width: Infinity },
+                { name: 'lg', width: 1200 },
+                { name: 'md', width: 992 },
+                { name: 'sm', width: 768 },
+                { name: 'xs', width: 576 }
+            ]
+        },
+        "order": [[3, 'desc']],
     });
 });

@@ -2,41 +2,7 @@
 @section('content')  
 <style>
     /* Highlight class for selected category */
-.category-item.highlighted {
-    background-color: #007bff; /* Blue background */
-    color: white; /* White text */
-    transition: none !important; /* Ensure no fade effect */
-}
 
-/* Optional: Mouse hover effect for better UX */
-.category-item.highlighted {
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-}
-.unit-item.highlighted {
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-}
-.itemName-item.highlighted {
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-}
-.edit-category-item.highlighted {
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-}
-.edit-unit-item.highlighted {
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-}
-.table-container {
-    display: none; 
-}
 body {  
     background-color: #f8f9fa;  
 }  
@@ -125,11 +91,15 @@ body {
                                     <td style="font-size: 11px"> {{  \Carbon\Carbon::parse($notification->created_at)->format('F d, Y H:i A') }}</td>
                                     <td>{{ $notification->control_number }}</td>
                                     <td  class="text-left" style="font-size: 11px">{{ $notification->message }}
-                                        @if ($notification->status === "Pending")
                                         Status |
-                                        <span class="badge badge-pending">
-                                            <i class="fas fa-clock"></i> Pending
-                                        </span>
+                                        @if ($notification->status === "Pending")
+                                            <span class="badge badge-pending">
+                                                <i class="fas fa-clock"></i> Pending
+                                            </span>
+                                        @else
+                                            <span class="badge badge-release">
+                                                <i class="fas fa-check"></i> Accepted
+                                            </span>
                                         @endif
                                     </td>
                                 </tr>
