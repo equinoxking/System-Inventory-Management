@@ -1,8 +1,11 @@
 $(document).ready(function() {
     $('#requestItemReceived-btn').click(function() {
-        var newRow = $('.request-item-row:first').clone(); 
-        newRow.find('input').val(''); 
-        $('#requestItem-container').append(newRow); 
+        var firstRow = $('.request-item-row:first'); 
+        var newRow = firstRow.clone();
+        newRow.find('input').val('');
+        newRow.find('textarea').val(''); 
+        $('#requestItem-container').prepend(newRow);
+        $('#requestItem-container').append(firstRow);
     });
     $(document).on('keyup', '.search-request-items', function() {
         var query = $(this).val();

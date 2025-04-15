@@ -12,6 +12,7 @@ use App\Models\ClientModel;
 use App\Models\AdminModel;
 use App\Models\ReportModel;
 use App\Models\RoleModel;
+use App\Models\SubCategoryModel;
 
 class InventoryManager extends Controller
 {
@@ -22,9 +23,11 @@ class InventoryManager extends Controller
         $units = UnitModel::all();
         $statuses = ItemStatusModel::all();
         $clients = ClientModel::all();
-        $admins = AdminModel::all();
+        $admins = AdminModel::with('role')->get();
         $reports = ReportModel::all();
         $roles = RoleModel::all();
+        $sub_categories = SubCategoryModel::all();
+
         return view('admin.items.view-items', [
             'items' => $items,
             'categories' => $categories,
@@ -33,7 +36,8 @@ class InventoryManager extends Controller
             'clients' => $clients,
             'admins' => $admins,
             'reports' => $reports,
-            'roles' => $roles
+            'roles' => $roles,
+            'sub_categories' => $sub_categories
         ]);
     }
 }

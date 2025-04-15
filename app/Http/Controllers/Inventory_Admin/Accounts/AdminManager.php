@@ -1,56 +1,75 @@
 <?php
 
-namespace App\Http\Controllers\Inventory_Admin\Items;
+namespace App\Http\Controllers\Inventory_Admin\Accounts;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminModel;
 use Illuminate\Http\Request;
-use App\Models\UnitModel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Carbon;
 
-class UnitManager extends Controller
+class AdminManager extends Controller
 {
-    public function searchUnit(Request $request){
-        $query = $request->input('query'); 
-        $units = UnitModel::where('name', 'like', '%' . $query . '%')
-        ->get();
-        return response()->json($units);
-    }
-    public function storeUnit(Request $request){
-        $unitId = $request->input('category_id');
-        $unit = UnitModel::find($unitId);
-
-        return response()->json(['
-            message' => 'Unit selected', 
-            'unit' => $unit
-        ]);
-    }
-    public function updateUnit(Request $request){
+    public function addAdmin(Request $request){
         $validator = Validator::make($request->all(), [
-            'unit_id' => 'required|exists:units,id',
-            'unit_control_number' => 'required|exists:units,control_number',
-            'unit_name' => [
+            'admin_full_name' => 'required|unique:admins,full_name',
+            'admin_position' => 'required',
+            'system_role' => 'required|exists:roles,id',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'message' => $validator->errors()
+            ]);
+        } else {
+            $admin = new AdminModel();
+            $admin->role_id = $request->get('system_role');
+            $admin->control_number = $this->generateControlNumber();
+            $admin->full_name = $request->get('admin_full_name');
+            $admin->position = $request->get('admin_position');
+            $admin->status = "Active";
+            $admin->save();
+
+            if($admin){
+                return response()->json([
+                    'message' => 'Admin added successful!',
+                    'status' => 200
+                ]);
+            }else{
+                return response()->json([
+                    'message' => 'Check your internet connection!',
+                    'status' => 500
+                ]);
+            }
+        }
+    }
+    public function updateAdmin(Request $request){
+        $validator = Validator::make($request->all(), [
+            'admin_id' => 'required|exists:admins,id',
+            'admin_control_number' => 'required|exists:admins,control_number',
+            'admin_full_name' => [
                 'required',
-                Rule::unique('units', 'name')->ignore($request->get('unit_id')),
+                Rule::unique('admins', 'full_name')->ignore($request->get('admin_id')),
             ],
+            'admin_position' => 'required',
+            'admin_status' => 'required'
         ]);
-        
         if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
                 'message' => $validator->errors()
             ]);
         } else {
-            $unit = UnitModel::findOrFail($request->get('unit_id'));
-            $unit->name = $request->get('unit_name');
-            $unit->description = $request->get('unit_description');
-            $unit->symbol = $request->get('unit_symbol');
-            $unit->save();
+            $admin = AdminModel::findOrFail($request->get('admin_id'));
+            $admin->full_name = $request->get('admin_full_name');
+            $admin->position = $request->get('admin_position');
+            $admin->status = $request->get('admin_status');
+            $admin->save();
 
-            if($unit){
+            if($admin){
                 return response()->json([
-                    'message' => 'Unit updated successful!',
+                    'message' => 'Admin updated successful!',
                     'status' => 200
                 ]);
             }else{
@@ -61,9 +80,9 @@ class UnitManager extends Controller
             }
         }
     }
-    public function deleteUnit(Request $request){
+    public function deleteAdmin(Request $request){
         $validator = Validator::make($request->all(), [ 
-            'unit_id' => 'required|exists:units,id',
+            'admin_id' => 'required|exists:admins,id',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -71,40 +90,10 @@ class UnitManager extends Controller
                 'message' => $validator->errors()
             ]);
         } else {
-            $unit = UnitModel::where('id', $request->get('unit_id'))->delete();
-            if($unit){
+            $admin = AdminModel::where('id', $request->get('admin_id'))->delete();
+            if($admin){
                 return response()->json([
-                    'message' => 'Unit deleted successful!',
-                    'status' => 200
-                ]);
-            }else{
-                return response()->json([
-                    'message' => 'Check your internet connection!',
-                    'status' => 500
-                ]);
-            }
-        }
-    }
-    public function addUnit(Request $request){
-        $validator = Validator::make($request->all(), [
-            'unit_name' => 'required|unique:units,name',
-        ]);
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 400,
-                'message' => $validator->errors()
-            ]);
-        } else {
-            $unit = new UnitModel();
-            $unit->name = $request->get('unit_name');
-            $unit->control_number = $this->generateControlNumber();
-            $unit->symbol = $request->get('unit_symbol');
-            $unit->description = ucfirst($request->get('unit_description'));
-            $unit->save();
-
-            if($unit){
-                return response()->json([
-                    'message' => 'Unit added successful!',
+                    'message' => 'Admin deleted successful!',
                     'status' => 200
                 ]);
             }else{
@@ -117,7 +106,7 @@ class UnitManager extends Controller
     }
     private function generateControlNumber() {
         $currentYearAndMonth = Carbon::now()->format('Y-m');
-        $controlNumber = UnitModel::whereYear('created_at', Carbon::now()->year)
+        $controlNumber = AdminModel::whereYear('created_at', Carbon::now()->year)
                                 ->whereMonth('created_at', Carbon::now()->month)
                                 ->orderBy('control_number', 'desc')
                                 ->pluck('control_number')

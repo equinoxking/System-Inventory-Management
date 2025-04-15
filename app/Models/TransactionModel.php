@@ -10,8 +10,8 @@ class TransactionModel extends Model
     use HasFactory;
     protected $table = 'transactions';
     protected $fillable = [
-        'id',
         'user_id',
+        'admin_id',
         'item_id',
         'status_id',
         'transaction_number',
@@ -21,6 +21,7 @@ class TransactionModel extends Model
         'approved_date',
         'reason',
         'remark',
+        'created_at',
         'updated_at'
     ];
     public function status()
@@ -39,8 +40,12 @@ class TransactionModel extends Model
     {
         return $this->hasOne(TransactionDetailModel::class, 'transaction_id');
     }
-    public function clientBy()
+    public function adminBy()
     {
-        return $this->belongsTo(ClientModel::class, 'released_by');
+        return $this->belongsTo(AdminModel::class, 'released_by');
+    }
+    public function admin()
+    {
+        return $this->belongsTo(AdminModel::class, 'admin_id');
     }
 }

@@ -172,7 +172,6 @@ class TransactionsManager extends Controller
             ]);
         }
     }
-    
     private function generateTransactionNumber(){
         $currentYearAndMonth = Carbon::now()->format('Y-m'); 
         $lastTransactionNumber = TransactionModel::whereYear('created_at', Carbon::now()->year)

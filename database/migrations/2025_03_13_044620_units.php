@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('units', function (Blueprint $table) {
             $table->id();
-            $table->string('name' , 60);
+            $table->string('control_number' , 30)->unique();
+            $table->string('name' , 60)->unique();
+            $table->string('symbol' , 20)->nullable();
+            $table->string('description' , 255)->unique();
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
         });

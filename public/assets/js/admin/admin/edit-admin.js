@@ -1,32 +1,27 @@
-$(document).ready(function() {
-    $("#addItemBtn").click(function() {
-        $("#itemForm").css({
-            "display": "flex",        
-        });
-        $("#receivedItemForm").css({
-            "display": "none",        
-        });
-    });
-    $('#createItem-closeBtn').click(function(){
-        $("#itemForm").css({
-            "display": "none",        
-        });
-    })
+function editAdmin(admin){
+    var data = JSON.parse(admin);
+    $('#editAdminModal').modal('show'); 
+    $('#edit-admin-id').val(data.id);
+    $('#edit-admin-full-name').val(data.full_name);
+    $('#edit-admin-control_number').val(data.control_number);
+    $('#edit-admin-position').val(data.position);
+}
+$('#edit-admin-close-btn').click(function(){
+    $('#editAdminModal').modal('hide');
 });
-$(document).ready(function(){
-    $(document).on('submit', '#createItem-form', function(event){
-      event.preventDefault();
-      var formData = $('#createItem-form').serialize();
-      console.log(formData);
+$(document).ready(function() {
+    $(document).on('submit', '#edit-admin-form', function(event){
+        event.preventDefault();
+        var formData = $('#edit-admin-form').serialize();
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            url: '/add-item',
-            type: 'POST',
+            url: '/update-admin',
+            type: 'PATCH',
             data: formData,
             beforeSend: function() {
-                $('#addItemSubmit-btn').attr('disabled', true);
+                $('#edit-admin-submit-btn').attr('disabled', true);
                 Swal.fire({
                     title: 'Loading...',
                     text: 'Please wait while we process your request.',
@@ -52,7 +47,7 @@ $(document).ready(function(){
                             html: errorMessages,
                             showConfirmButton: true,
                         }).then(function() {
-                            $('#addItemSubmit-btn').attr('disabled', false);
+                            $('#edit-admin-submit-btn').attr('disabled', false);
                         });
                 }else if(response.status === 200){
                     Swal.fire({
@@ -61,7 +56,7 @@ $(document).ready(function(){
                     html: response.message,
                     showConfirmButton: true,
                     }).then(function(){
-                        $('#createItem-form')[0].reset();
+                        window.location.reload();
                     });
                 }
             },error: function(error){

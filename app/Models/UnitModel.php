@@ -11,7 +11,9 @@ class UnitModel extends Model
     protected $table = 'units';
     protected $fillable = [
         'name',
+        'control_number',
         'symbol',
+        'description',
         'created_at',
         'updated_at'
     ];

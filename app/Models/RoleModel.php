@@ -10,7 +10,6 @@ class RoleModel extends Model
     use HasFactory;
     protected $table = 'roles';
     protected $fillable = [
-        'id',
         'name',
         'created_at',
         'updated_at'
@@ -19,7 +18,7 @@ class RoleModel extends Model
     {
         return $this->hasMany(ClientModel::class);
     }
-    public function admins()
+    public function admin()
     {
         return $this->hasMany(AdminModel::class);
     }

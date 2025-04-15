@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\ClientModel;
 use Illuminate\Support\Facades\Http;
+use App\Models\AdminModel;
+use Illuminate\Support\Facades\Log;
+
 class LoginController extends Controller
 {
     public function login(Request $request){
@@ -56,8 +59,7 @@ class LoginController extends Controller
     
                 $roleKey = $client->role_id;
                 $sessionKey = $roles[$roleKey] ?? null;
-    
-
+                
                 $request->session()->put($sessionKey, [
                     'id' => $client->id,
                     'full_name' => $client->full_name,
@@ -110,4 +112,27 @@ class LoginController extends Controller
             'message' => 'Internal Server Error!'
         ]);
     }
+    public function setSelectedAdmin(Request $request){
+    $request->validate([
+        'admin_id' => 'required|exists:admins,id',
+    ]);
+    $admin = AdminModel::find($request->admin_id);
+    $sessionKey = 'loggedInInventoryAdmin';
+    $sessionData = $request->session()->get($sessionKey, []); 
+
+    $sessionData = array_merge($sessionData, [
+        'admin_id' => $admin->id, 
+        'admin_full_name' => $admin->full_name,
+    ]);
+    $request->session()->put($sessionKey, $sessionData);
+    
+    return response()->json(['message' => 'Admin selected successfully.']);
+    }
+    public function getAvailableAdmins(){
+
+    $admins = AdminModel::select('id', 'full_name')->get();
+
+    return response()->json($admins);
+    }
+
 }

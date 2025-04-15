@@ -1,32 +1,28 @@
-$(document).ready(function() {
-    $("#addItemBtn").click(function() {
-        $("#itemForm").css({
-            "display": "flex",        
-        });
-        $("#receivedItemForm").css({
-            "display": "none",        
-        });
-    });
-    $('#createItem-closeBtn').click(function(){
-        $("#itemForm").css({
-            "display": "none",        
-        });
-    })
+function editUnit(unit){
+    var data = JSON.parse(unit);
+    $('#editUnitModal').modal('show'); 
+    $('#edit-unit-id').val(data.id);
+    $('#edit-unit-name').val(data.name);
+    $('#edit-unit-symbol').val(data.symbol);
+    $('#edit-unit-control_number').val(data.control_number);
+    $('#edit-unit-description').val(data.description);
+}
+$('#edit-unit-close-btn').click(function(){
+    $('#editUnitModal').modal('hide');
 });
-$(document).ready(function(){
-    $(document).on('submit', '#createItem-form', function(event){
-      event.preventDefault();
-      var formData = $('#createItem-form').serialize();
-      console.log(formData);
+$(document).ready(function() {
+    $(document).on('submit', '#edit-unit-form', function(event){
+        event.preventDefault();
+        var formData = $('#edit-unit-form').serialize();
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            url: '/add-item',
-            type: 'POST',
+            url: '/update-unit',
+            type: 'PATCH',
             data: formData,
             beforeSend: function() {
-                $('#addItemSubmit-btn').attr('disabled', true);
+                $('#edit-unit-submit-btn').attr('disabled', true);
                 Swal.fire({
                     title: 'Loading...',
                     text: 'Please wait while we process your request.',
@@ -52,7 +48,7 @@ $(document).ready(function(){
                             html: errorMessages,
                             showConfirmButton: true,
                         }).then(function() {
-                            $('#addItemSubmit-btn').attr('disabled', false);
+                            $('#edit-unit-submit-btn').attr('disabled', false);
                         });
                 }else if(response.status === 200){
                     Swal.fire({
@@ -61,7 +57,7 @@ $(document).ready(function(){
                     html: response.message,
                     showConfirmButton: true,
                     }).then(function(){
-                        $('#createItem-form')[0].reset();
+                        window.location.reload();
                     });
                 }
             },error: function(error){

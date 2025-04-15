@@ -13,9 +13,12 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->foreignId('user_id')->references('id')->on('clients')->onDelete('cascade');
             $table->foreignId('item_id')->references('id')->on('items')->onDelete('cascade');
             $table->foreignId('status_id')->references('id')->on('transaction_statuses')->onDelete('cascade');
+            $table->unsignedBigInteger('admin_id')->nullable();
+            $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
             $table->foreignId('released_by')->references('id')->on('clients')->onDelete('cascade');
             $table->string('transaction_number')->unique();
             $table->dateTime('request_aging')->nullable();

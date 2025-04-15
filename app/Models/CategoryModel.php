@@ -11,6 +11,7 @@ class CategoryModel extends Model
     protected $table = 'categories';
     protected $fillable = [
         'sub_category_id',
+        'control_number',
         'name',
         'description',
         'created_at',

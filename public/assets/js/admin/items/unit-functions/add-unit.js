@@ -1,32 +1,22 @@
-$(document).ready(function() {
-    $("#addItemBtn").click(function() {
-        $("#itemForm").css({
-            "display": "flex",        
-        });
-        $("#receivedItemForm").css({
-            "display": "none",        
-        });
-    });
-    $('#createItem-closeBtn').click(function(){
-        $("#itemForm").css({
-            "display": "none",        
-        });
-    })
+$('#addUnitBtn').click(function(){
+    $('#addUnitModal').modal('show');
 });
-$(document).ready(function(){
-    $(document).on('submit', '#createItem-form', function(event){
-      event.preventDefault();
-      var formData = $('#createItem-form').serialize();
-      console.log(formData);
+$('#add-unit-close-btn').click(function(){
+    $('#addUnitModal').modal('hide');
+});
+$(document).ready(function() {
+    $(document).on('submit', '#add-unit-form', function(event){
+        event.preventDefault();
+        var formData = $('#add-unit-form').serialize();
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            url: '/add-item',
+            url: '/add-unit',
             type: 'POST',
             data: formData,
             beforeSend: function() {
-                $('#addItemSubmit-btn').attr('disabled', true);
+                $('#add-unit-submit-btn').attr('disabled', true);
                 Swal.fire({
                     title: 'Loading...',
                     text: 'Please wait while we process your request.',
@@ -52,7 +42,7 @@ $(document).ready(function(){
                             html: errorMessages,
                             showConfirmButton: true,
                         }).then(function() {
-                            $('#addItemSubmit-btn').attr('disabled', false);
+                            $('#add-unit-submit-btn').attr('disabled', false);
                         });
                 }else if(response.status === 200){
                     Swal.fire({
@@ -61,7 +51,7 @@ $(document).ready(function(){
                     html: response.message,
                     showConfirmButton: true,
                     }).then(function(){
-                        $('#createItem-form')[0].reset();
+                        window.location.reload();
                     });
                 }
             },error: function(error){

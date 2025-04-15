@@ -16,7 +16,7 @@ class AdminModel extends Model
         'created_at',
         'updated_at'
     ];
-    public function roles()
+    public function role()
     {
         return $this->belongsTo(RoleModel::class);
     }
@@ -24,4 +24,13 @@ class AdminModel extends Model
     {
         return $this->hasMany(ReportModel::class, 'admin_id', 'id');
     }
+    public function transaction()
+    {
+        return $this->hasMany(TransactionModel::class, 'admin_id', 'id');
+    }
+        public function adminBy()
+    {
+        return $this->hasMany(TransactionModel::class, 'released_by', 'id');
+    }
+
 }

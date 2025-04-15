@@ -1,32 +1,24 @@
-$(document).ready(function() {
-    $("#addItemBtn").click(function() {
-        $("#itemForm").css({
-            "display": "flex",        
-        });
-        $("#receivedItemForm").css({
-            "display": "none",        
-        });
-    });
-    $('#createItem-closeBtn').click(function(){
-        $("#itemForm").css({
-            "display": "none",        
-        });
-    })
+function deleteCategory(category){
+    var data = JSON.parse(category);
+    $('#deleteCategoryModal').modal('show'); 
+    $('#delete-category-id').val(data.id);
+}
+$('#delete-category-close-btn').click(function(){
+    $('#deleteCategoryModal').modal('hide');
 });
-$(document).ready(function(){
-    $(document).on('submit', '#createItem-form', function(event){
-      event.preventDefault();
-      var formData = $('#createItem-form').serialize();
-      console.log(formData);
+$(document).ready(function() {
+    $(document).on('submit', '#delete-category-form', function(event){
+        event.preventDefault();
+        var formData = $('#delete-category-form').serialize();
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            url: '/add-item',
-            type: 'POST',
+            url: '/delete-category',
+            type: 'DELETE',
             data: formData,
             beforeSend: function() {
-                $('#addItemSubmit-btn').attr('disabled', true);
+                $('#delete-category-submit-btn').attr('disabled', true);
                 Swal.fire({
                     title: 'Loading...',
                     text: 'Please wait while we process your request.',
@@ -52,7 +44,7 @@ $(document).ready(function(){
                             html: errorMessages,
                             showConfirmButton: true,
                         }).then(function() {
-                            $('#addItemSubmit-btn').attr('disabled', false);
+                            $('#delete-category-submit-btn').attr('disabled', false);
                         });
                 }else if(response.status === 200){
                     Swal.fire({
@@ -61,7 +53,7 @@ $(document).ready(function(){
                     html: response.message,
                     showConfirmButton: true,
                     }).then(function(){
-                        $('#createItem-form')[0].reset();
+                        window.location.reload();
                     });
                 }
             },error: function(error){

@@ -1,7 +1,7 @@
 $(document).ready(function () {
     var table = $('#itemsTable').DataTable({
         "aLengthMenu": [[5, 10, 25, 50, 75, 100], [5, 10, 25, 50, 75, 100]],
-        "pageLength": 5,
+        "pageLength": 1000000000,
         "responsive": true,
         "autoWidth": false,
         "processing": false,
@@ -171,8 +171,6 @@ $(function () {
         table.ajax.reload(null, false);  
     }, 6000);
 });
-
-
 $(function () {
     var table = $('#accountTable').dataTable({
         "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
@@ -222,8 +220,8 @@ $(function () {
 });
 $(function () {
     var table = $('#categoryTable').dataTable({
-        "aLengthMenu": [[10, 15, 25, 50, 75 , 100, -1],[10, 15, 25, 50, 75 , 100, "All"]],
-        "pageLength": 10,
+        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
+        "pageLength": 5,
         "responsive": {
             breakpoints: [
                 { name: 'xl', width: Infinity },
@@ -232,7 +230,9 @@ $(function () {
                 { name: 'sm', width: 768 },
                 { name: 'xs', width: 576 }
             ]
-        }
+        },
+        "order": [[2, 'desc']]
+        
     });
 });
 $(function () {
@@ -361,5 +361,37 @@ $(function () {
             ]
         },
         "order": [[3, 'desc']],
+    });
+});
+$(function () {
+    var table = $('#unitTable').dataTable({
+        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
+        "pageLength": 5,
+        "responsive": {
+            breakpoints: [
+                { name: 'xl', width: Infinity },
+                { name: 'lg', width: 1200 },
+                { name: 'md', width: 992 },
+                { name: 'sm', width: 768 },
+                { name: 'xs', width: 576 }
+            ]
+        },
+        "order": [[2, 'desc']],
+    });
+});
+$(function () {
+    var table = $('#adminTable').dataTable({
+        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
+        "pageLength": 5,
+        "responsive": {
+            breakpoints: [
+                { name: 'xl', width: Infinity },
+                { name: 'lg', width: 1200 },
+                { name: 'md', width: 992 },
+                { name: 'sm', width: 768 },
+                { name: 'xs', width: 576 }
+            ]
+        },
+        "order": [[2, 'desc']],
     });
 });

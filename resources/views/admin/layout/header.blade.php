@@ -36,7 +36,7 @@
                 </li>
             </ul>
             @php
-                $fullName = trim(session('loggedInInventoryAdmin')['full_name']);
+                $fullName = trim(session('loggedInInventoryAdmin')['admin_full_name']);
                 $firstName = explode(' ', $fullName)[0];
             @endphp
             <ul class="navbar-nav logout ml-3">

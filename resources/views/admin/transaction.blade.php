@@ -13,6 +13,9 @@
         </div>
         <div class="col-md-4 text-end">
             <!-- Generate PDF Button Properly Aligned -->
+            <button type="button" class="btn btn-success" id="requestBtn" title="Request item button">
+                <i class="fa-solid fa-handshake"></i>
+            </button>
             <button type="button" class="btn btn-info" title="Generate PDF button">
                 <i class="fa-solid fa-file-pdf"></i> 
             </button>
@@ -23,6 +26,56 @@
             </div>
         </div>
     </div>
+</div>
+<div class="container-fluid card w-100 shadow rounded p-4" id="requestForm" style="max-height: 500px; overflow-y: auto; background-color: #f8f9fa; display:none; border: 2px solid #ddd;">
+    <!-- Form Header -->
+    <div class="d-flex justify-content-between align-items-center bg-success text-light p-3 rounded-top">
+        <h4 class="m-0 text-center flex-grow-1"><strong>REQUEST ITEM FORM</strong></h4>
+        <button type="button" id="requestItem-closeBtn" class="btn btn-danger p-2">&times;</button>
+    </div>
+    <!-- Form Body -->
+    <form action="" id="requestItem-form" class="p-3">
+        @csrf
+        <div class="col-md-12 d-flex justify-content-end">
+            <button type="button" id="requestItemReceived-btn" class="btn btn-primary rounded px-4 py-2">
+                Request more item
+            </button>
+        </div>
+        <div id="requestItem-container">
+            <div class="row mb-3 mt-2 request-item-row">
+                <div class="col-md-3 form-group">
+                    <label for="itemName" class="font-weight-bold">Item Name</label>
+                    <input type="text" class="search-request-items form-control" name="requestItemName[]" id="requestItemName" placeholder="Search items..." autocomplete="off"/>
+                    <ul class="item-results" style="display: none; max-height: 200px; overflow-y: auto;"></ul>
+                    <input type="text" class="selected-item-id" id="requestItemId" name="requestItemId[]" hidden>
+                </div>
+                <div class="col-md-1 form-group">
+                    <label for="quantity" class="font-weight-bold">Quantity</label>
+                    <input type="number" class="form-control requestQuantity" name="requestQuantity[]" id="requestQuantity" placeholder="Enter quantity" min="1">
+                </div>
+                <div class="col-md-2 form-group">
+                    <label for="maxQuantity" class="font-weight-bold">Available Quantity</label>
+                    <input type="number" class="form-control quantity requestMaxQuantity" name="requestMaxQuantity[]" id="requestMaxQuantity" readonly>
+                </div>
+                <div class="col-md-1 form-group">
+                    <label for="action" class="font-weight-bold">Action</label>
+                    <button type="button" class="remove-request-item btn btn-danger">Remove</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12 d-flex justify-content-end">
+                <div class="col-md-1 form-group">
+                    <label for="" class="font-weight-bold">&nbsp</label>
+                    <button type="reset" class="btn btn-secondary rounded px-4 py-2 me-3 w-100">Clear</button>
+                </div>
+                <div class="col-md-1 form-group">
+                    <label for="" class="font-weight-bold">&nbsp</label>
+                    <button type="submit" id="requestItemSubmit-btn" class="btn btn-success rounded px-4 py-2 w-100">Submit</button>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
 <div class="container-fluid card w-100">
     <div class="row">
@@ -89,10 +142,10 @@
                         <td>{{ $transaction->transactionDetail->request_quantity }}</td>
                         <td>{{ $transaction->item->inventory->unit->name }}</td>
                         <td>{{ $transaction->item->name }}</td>
-                        <td>{{ $transaction->client->full_name }}</td>
+                        <td>{{ $transaction->client ? $transaction->client->full_name :  $transaction->admin->full_name}}</td>
                         <td>{{ $transaction->approved_time ? \Carbon\Carbon::parse($transaction->approved_date)->format('F d, Y') . ' ' . \Carbon\Carbon::parse($transaction->approved_time)->format('h:i A')  : '' }}</td>
                         <td>{{ $transaction->request_aging }}</td>
-                        <td>{{ $transaction->clientBy->full_name }}</td>
+                        <td>{{ $transaction->adminBy ? $transaction->adminBy->full_name : 'No admin' }}</td>
                         <td>{{ $transaction->released_time ? \Carbon\Carbon::parse($transaction->released_time)->format('h:i A') : '' }}</td>
                         <td>{{ $transaction->released_aging }}</td>
                         <td>
@@ -186,6 +239,8 @@
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="{{ asset('assets/js/admin/transactions/status.js') }}"></script>
+<script src="{{ asset('assets/js/admin/transactions/request-item.js') }}"></script>
+<script src="{{ asset('assets/js/user/items/search-items.js') }}"></s>
 <script>
 window.onload = function() {
     const options = { timeZone: 'Asia/Manila', hour12: false };

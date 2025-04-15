@@ -16,6 +16,7 @@ use App\Http\Controllers\Inventory_Admin\Accounts\AccountManager;
 use App\Http\Controllers\Inventory_Admin\Pdf\ReportManager;
 use App\Http\Controllers\User\Transactions\TransactionsManager;
 use App\Http\Controllers\Inventory_Admin\Report\PdfReportManager;
+use App\Http\Controllers\Inventory_Admin\Accounts\AdminManager;
 use App\Http\Controllers\User\User_functionController;
 use App\Http\Controllers\User\Account\UserProfileManager;
 /*
@@ -35,6 +36,8 @@ Route::controller(MainNavigationController::class)->group(function() {
 //Route for Access
 Route::controller(LoginController::class)->group(function(){
     Route::post('/login-user', 'login');
+    Route::post('/set-selected-admin', 'setSelectedAdmin');
+    Route::get('/get-available-admins','getAvailableAdmins');
 });
 /* -- Inventory Admin --*/
 Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
@@ -49,12 +52,17 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::get('/search-categories', 'searchCategory')->name('search.categories');
         Route::get('/submit-category', 'store')->name('some_route');
         Route::get('/search-edit-categories', 'searchCategory');
-
+        Route::patch('/update-category','updateCategory');
+        Route::delete('/delete-category', 'deleteCategory');
+        Route::post('/add-category', 'addCategory');
     });
     Route::controller(UnitManager::class)->group(function() {
         Route::get('/search-units', 'searchUnit')->name('search.units');
         Route::get('/submit-unit', 'storeUnit')->name('storeUnit');
         Route::get('/edit-search-units', 'searchUnit');
+        Route::patch('/update-unit','updateUnit');
+        Route::delete('/delete-unit', 'deleteUnit');
+        Route::post('/add-unit','addUnit');
     });
     Route::controller(itemManager::class)->group(function() {
         Route::post('/add-item', 'addItem');
@@ -76,11 +84,17 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::get('admin/transaction', 'goToTransactions');
         Route::patch('/change-transaction-status', 'updateTransactionStatus');
         Route::get('/admin/refreshTransactions', 'getTransactions');
+        Route::post('/request-item-admin', 'requestItemAdmin');
     });
     Route::controller(AccountManager::class)->group(function(){
         Route::get('/admin/account', 'goToAccounts');
         Route::patch('/set-user-role', 'setUserRole');
         Route::patch('/change-user-status', 'changeUserStatus');
+    });
+    Route::controller(AdminManager::class)->group(function(){
+        Route::post('/add-admin', 'addAdmin');
+        Route::patch('/update-admin','updateAdmin');
+        Route::delete('/delete-admin', 'deleteAdmin');
     });
     Route::controller(ReportManager::class)->group(function(){
         Route::post('/generate-report', 'generateReport');

@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('admin_id')->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreignId('admin_id')->references('id')->on('clients')->onDelete('cascade');
             $table->foreignId('user_id')->references('id')->on('clients')->onDelete('cascade');
             $table->string('control_number')->unique();
             $table->string('message', 255);
