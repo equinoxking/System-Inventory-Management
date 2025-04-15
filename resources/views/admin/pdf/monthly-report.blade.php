@@ -71,10 +71,10 @@
                 <th width="50%">Item Description</th>
                 <th width="5%">Units</th>
                 <th width="10%">Balance as of {{ $formattedSubDate }}</th>
-                <th width="10%">Total Month Delivered</th>
-                <th width="10%">Stock on Hand</th>
-                <th width="10%">Total Month Withdrew</th>
-                <th width="10%">Balance as of {{ $formattedCurrentDate }}</th>
+                <th width="10%">Delivered for Stocks</th>
+                <th width="10%">Total Stock on Hand</th>
+                <th width="10%">Total Withdrawn</th>
+                <th width="10%">Available Stock as of {{ $formattedCurrentDate }}</th>
             </tr>
         </thead>
         <tbody>

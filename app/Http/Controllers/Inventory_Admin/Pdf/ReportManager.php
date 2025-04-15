@@ -291,7 +291,7 @@ class ReportManager extends Controller
                             'December' => 12,
                         ];
 
-                        $getMonth = $quarters[$selectedQuarter][0];
+                        $getFirstMonth = $quarters[$selectedQuarter][0];
                         $getSecondMonth = $quarters[$selectedQuarter][1];
                         $getThirdMonth = $quarters[$selectedQuarter][2];
 
@@ -299,7 +299,7 @@ class ReportManager extends Controller
                             return $monthToInt[$month];
                         }, $months);
 
-                        $numericMonth = $monthToInt[$getMonth];
+                        $numericMonth = $monthToInt[$getFirstMonth];
                         $numericSecondMonth = $monthToInt[$getSecondMonth];
                         $numericThirdMonth = $monthToInt[$getThirdMonth];
 
@@ -523,7 +523,8 @@ class ReportManager extends Controller
                         'monthAbbreviations' => $monthAbbreviations,
                         'endOfMonthFormatted' => $endOfMonthFormatted,
                         'conductedBy' => $conductedBy,
-                        'preparedBy' => $preparedBy
+                        'preparedBy' => $preparedBy,
+                        'getMonth' => $getFirstMonth
                         
                     ];
                     $pdf = PDF::loadView('admin.pdf.quarterly-report', $data)

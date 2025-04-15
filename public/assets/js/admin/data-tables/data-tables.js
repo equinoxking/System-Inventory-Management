@@ -326,8 +326,8 @@ $(function () {
 });
 $(function () {
     var table = $('#notificationTable').DataTable({
-        "aLengthMenu": [[5, 10, 25, 50, 75, 100], [5, 10, 25, 50, 75, 100]],
         "pageLength": 5,
+        "lengthChange": false ,
         "responsive": {
             breakpoints: [
                 { name: 'xl', width: Infinity },

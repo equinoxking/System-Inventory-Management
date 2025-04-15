@@ -68,9 +68,30 @@
                 <th width="5%" colspan="2" rowspan="2">No.</th>
                 <th style="text-align: center; width: 50%;" colspan="2" rowspan="2">Item Description</th>
                 <th width="5%" colspan="2" rowspan="2">Units</th>
-                <th width="5%" colspan="2" rowspan="2">Balance as of {{ $formatFinalSubMonth }}</th>
-                <th width="5%" colspan="2" rowspan="2">Total Quarter Delivered</th>
-                <th width="5%" colspan="2" rowspan="2">Stock on Hand</th>
+                <th width="5%" colspan="2" rowspan="2">Stock on Hand <br>  
+                    @if ($getMonth === "January")
+                        4th Quarter
+                    @elseif ($getMonth === "April")
+                        1st Quarter
+                    @elseif ($getMonth === "July")
+                        2nd Quarter
+                    @else 
+                        3rd Quarter
+                    @endif
+                </th>
+                <th width="5%" colspan="2" rowspan="2">
+                    Total Delivered <br> 
+                    @if ($getMonth === "January")
+                        1st Quarter
+                    @elseif ($getMonth === "April")
+                        2nd Quarter
+                    @elseif ($getMonth === "July")
+                        3rd Quarter
+                    @else 
+                        4th Quarter
+                    @endif
+                </th>
+                <th width="5%" colspan="2" rowspan="2">Total Stock on Hand</th>
                 <th width="5%" colspan="4">MONTHLY UTILIZATION WITHDRAWAL</th>
                 <th width="5%" colspan="2" rowspan="2">Available Stock as of {{ $formatFinalMonth }}</th>
             </tr>
