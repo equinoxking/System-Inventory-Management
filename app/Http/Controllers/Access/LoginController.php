@@ -123,6 +123,7 @@ class LoginController extends Controller
     $sessionData = array_merge($sessionData, [
         'admin_id' => $admin->id, 
         'admin_full_name' => $admin->full_name,
+        'admin_position' => $admin->position
     ]);
     $request->session()->put($sessionKey, $sessionData);
     

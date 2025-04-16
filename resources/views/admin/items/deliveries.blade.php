@@ -80,7 +80,7 @@
                         <th width="12%">Date/Time Received</th>
                         <th width="12%">Date/Time Updated</th>
                         <th width="12%">Delivery Type</td>
-                        <th width="10%">Control Number</th>
+                        <th width="10%">P.O. Number</th>
                         <th width="10%">Stock On Hand</th>
                         <th width="10%">Delivered Quantity</th>
                         <th width="5%">UoM</th>

@@ -59,6 +59,9 @@
             </div>
     </form>    
 </div>
+@php
+    
+@endphp
 <div class="container-fluid mt-3">
     <div class="row">
         <div class="col-md-9" style="text-align: left">
@@ -265,19 +268,11 @@
                             </select>
                         </div>
                         <div class="form-group" id="signatories-row" style="display: none">
-                            <label for="conducted" class="font-weight-bold">Conducted By:</label>
-                            <select name="conducted" id="conducted" class="form-control">
-                                <option value="">Select Conducted By:</option>
-                                @foreach ($clients as $client)
-                                    <option value="{{ $client->id }}">{{ $client->full_name }}</option>
-                                @endforeach
-                            </select>
-                        
                             <label for="prepared" class="font-weight-bold">Prepared By:</label>
                             <select name="prepared" id="prepared" class="form-control">
                                 <option value="">Select Prepared By:</option>
-                                @foreach ($clients as $client)
-                                    <option value="{{ $client->id }}">{{ $client->full_name }}</option>
+                                @foreach ($admins as $admin)
+                                    <option value="{{ $admin->id }}">{{ $admin->full_name }}</option>
                                 @endforeach
                             </select>
                         </div>                        
@@ -299,3 +294,49 @@
 <script src="{{ asset('assets/js/admin/items/delete-item.js') }}"></script>
 <script src="{{ asset('assets/js/admin/items/edit-item.js') }}"></script>
 <script src="{{ asset('assets/js/admin/pdf/report.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const periodSelect = document.getElementById('period');
+        const monthSelect = document.getElementById('month');
+        const yearMonthly = document.getElementById('selectedYear');
+        const quarterSelect = document.getElementById('quarterly');
+        const yearQuarterly = document.getElementById('yearSelectQuarterly');
+        const preparedSelect = document.getElementById('prepared');
+        const submitBtn = document.getElementById('report-submit-btn');
+    
+        function validateForm() {
+            const period = periodSelect.value;
+    
+            const prepared = preparedSelect.value;
+    
+            let isValid = false;
+    
+            if (period === 'Monthly') {
+                const month = monthSelect.value;
+                const year = yearMonthly.value;
+    
+                isValid = (month !== '' && year !== '' && prepared !== '');
+    
+            } else if (period === 'Quarterly') {
+                const quarter = quarterSelect.value;
+                const year = yearQuarterly.value;
+    
+                isValid = (quarter !== '' && year !== '' && prepared !== '');
+            }
+    
+            submitBtn.disabled = !isValid;
+        }
+        validateForm();
+        periodSelect.addEventListener('change', function () {
+            const selected = this.value;
+            document.getElementById('month-row').style.display = selected === 'Monthly' ? 'block' : 'none';
+            document.getElementById('quarterly-row').style.display = selected === 'Quarterly' ? 'block' : 'none';
+            document.getElementById('signatories-row').style.display = selected !== '' ? 'block' : 'none';
+    
+            validateForm(); 
+        });
+        [monthSelect, yearMonthly, quarterSelect, yearQuarterly, preparedSelect]
+            .forEach(el => el.addEventListener('change', validateForm));
+    });
+</script>
+    

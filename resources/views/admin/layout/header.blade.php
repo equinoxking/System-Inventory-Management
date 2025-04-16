@@ -23,11 +23,20 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/admin/lookup-tables') }}" 
+                    <a class="nav-link" href="{{ url('/admin/reports') }}?section=items" 
+                       class="reports-link" 
+                       style="{{ (Request::is('admin/reports')) ? 'background-color: #3d5c99;' : '' }}">
+                       <i class="fas fa-chart-bar mr-1"></i>Reports
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url('/admin/lookup-tables') }}?section=items" 
+                       class="lookup-tables-link" 
                        style="{{ (Request::is('admin/lookup-tables')) ? 'background-color: #3d5c99;' : '' }}">
                        <i class="fas fa-database mr-1"></i>Lookup Tables
                     </a>
                 </li>
+                
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('/admin/audit') }}" 
                        style="{{ (Request::is('admin/audit')) ? 'background-color: #3d5c99;' : '' }}">
@@ -36,17 +45,20 @@
                 </li>
             </ul>
             @php
-                $fullName = trim(session('loggedInInventoryAdmin')['admin_full_name']);
-                $firstName = explode(' ', $fullName)[0];
+                $position = ucwords(session('loggedInInventoryAdmin')['admin_position'] ?? '');
             @endphp
             <ul class="navbar-nav logout ml-3">
                 <li class="nav-item mr-3 mt-1 text-light">
                     <strong>
-                        Hi,
-                        @if (session('loggedInInventoryAdmin')['role'] === "InventoryAdmin")
-                            Admin
-                        @endif
-                        {{ $firstName }}
+                        <div>
+                            <div>
+                                {{ session('loggedInInventoryAdmin')['admin_full_name'] }}
+                            </div>
+                            <div style="text-align: center">
+                                <span >Admin, {{ $position }}</span>
+                            </div>
+                        </div>
+                       
                     </strong>
                 </li>
                 <li class="nav-item">

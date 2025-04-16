@@ -20,7 +20,7 @@ class IA_mainController extends Controller
         $clients = ClientModel::count();
         $transaction = TransactionModel::count();
         $receive = ReceiveModel::count();
-        $items = ItemModel::all();
+        // $items = ItemModel::all();
         $itemCount = ItemModel::count();
         $counts = TransactionModel::selectRaw('remark, COUNT(*) as count')
             ->groupBy('remark')
@@ -36,6 +36,20 @@ class IA_mainController extends Controller
             $count = $counts->firstWhere('remark', $label);
             $data[] = $count ? $count->count : 0;
         }
+        $items = ItemModel::with('transacts.TransactionDetail')->get();
+
+        $itemsWithTransactionSums = $items->map(function ($item) {
+            // Sum all request_quantity values in TransactionDetail for each transaction related to this item
+            $totalTransactionSum = $item->transacts->sum(function ($transact) {
+                // Check if transactionDetail exists and sum the 'request_quantity' for all related transaction details
+                return $transact->transactionDetail ? $transact->transactionDetail->request_quantity : 0;
+            });
+            // Return the item with its total transaction sum
+            return [
+                'item' => $item,
+                'total_transaction_sum' => $totalTransactionSum
+            ];
+        });
         $categories = CategoryModel::all();
         $transactions = TransactionModel::all();
         $notifications = NotificationModel::all();
@@ -47,7 +61,8 @@ class IA_mainController extends Controller
             'itemCount' => $itemCount,
             'transacts' => $transactions,
             'categories' => $categories,
-            'notifications' => $notifications
+            'notifications' => $notifications,
+            'itemsWithTransactionSums' => $itemsWithTransactionSums
         ], compact('data', 'labels'));
     }
     public function goToTransactions(){

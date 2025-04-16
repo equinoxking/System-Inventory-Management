@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Inventory_Admin\Pdf;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminModel;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\InventoryModel;
@@ -29,7 +30,6 @@ class ReportManager extends Controller
                 case 'Monthly':
                     $validatorMonthly = Validator::make($request->all(), [
                         'month' => 'required',
-                        'conducted' => 'required',
                         'prepared' => 'required',
                         'monthlySelectedYear' => 'required'
                     ]);
@@ -208,8 +208,7 @@ class ReportManager extends Controller
                     $sessionLogin = session()->get('loggedInInventoryAdmin')['id'];
                     $client = ClientModel::where('id', $sessionLogin)->first();
                     $now = Carbon::now('Asia/Manila')->format('F j, Y h:i A');
-                    $preparedBy = ClientModel::where('id', $request->get('prepared'))->first();
-                    $conductedBy = ClientModel::where('id', $request->get('conducted'))->first();
+                    $preparedBy = AdminModel::where('id', $request->get('prepared'))->first();
 
                     $data = [
                         'title' => 'INVENTORY REPORT OF SUPPLIES FOR THE MONTH OF ' . strtoupper($formattedDateNow) ,
@@ -222,11 +221,10 @@ class ReportManager extends Controller
                         'client' => $client,
                         'now' => $now,
                         'formattedDateNow' => $formattedDateNow,
-                        'conductedBy' => $conductedBy,
                         'preparedBy' => $preparedBy
                     ];
-    
-                    $pdf = PDF::loadView('admin.pdf.monthly-report', $data)
+                    $now = now()->setTimezone('Asia/Manila')->format('F d, Y h:i A');
+                    $pdf = PDF::loadView('admin.pdf.monthly-report', $data, compact('now'))
                         ->setPaper('legal', 'landscape')
                         ->setOptions([
                             'isHtml5ParserEnabled' => true,
@@ -247,7 +245,6 @@ class ReportManager extends Controller
                 case "Quarterly":
                     $validatorQuarterly = Validator::make($request->all(), [
                         'quarterly' => 'required',
-                        'conducted' => 'required',
                         'prepared' => 'required',
                         'selectedYear' => 'required'
                     ]);
@@ -505,8 +502,7 @@ class ReportManager extends Controller
                         $endOfMonth = Carbon::createFromFormat('Y-m', "$selectedYear-$numericMonthNow")->endOfMonth();
                         $endOfMonthFormatted = $endOfMonth->format('F d, Y');
                         $now = Carbon::now('Asia/Manila')->format('F j, Y h:i A');
-                        $preparedBy = ClientModel::where('id', $request->get('prepared'))->first();
-                        $conductedBy = ClientModel::where('id', $request->get('conducted'))->first();
+                        $preparedBy = AdminModel::where('id', $request->get('prepared'))->first();
                     } else {
                         $items = collect();  
                     }
@@ -522,7 +518,6 @@ class ReportManager extends Controller
                         'now' => $now,
                         'monthAbbreviations' => $monthAbbreviations,
                         'endOfMonthFormatted' => $endOfMonthFormatted,
-                        'conductedBy' => $conductedBy,
                         'preparedBy' => $preparedBy,
                         'getMonth' => $getFirstMonth
                         

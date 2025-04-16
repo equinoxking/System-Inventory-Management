@@ -16,13 +16,13 @@
         </div>
         <div class="col-md-2">
             <select name="container" id="container" class="form-control">
-                <option value="items">Items</option>
-                <option value="deliveries">Deliveries</option>
-                <option value="reports">Reports</option>
-                <option value="accounts">Accounts</option>
-                <option value="categories">Categories</option>
-                <option value="units">Units</option>
-                <option value="admins">Admins</option>
+                <option value="items" {{ $activeSection == 'items' ? 'selected' : '' }}>Items</option>
+                <option value="deliveries" {{ $activeSection == 'deliveries' ? 'selected' : '' }}>Deliveries</option>
+                <option value="reports" {{ $activeSection == 'reports' ? 'selected' : '' }}>Reports</option>
+                <option value="accounts" {{ $activeSection == 'accounts' ? 'selected' : '' }}>Accounts</option>
+                <option value="categories" {{ $activeSection == 'categories' ? 'selected' : '' }}>Categories</option>
+                <option value="units" {{ $activeSection == 'units' ? 'selected' : '' }}>Units</option>
+                <option value="admins" {{ $activeSection == 'admins' ? 'selected' : '' }}>Admins</option>
             </select>
         </div>
         <div class="col-md-7 text-end">

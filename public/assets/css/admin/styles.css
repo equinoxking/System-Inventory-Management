@@ -234,3 +234,6 @@ th {
 a {
     cursor: pointer;
 }
+.container-fluid {
+    font-size: 13px !important;
+}

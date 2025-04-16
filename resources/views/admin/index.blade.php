@@ -5,6 +5,7 @@
 
 body {  
     background-color: #f8f9fa;  
+   
 }  
 .card {  
     text-align: center;  
@@ -65,40 +66,43 @@ body {
 }
 
 /* Optional: Match column widths */
-#availableItemTable th,
-.table-scroll-wrapper td {
+
+
+#notificationTable {
     width: 33.33%;
 }
+
+
 </style>
 <div class="container-fluid mt-4">  
     <div class="row align-items-stretch">  
         <!-- Notifications Section -->  
-        <div class="col-md-5 mb-2">  
-            <div class="card">  
-                <h4 class="card-title">Notifications</h4>  
-                <div>  
-                    <table class="table" style="font-size: 12px" id="notificationTable">  
-                        <thead>  
+        <div class="col-9 mb-2">  
+            <div class="card p-3">  
+                <h4 class="card-title mb-3">Notifications</h4>  
+                <div class="table-responsive">  
+                    <table class="table table-bordered table-hover" style="font-size: 14px; width: 100%;" id="notificationTable">  
+                        <thead class="thead-light">  
                             <tr>  
-                                <th>Date/Time</th>
-                                <th>Control Number</th> 
-                                <th>Message</th>  
+                                <th style="width: 18%;">Date/Time</th>
+                                <th style="width: 12%;">Control #</th> 
+                                <th style="width: 70%;">Message</th>  
                             </tr>  
                         </thead>  
                         <tbody>  
                             @foreach ($notifications as $notification)
                                 <tr>
-                                    <td style="font-size: 11px"> {{  \Carbon\Carbon::parse($notification->created_at)->format('F d, Y H:i A') }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($notification->created_at)->format('F d, Y h:i A') }}</td>
                                     <td>{{ $notification->control_number }}</td>
-                                    <td  class="text-left" style="font-size: 11px">{{ $notification->message }}
-                                        Status |
+                                    <td class="text-left">
+                                        {{ $notification->message }} Status |
                                         @if ($notification->status === "Pending")
-                                            <span class="badge badge-pending">
+                                            <span class="badge badge-warning">
                                                 <i class="fas fa-clock"></i> Pending
                                             </span>
                                         @else
-                                            <span class="badge badge-release">
-                                                <i class="fas fa-check"></i> Accepted
+                                            <span class="badge badge-success">
+                                                <i class="fas fa-check"></i> Issued
                                             </span>
                                         @endif
                                     </td>
@@ -108,22 +112,23 @@ body {
                     </table>  
                 </div>  
             </div>  
-        </div>  
+        </div>
+          
 
         <!-- Bar Chart Section -->  
-        <div class="col-md-3 mb-2">  
+        {{-- <div class="col-md-3 mb-2">  
             <div class="card">  
                 <h4 class="card-title">Bar Graph</h4>  <br>
                 <canvas id="transactionChart"></canvas>
             </div>  
-        </div>  
+        </div>   --}}
 
-        <div class="col-md-4 mt-3">  
+        <div class="col-md-3 mt-3">  
             <div class="row">  
                 <div class="col-md-6 mb-4">  
                     <div class="card">  
                         <h4 class="card-title">Users</h4>  
-                        <i class="fas fa-users icon" style="font-size: 40px; color: #007bff; margin-right: 10px;"></i>   
+                        <a href="{{ url('/admin/lookup-tables') }}?section=accounts"><i class="fas fa-users icon" style="font-size: 40px; color: #007bff; margin-right: 10px;"></i></a>  
                         <div class="icon-number">
                             @if ($clients >= 0 && $clients <= 9)
                                 0{{ $clients }}
@@ -135,8 +140,9 @@ body {
                 </div>  
                 <div class="col-md-6 mb-4">  
                     <div class="card">  
-                        <h4 class="card-title">Transactions</h4>  
-                        <i class="fas fa-receipt icon" style="color: #28a745; font-size: 40px;"></i>  
+                        <h4 class="card-title">Transactions</h4> 
+                        <a href="{{ url('/admin/transaction') }}"><i class="fas fa-receipt icon" style="color: #28a745; font-size: 40px;"></i>  </a>
+                        
                         <div class="icon-number">
                             @if ($transactions >= 0 && $transactions <= 9)
                                 0{{ $transactions }}
@@ -148,8 +154,9 @@ body {
                 </div>  
                 <div class="col-md-6 mb-4">  
                     <div class="card">  
-                        <h4 class="card-title">Items</h4>  
-                        <i class="fas fa-box icon" style="color: #ffc107; font-size: 40px;"></i> 
+                        <h4 class="card-title">Items</h4>
+                        <a href="{{ url('/admin/lookup-tables') }}?section=items"><i class="fas fa-box icon" style="color: #ffc107; font-size: 40px;"></i></a>  
+                       
                         <div class="icon-number">
                             @if ($itemCount >= 0 && $itemCount <= 9)
                                 0{{ $itemCount }}
@@ -161,8 +168,8 @@ body {
                 </div>  
                 <div class="col-md-6 mb-4">  
                     <div class="card">  
-                        <h4 class="card-title">Deliveries</h4>  
-                        <i class="fas fa-shopping-cart icon" style="color: #dc3545; font-size: 40px;"></i>
+                        <h4 class="card-title">Deliveries</h4>
+                        <a href="{{ url('/admin/lookup-tables') }}?section=deliveries"><i class="fas fa-shopping-cart icon" style="color: #dc3545; font-size: 40px;"></i></a>  
                         <div class="icon-number">
                             @if ($receives >= 0 && $receives <= 9)
                                 0{{ $receives }}
@@ -180,40 +187,44 @@ body {
     <!-- Data Table Section -->  
     <div class="data-table-section">
         <h2 class="text-center">Item List</h2>
-        <div class="d-flex align-items-center">
-            <div class="col-md-2 form-group text-right">
-                <label for="category-filter">Filter By Category: </label>
-            </div>
-            <div class="col-md-2">
-                <select id="category-filter" class="form-control">
-                    <option value="">All</option>
+        <div class="row mb-3">
+            <div class="row mb-3">
+                <div class="col-md-4 d-flex align-items-center">
+                    <label for="category-filter" class="mb-0 mr-2" style="white-space: nowrap;">Filter By Category:</label>
+                    <select id="category-filter" class="form-control">
+                        <option value="">All</option>
                         @foreach ($categories as $category)
                             <option value="{{ $category->name }}">{{ $category->name }}</option>
                         @endforeach
-                </select>
+                    </select>
+                </div>
             </div>
+            
         </div>
+        
         <!-- Scrollable wrapper -->
         <div>
             <table id="availableItemTable" class="table table-striped table-bordered">
                 <thead>
                     <tr>
-                        <th>Category</th>
-                        <th>Stock On Hand</th>
-                        <th>Item Name</th>
-                        <th>Stock Level</th>
+                        <th width="30%">Category</th>
+                        <th width="30%">Item Name</th>
+                        <th width="5%">Issued</th>
+                        <th width="7%">Stock On Hand</th>
+                        <th width="10%" class="text-center">Stock Level</th>
                     </tr>
                 </thead>
                 <tbody style="max-height: 200px; overflow-y: auto;">
-                    @foreach ($items as $item)
+                    @foreach ($itemsWithTransactionSums as $itemData)
                         <tr>
-                            <td>{{ $item->category->name }}</td>
-                            <td class="text-right">Availability ({{ $item->inventory->quantity }})</td>
-                            <td>{{ $item->name }}</td>
-                            <td>
-                                @if($item->inventory->quantity == 0)
+                            <td>{{ $itemData['item']->category->name }}</td>
+                            <td>{{ $itemData['item']->name }}</td>
+                            <td>{{ $itemData['total_transaction_sum'] }}</td> <!-- Display the total transaction sum -->
+                            <td class="text-right">{{ $itemData['item']->inventory->quantity }}</td>
+                            <td  class="text-center">
+                                @if($itemData['item']->inventory->quantity == 0)
                                     <span class="badge badge-noStock"><i class="fas fa-times-circle"></i> No Stock</span>
-                                @elseif ($item->inventory->quantity <= 20) 
+                                @elseif ($itemData['item']->inventory->quantity <= 20) 
                                     <span class="badge badge-noStock"><i class="fas fa-times-circle"></i> Critical</span>
                                 @else 
                                     <span class="badge badge-highStock"><i class="fas fa-check-circle"></i> Normal</span>
@@ -227,7 +238,7 @@ body {
     </div>
     
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
+{{-- <script>
     var ctx = document.getElementById('transactionChart').getContext('2d');
     var transactionChart = new Chart(ctx, {
         type: 'bar',
@@ -266,6 +277,6 @@ body {
             }
         }
     }
-    });
+    }); --}}
 </script> 
 @endsection  

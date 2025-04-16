@@ -6,20 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Monthly Report Generation</title>
     <style>
+        
         .rightText{
             text-align: right;
-        }
-        .header, .footer {
-            text-align: center;
-            position: fixed;
-            left: 0;
-            right: 0;
-        }
-        .header {
-            top: 0;
-            padding: 10px;
-            font-size: 14px;
-            font-weight: bold;
         }
         table {
             width: 100%;
@@ -33,15 +22,6 @@
         .content {
             margin-bottom: 50px;
         }
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 10px;
-            padding: 10px;
-        }
         table.signatories-table th, table.signatories-table td {
             border: none;
         }
@@ -51,9 +31,73 @@
         body{
             font-size: 12px;
         }
+        .header {
+            text-align: center;
+            padding-bottom: 10px;
+            font-size: 14px;
+            position: absolute;
+            top: 30px; /* Space between the header and top of the page */
+            left: 0;
+            right: 0;
+        }
+
+        /* Footer style */
+        .footer {
+            position: fixed;
+            bottom: 30px; /* Distance from the bottom of the page */
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 9px;
+            padding-top: 10px;
+        }
+
+        /* Page number style */
+        .pagenum:before {
+            content: counter(page);
+        }
+
+        /* Hide header on all pages except first page */
+        .first-page-header {
+            display: block;
+        }
+
+        .not-first-page .first-page-header {
+            display: none;
+        }
+
     </style>
 </head>
 <body>
+    @php
+        $imagePath = public_path('assets/images/LOGO-PH.png');
+        $imageData = base64_encode(file_get_contents($imagePath));
+        $src = 'data:image/png;base64,' . $imageData;
+        $imagePath1 = public_path('assets/images/LOGO.webp');
+        $imageData1 = base64_encode(file_get_contents($imagePath1));
+        $src1 = 'data:image/png;base64,' . $imageData1;
+    @endphp
+<div class="header first-page-header">
+    <table style="border: none; border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <th style="border: none;">
+                    <img style="width: 60px; height: 60px; margin: 0 auto; margin-left: 40rem" src="{{ $src1 }}">
+                </th>
+                <td style="text-align: center; border: none;" width="80%">
+                    <p style="margin: 0; font-weight: bold">Republic of the Philippines</p>
+                    <p style="margin: 0; font-weight: none">Province of Nueva Vizcaya</p>
+                    <p style="margin: 0; font-weight: none">Bayombong</p>
+                    <span style="margin: 0; font-size: 13px; font-weight:bold">PROVINCIAL HUMAN RESOURCE AND MANAGEMENT OFFICE</span>
+                </td>
+                <th style="border: none;">
+                    <img style="width: 80px; height: 80px; margin: 0 auto; margin-right: 40rem" src="{{ $src }}">
+                </th>
+            </tr>
+        </tbody>
+    </table>    
+</div>
+<main style="margin-top: 7rem">
     <table class="table date-generated">
         <thead>
             <tr>
@@ -154,7 +198,6 @@
                 <table class="signatories-table table" style="border: none;">
                     <thead class="signatories-table">
                         <tr>
-                            <td colspan="2">Conducted by:</td>
                             <td colspan="2">Prepared by:</td>
                             <td colspan="2">Reviewed by:</td>
                             <td colspan="2">Noted by:</td>
@@ -162,12 +205,6 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="2">
-                                <p>
-                                    <strong>{{ strToUpper($conductedBy->full_name)}}</strong><br>
-                                    <span style="font-style: italic">{{ $conductedBy->position }}</span>
-                                </p>
-                            </td>
                             <td colspan="2">
                                 <p>
                                     <strong>{{ strToUpper($preparedBy->full_name) }}</strong><br>
@@ -188,14 +225,13 @@
                             </td>
                         </tr>
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <td><span style="font-size: 9px " >Date Generated: {{ $now }}</span></td>
-                        </tr>
-                    </tfoot>
                 </table>
             </div>
         </div>
     </div>
+</main>
+<div class="footer">
+    <span>Date Generated: {{ $now }}</span> | Page <span class="pagenum"></span>
+</div>
 </body>
 </html>

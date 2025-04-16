@@ -56,6 +56,14 @@
         }
     </style>
 </head>
+@php
+    $imagePath = public_path('assets/images/LOGO-PH.png');
+    $imageData = base64_encode(file_get_contents($imagePath));
+    $src = 'data:image/png;base64,' . $imageData;
+    $imagePath1 = public_path('assets/images/LOGO.webp');
+    $imageData1 = base64_encode(file_get_contents($imagePath1));
+    $src1 = 'data:image/png;base64,' . $imageData1;
+@endphp
 <body>
     <div class="title">
         <strong>{{ $title }}</strong><br>
@@ -227,7 +235,6 @@
                 <table class="signatories-table table" style="border: none;">
                     <thead class="signatories-table">
                         <tr>
-                            <td colspan="2">Conducted by:</td>
                             <td colspan="2">Prepared by:</td>
                             <td colspan="2">Reviewed by:</td>
                             <td colspan="2">Noted by:</td>
@@ -235,12 +242,6 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="2">
-                                <p>
-                                    <strong>{{ strToUpper($conductedBy->full_name)}}</strong><br>
-                                    <span style="font-style: italic">{{ $conductedBy->position }}</span>
-                                </p>
-                            </td>
                             <td colspan="2">
                                 <p>
                                     <strong>{{ strToUpper($preparedBy->full_name) }}</strong><br>

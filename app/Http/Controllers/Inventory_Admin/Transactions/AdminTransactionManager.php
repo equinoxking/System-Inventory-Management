@@ -106,7 +106,19 @@ class AdminTransactionManager extends Controller
                             $inventory->quantity = $newQuantity;
                             $inventory->save();
                         }
-                        if (!$inventory) {
+                        $message = "Admin: " . $admin->full_name .
+                        " | Transaction: " . $transaction->transaction_number .
+                        " | Item: " . $requestItem->request_item .
+                        " | Quantity: " . $requestItem->request_quantity . ".";
+                        $notification = new NotificationModel();
+                        $notification->control_number = $this->generateNotificationNumber();
+                        $notification->user_id = $transaction->user_id;
+                        $notification->admin_id = $admin->id;
+                        $notification->message = $message;
+                        $notification->status = "Issued";
+                        $notification->save();
+                        
+                        if (!$inventory || !$notification) {
                             $allItemsProcessed = false;
                             break;
                         }

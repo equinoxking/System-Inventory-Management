@@ -240,9 +240,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="{{ asset('assets/js/admin/transactions/status.js') }}"></script>
 <script src="{{ asset('assets/js/admin/transactions/request-item.js') }}"></script>
-<script src="{{ asset('assets/js/user/items/search-items.js') }}"></s>
+<script src="{{ asset('assets/js/user/items/search-items.js') }}"></script>
 <script>
-window.onload = function() {
+    window.onload = function() {
     const options = { timeZone: 'Asia/Manila', hour12: false };
     const now = new Date();
     const timeInManila = new Intl.DateTimeFormat('en-GB', {
@@ -258,19 +258,18 @@ function toggleSelection() {
     const status = document.getElementById('status').value;
     const timeDivision = document.getElementById('timeDivision');
     const reasonDivision = document.getElementById('reasonDivision');
-    // const dateDivision = document.getElementById('dateDivision');
     if (status === '3') {
         reasonDivision.style.display = 'block';
         timeDivision.style.display = 'none';
-        // dateDivision.style.display = 'none';
+
     } else if (status === '2') {
         reasonDivision.style.display = 'none';
         timeDivision.style.display = 'block';
-        // dateDivision.style.display = 'block';
+
     } else {
         timeDivision.style.display = 'none';
         reasonDivision.style.display = 'none';
-        // dateDivision.style.display = 'none';
+
     }
 }
 </script>

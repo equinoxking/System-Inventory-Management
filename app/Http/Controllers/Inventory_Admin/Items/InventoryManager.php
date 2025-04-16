@@ -16,7 +16,7 @@ use App\Models\SubCategoryModel;
 
 class InventoryManager extends Controller
 {
-    public function showItems(){
+    public function showItems(Request $request){
         $items = ItemModel::with(['category', 'inventory', 'status' , 'receives'])
         ->get();
         $categories = CategoryModel::all();
@@ -27,7 +27,7 @@ class InventoryManager extends Controller
         $reports = ReportModel::all();
         $roles = RoleModel::all();
         $sub_categories = SubCategoryModel::all();
-
+        $activeSection = $request->query('section', 'items');
         return view('admin.items.view-items', [
             'items' => $items,
             'categories' => $categories,
@@ -37,7 +37,7 @@ class InventoryManager extends Controller
             'admins' => $admins,
             'reports' => $reports,
             'roles' => $roles,
-            'sub_categories' => $sub_categories
-        ]);
+            'sub_categories' => $sub_categories,
+        ], compact('activeSection'));
     }
 }

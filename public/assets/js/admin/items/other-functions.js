@@ -117,19 +117,43 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
-document.getElementById('container').addEventListener('change', function () {
-    // Hide all containers
+document.addEventListener('DOMContentLoaded', function () {
     const containers = document.querySelectorAll('.table-container');
-    containers.forEach(container => {
-        container.style.display = 'none';
-    });
+    const urlParams = new URLSearchParams(window.location.search);
+    const section = urlParams.get('section') || 'items'; // Default to 'items'
 
-    // Show the selected container
-    const selectedValue = this.value;
-    if (selectedValue) {
-        const selectedContainer = document.getElementById(`${selectedValue}-container`);
+    // Function to hide all containers
+    function hideAllContainers() {
+        containers.forEach(container => {
+            container.style.display = 'none';
+        });
+    }
+
+    // Function to show a specific container
+    function showContainer(containerId) {
+        hideAllContainers();  // Hide all containers
+        const selectedContainer = document.getElementById(containerId);
         if (selectedContainer) {
-            selectedContainer.style.display = 'block';
+            selectedContainer.style.display = 'block'; // Show the selected container
         }
     }
+
+    // Initially show the container based on the URL parameter
+    showContainer(`${section}-container`);
+
+    // Handle the change event for the dropdown
+    document.getElementById('container').addEventListener('change', function () {
+        const selectedValue = this.value;  // Get selected value from dropdown
+        showContainer(`${selectedValue}-container`); // Show the corresponding container
+    });
+
+    // Handle anchor clicks for each section (items, deliveries, etc.)
+    const anchorLinks = document.querySelectorAll('.card a');
+    anchorLinks.forEach(link => {
+        link.addEventListener('click', function (event) {
+            event.preventDefault();  // Prevent default link action
+            const section = this.dataset.section;  // Get section from data-section attribute
+            showContainer(`${section}-container`); // Show the corresponding container
+        });
+    });
 });
