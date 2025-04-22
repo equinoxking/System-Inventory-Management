@@ -86,32 +86,34 @@ th {
     white-space: nowrap; 
 }
 .badge-success {
-    color: ffffff;
-    background-color: #28a745; 
-    padding: 5px;
+    color: #ffffff;
+    background-color: #28a745; /* Customize for your other badges (pending, danger) */
+    padding: 5px 10px;
     border-radius: 3px;
-    display: inline-block; 
-    width: 6rem; 
-    white-space: nowrap; 
+    text-align: center;
+    align-items: center;
+    display: inline-flex;
+    margin-left: 1rem;
 }
-
 .badge-danger {
     color: ffffff;
     background-color: #dc3545; 
-    padding: 5px;
+    padding: 5px 10px;
     border-radius: 3px;
-    display: inline-block; 
-    width: 6rem; 
-    white-space: nowrap;
+    text-align: center;
+    align-items: center;
+    display: inline-flex;
+    margin-left: 1rem;
 }
 .badge-pending {
     color: ffffff;
     background-color: #FF9800; 
-    padding: 5px;
+    padding: 5px 10px;
     border-radius: 3px;
-    display: inline-block; 
-    width: 6rem; 
-    white-space: nowrap;
+    text-align: center;
+    align-items: center;
+    display: inline-flex;
+    margin-left: 1rem;
 }
 .badge-forReview {
     color: ffffff;
@@ -125,6 +127,15 @@ th {
 .badge-release {
     color: ffffff;
     background-color: #4CAF50; 
+    padding: 5px;
+    border-radius: 3px;
+    display: inline-block; 
+    width: 6rem; 
+    white-space: nowrap;
+}
+.badge-released {
+    color: ffffff;
+    background-color: #17a2b8;
     padding: 5px;
     border-radius: 3px;
     display: inline-block; 

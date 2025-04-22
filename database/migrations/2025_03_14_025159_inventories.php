@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('item_id')->references('id')->on('items')->onDelete('cascade');
             $table->foreignId('unit_id')->references('id')->on('units')->onDelete('cascade');
             $table->integer('quantity');
-            $table->integer('max_quantity');
+            $table->integer('min_quantity');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
         });

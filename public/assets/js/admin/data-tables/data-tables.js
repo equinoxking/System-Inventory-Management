@@ -23,13 +23,13 @@ $(document).ready(function () {
             
         },
         "columns": [
-            { "data": "created_at" },
-            { "data": "updated_at" },
             { "data": "control_number" },
-            { "data": "quantity" },
-            { "data": "unit_name" },
             { "data": "category_name" },
             { "data": "item_name" },
+            { "data": "unit_name" },
+            { "data": "quantity" },
+            { "data": "buffer" },
+            { "data": "created_at" },
             {
                 "data": "status_name",
                 "render": function(data, type, row) {
@@ -43,9 +43,7 @@ $(document).ready(function () {
             {
                 "data": null,
                 "render": function(data, type, row) {
-                    if(row.quantity == 0){
-                        return '<span class="badge badge-noStock"><i class="fas fa-times-circle"></i> No Stock</span>';
-                    } else if (row.quantity <= 20) {
+                    if(row.buffer > row.quantity){
                         return '<span class="badge badge-noStock"><i class="fas fa-times-circle"></i> Critical</span>';
                     } else {
                         return '<span class="badge badge-highStock"><i class="fas fa-check-circle"></i> Normal</span>';
@@ -66,7 +64,7 @@ $(document).ready(function () {
     });
     setInterval(function() {
         table.ajax.reload();  // This reloads the data from the server
-    }, 1000);
+    }, 6000);
     $('#category-filter, #unit-filter, #status-filter').on('change', function () {
         table.ajax.reload();  // Reload the table data based on new filters
     });
@@ -98,7 +96,7 @@ $(function () {
         },
         "order": [[1, 'desc']],
         "autoWidth": false,
-        "processing": true,
+        "processing": false,
         "serverSide": false,
         "ajax": {
             url: '/admin/refreshTransactions',  // Replace with your actual endpoint
@@ -129,11 +127,11 @@ $(function () {
                 "data": "status",
                 "render": function(data, type, row) {
                     if (data === 'Accepted') {
-                        return '<span class="badge badge-success"><i class="fas fa-check-circle"></i> Accepted</span>';
+                        return '<span class="badge-success"><i class="fas fa-check-circle"></i></span>';
                     } else if (data === 'Pending') {
-                        return '<span class="badge badge-pending"><i class="fas fa-clock"></i> Pending</span>';
+                        return '<span class="badge-pending"><i class="fas fa-clock"></i></span>';
                     } else {
-                        return '<span class="badge badge-danger"><i class="fas fa-times-circle"></i> Rejected</span>';
+                        return '<span class="badge-danger"><i class="fas fa-times-circle"></i></span>';
                     }
                 }
             },
@@ -187,7 +185,7 @@ $(function () {
     });
 });
 $(function () {
-    var table = $('#transactionHistoryTable').dataTable({
+    var table = $('#transactionHistoryTable').DataTable({
         "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
         "pageLength": 5,
         "responsive": {
@@ -199,10 +197,69 @@ $(function () {
                 { name: 'xs', width: 576 }
             ]
         },
-        "order": [[1, 'desc']]
+        "order": [[1, 'desc']],
+        "autoWidth": false,
+        "processing": false,
+        "serverSide": false,
+        "ajax": {
+            url: '/admin/refreshActedTransactions',  // Replace with your actual endpoint
+            type: 'GET',
+            "dataSrc": function (json) {
+                return json.data;
+            } // Ensure that 'data' is the key where the array of rows is located
+        },
+        "columns": [
+            { "data": "time_request" },
+            { "data": "transaction_number" },
+            { "data": "stock_on_hand"},
+            { "data": "quantity" },
+            { "data": "unit" },
+            { "data": "item_name" },
+            { "data": "client_name" },
+            {
+                data: null, // No direct data
+                render: function(data, type, row) {
+                    return row.date_approved + ' ' + row.time_approved;
+                },
+                title: 'Date/Time Acted' // Title for the merged column
+            },
+            { "data": "request_aging" },
+            { "data": "released_by" },
+            { "data": "time_released" },
+            { "data": "released_aging" },
+            {
+                "data": "status",
+                "render": function(data, type, row) {
+                    if (data === 'Accepted') {
+                        return '<span class="badge-success"><i class="fas fa-check-circle"></i></span>';
+                    } else if (data === 'Pending') {
+                        return '<span class="badge-pending"><i class="fas fa-clock"></i></span>';
+                    } else {
+                        return '<span class="badge-danger"><i class="fas fa-times-circle"></i></span>';
+                    }
+                }
+            },
+            {
+                "data": "remarks",
+                "render": function(data, type, row) {
+                    if (data === 'For Review') {
+                        return '<span class="badge badge-forReview"><i class="fas fa-search"></i> For Review</span>';
+                    } else if (data === 'Released') {
+                        return '<span class="badge badge-released"><i class="fas fa-box-open"></i> Released</span>';
+                    } else if (data === 'Ready for Release') {
+                        return '<span class="badge badge-release"><i class="fas fa-cloud-upload-alt"></i> Ready for Release</span>';
+                    } else {
+                        return '<span class="badge badge-completed"><i class="fas fa-check-circle"></i> Completed</span>';
+                    }
+                }
+            },
+        ],
     });
-    
+    setInterval(function() {
+        table.ajax.reload(null, false);  
+    }, 6000);
 });
+
 $(function () {
     var table = $('#auditTable').dataTable({
         "aLengthMenu": [[10, 15, 25, 50, 75 , 100, -1],[10, 15, 25, 50, 75 , 100, "All"]],
@@ -252,38 +309,14 @@ $(function () {
             }
         },
         "columns": [
-            { "data": "created_at" },
-            { "data": "updated_at" },
-            { "data": "type"},
             { "data": "control_number" },
-            { "data": "remaining_quantity" },
-            { "data": "received_quantity" },   
-            { "data": "unit_name" },
+            { "data": "category" }, 
             { "data": "item_name" }, 
-            {
-                "data": null,
-                "render": function(data, type, row) {
-                    if(row.type === "Inspection Delivery"){
-                        return '<span class="badge badge-forReview"><i class="fas fa-search"></i> For Inspection</span>';
-                    }else{
-                        return '<span class="badge badge-completed"><i class="fas fa-check-circle"></i> Completed</span>';
-                    }
-                },
-                "orderable": false,
-                "class": "text-center"
-            },        
-            {
-                "data": null,
-                "render": function(data, type, row) {
-                    if(row.type === "Inspection Delivery"){
-                        return '<button type="button" class="btn btn-sm btn-warning" id="editReceivedItem" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" title="Supply received edit button"><i class="fa fa-edit"></i></button>';
-                    }else{
-                        return ''
-                    }
-                },
-                "orderable": false,
-                "class": "text-center"
-            }
+            { "data": "unit_name" },
+            { "data": "received_quantity" },
+            { "data": "remaining_quantity" },
+            { "data": "supplier" },
+            { "data": "created_at" }, 
         ]
     });
 
@@ -296,7 +329,7 @@ $(function () {
     // Automatically reload the data every 6 seconds
     setInterval(function() {
         table.ajax.reload(null, false);  // Reload the table without resetting pagination
-    }, 1000);
+    }, 6000);
 });
 $(function () {
     var table = $('#availableItemTable').DataTable({

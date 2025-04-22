@@ -28,8 +28,10 @@ class AdminTransactionManager extends Controller
             'adminBy',
             'admin'
         ])
-        ->where('remark', '!=' , 'Completed')
-        ->get();
+        ->where(function ($query) {
+            $query->where('status_id', 1);
+        })
+        ->get();        
         $transactionHistories = TransactionModel::with([
             'transactionDetail',
             'client',
@@ -41,7 +43,8 @@ class AdminTransactionManager extends Controller
             'admin'
         ])
         ->where('remark', 'Completed')
-        ->orWhere('remark', 'Rejected')
+        ->orWhere('remark', 'Ready for Release')
+        ->orWhere('remark', 'Released')
         ->get();
         $statuses = TransactionStatusModel::all();
 
@@ -88,64 +91,112 @@ class AdminTransactionManager extends Controller
                     case 2:
                         $allItemsProcessed = true;
                         // Logic for Accepted status
-                        $status = TransactionStatusModel::where('name', 'Accepted')->first();
-                        $transaction->released_by = $admin->id;
-                        $transaction->released_time = $formattedTime;
-                        $transaction->approved_date = $formattedDateNow;
-                        $transaction->approved_time = $formattedTimeNow;
-                        $transaction->remark = 'For Release';
-                        $transaction->request_aging = $agingString;
-                        $transaction->status_id = $status->id;
-                        
-                        $transaction->save();
-
-                        $inventory = InventoryModel::where('item_id', $transaction->item_id)->first();
+                        $checkInventory = InventoryModel::where('item_id', $transaction->item_id)->first();
                         $requestItem = TransactionDetailModel::where('transaction_id', $transact_id)->first();
-                        if ($inventory) {
-                            $newQuantity = $inventory->quantity - $requestItem->request_quantity;
-                            $inventory->quantity = $newQuantity;
-                            $inventory->save();
-                        }
-                        $message = "Admin: " . $admin->full_name .
-                        " | Transaction: " . $transaction->transaction_number .
-                        " | Item: " . $requestItem->request_item .
-                        " | Quantity: " . $requestItem->request_quantity . ".";
-                        $notification = new NotificationModel();
-                        $notification->control_number = $this->generateNotificationNumber();
-                        $notification->user_id = $transaction->user_id;
-                        $notification->admin_id = $admin->id;
-                        $notification->message = $message;
-                        $notification->status = "Issued";
-                        $notification->save();
-                        
-                        if (!$inventory || !$notification) {
-                            $allItemsProcessed = false;
+
+                        if($checkInventory->quantity < $requestItem->request_quantity){
+                            $status = TransactionStatusModel::where('name', 'Denied')->first();
+                            $transaction->remark = "Completed";
+                            $transaction->status_id = $status->id;
+                            $transaction->reason = "Insufficient Inventory";
+                            $transaction->save();
+                            if($transaction){
+                                return response()->json([
+                                    'message' => "This request will be denied automatically due to insufficient inventory!",
+                                    'status' => 501
+                                ]);
+                            }else{
+                                return response()->json([
+                                    'message' => "Check your internet connection!",
+                                    'status' => 500
+                                ]);
+                            }
+                        }else{
+                            $status = TransactionStatusModel::where('name', 'Accepted')->first();
+                            $transaction->released_by = $admin->id;
+                            $transaction->released_time = $formattedTime;
+                            $transaction->approved_date = $formattedDateNow;
+                            $transaction->approved_time = $formattedTimeNow;
+                            if (Carbon::now()->lessThan(Carbon::parse($time))) {
+                                $transaction->remark = "Ready for Release";
+                            } else {
+                                $transaction->remark = "Released";
+                            }
+                            $transaction->request_aging = $agingString;
+                            $transaction->status_id = $status->id;
+                            
+                            $transaction->save();
+    
+                            $inventory = InventoryModel::where('item_id', $transaction->item_id)->first();
+                           
+                            if ($inventory) {
+                                $newQuantity = $inventory->quantity - $requestItem->request_quantity;
+                                $inventory->quantity = $newQuantity;
+                                $inventory->save();
+                            }
+                            $message = "Admin: " . $admin->full_name .
+                            " | Transaction: " . $transaction->transaction_number .
+                            " | Item: " . $requestItem->request_item .
+                            " | Quantity: " . $requestItem->request_quantity . ".";
+                            $notification = new NotificationModel();
+                            $notification->control_number = $this->generateNotificationNumber();
+                            $notification->user_id = $transaction->user_id;
+                            $notification->admin_id = $admin->id;
+                            $notification->message = $message;
+                            $notification->status = "Issued";
+                            $notification->save();
+                            
+                            if (!$inventory || !$notification) {
+                                $allItemsProcessed = false;
+                                break;
+                            }
+                            if ($allItemsProcessed) {
+                                return response()->json([
+                                    'message' => "Status change successful!",
+                                    'status' => 200
+                                ]);
+                            } else {
+                                return response()->json([
+                                    'message' => "Check your internet connection!",
+                                    'status' => 500
+                                ]);
+                            }  
                             break;
                         }
-                        if ($allItemsProcessed) {
-                            return response()->json([
-                                'message' => "Status change successful!",
-                                'status' => 200
-                            ]);
-                        } else {
-                            return response()->json([
-                                'message' => "Error in changing status!",
-                                'status' => 500
-                            ]);
-                        }  
-                        break;
-
+                       
                     case 3:
                         // Logic for Rejected status
-                        $status = TransactionStatusModel::where('name', 'Rejected')->first();
-                        $transaction->status_id = $status->id;
-                        $transaction->reason = ucfirst($request->get('reason'));
-                        $transaction->save();
-                        break;
+                        $validatorForDenied = Validator::make($request->all(), [
+                            'reason' => 'required', 
+                        ]);
+                        if ($validatorForDenied->fails()) {
+                            return response()->json([
+                                'status' => 400,
+                                'message' => $validatorForDenied->errors()
+                            ]);
+                        } else{
+                            $status = TransactionStatusModel::where('name', 'Denied')->first();
+                            $transaction->remark = "Completed";
+                            $transaction->status_id = $status->id;
+                            $transaction->reason = ucfirst($request->get('reason'));
+                            $transaction->save();
 
+                            if($transaction){
+                                return response()->json([
+                                    'message' => "Status change successful!",
+                                    'status' => 200
+                                ]);
+                            }else{
+                                return response()->json([
+                                    'message' => "Check your internet connection!",
+                                    'status' => 500
+                                ]);
+                            }
+                            break;
+                        }
                     default:
                         return response()->json([
-                            'message' => 'Invalid status!',
+                            'message' => "Check your internet connection!",
                             'status' => 400
                         ]);
                 }
@@ -155,9 +206,10 @@ class AdminTransactionManager extends Controller
     public function getTransactions(Request $request)
     {
         $transactions = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'])
-            ->where('remark', "!=", 'Completed')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        ->where(function ($query) {
+            $query->where('status_id', 1);
+        })
+        ->get();     
 
         $formattedTransactions = $transactions->map(function ($transaction) {
             return [
@@ -180,6 +232,39 @@ class AdminTransactionManager extends Controller
             ];
         });
     
+        return response()->json([
+            'data' => $formattedTransactions
+        ]);
+    }
+    public function getActedTransactions(Request $request)
+    {
+        $transactions = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'])
+        ->where(function ($query) {
+            $query->where('status_id', 2)
+            ->orWhere('status_id', 3);
+        })
+        ->get();     
+
+        $formattedTransactions = $transactions->map(function ($transaction) {
+            return [
+                'id' => $transaction->id,
+                'time_request' => \Carbon\Carbon::parse($transaction->created_at)->format('F d, Y h:i A'),
+                'transaction_number' => $transaction->transaction_number,
+                'client_name' => $transaction->client ? $transaction->client->full_name : $transaction->admin->full_name,
+                'item_name' => $transaction->item->name,
+                'unit' => $transaction->item->inventory->unit->name,
+                'stock_on_hand' => $transaction->item->inventory->quantity,
+                'quantity' => $transaction->transactionDetail->request_quantity,
+                'released_by' => $transaction->adminBy ? $transaction->adminBy->full_name : '',
+                'request_aging' => $transaction->request_aging,
+                'time_released' => $transaction->released_time ? \Carbon\Carbon::parse($transaction->released_time)->format('h:i A') : '',
+                'time_approved' => $transaction->approved_time ? \Carbon\Carbon::parse($transaction->approved_time)->format('h:i A') : '',
+                'date_approved' => $transaction->approved_date ? \Carbon\Carbon::parse($transaction->approved_date)->format('F d, Y') : '',
+                'released_aging' => $transaction->released_aging,
+                'status' => $transaction->status ? $transaction->status->name : '',
+                'remarks' => $transaction->remark,
+            ];
+        });
         return response()->json([
             'data' => $formattedTransactions
         ]);

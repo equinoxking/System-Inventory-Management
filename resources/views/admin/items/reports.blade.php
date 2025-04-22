@@ -17,10 +17,8 @@
                 <thead style="background-color: #3d5c99; color:white">
                     <tr>
                         <th width="12%">Date/Time Submitted</th>
-                        <th width="12%">Date/Time Updated</th>
                         <th width="10%">Report Type</th>
-                        <th width="10%">Control Number</th>
-                        <th width="10%">Report Name</th>
+                        <th width="10%">Report Number</th>
                         <th width="10%">Submitted By</th>
                         <th width="10%">Position</th>
                         <th width="5%">Action</th>
@@ -30,10 +28,8 @@
                     @foreach ($reports as $report)
                     <tr>
                         <td>{{ \Carbon\Carbon::parse($report->created_at)->format('F d, Y H:i A') }}</td>
-                        <td>{{ \Carbon\Carbon::parse($report->updated_at)->format('F d, Y H:i A') }}</td>
                         <td>{{ $report->report_type }}</td>
                         <td>{{ $report->control_number }}</td>
-                        <td>{{ $report->report_name }}</td>
                         <td>{{ $report->admin->full_name }}</td>
                         <td>{{ $report->admin->position }}</td>
                         <td class="text-center">
@@ -81,10 +77,6 @@
                                 <option value="Quarterly">Quarterly Report</option>
                                 <option value="Monthly">Monthly Report</option>
                             </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="reportName" class="font-weight-bold">Report Name</label>
-                            <input type="text" class="form-control" name="report_name" id="report_name">
                         </div>
                         <div class="form-group">
                             <label for="submittedBy" class="font-weight-bold">Submitted By:</label>

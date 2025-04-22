@@ -23,7 +23,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/admin/reports') }}?section=items" 
+                    <a class="nav-link" href="{{ url('/admin/reports') }}" 
                        class="reports-link" 
                        style="{{ (Request::is('admin/reports')) ? 'background-color: #3d5c99;' : '' }}">
                        <i class="fas fa-chart-bar mr-1"></i>Reports
@@ -52,11 +52,11 @@
                     <strong>
                         <div>
                             <div>
-                                {{ session('loggedInInventoryAdmin')['admin_full_name'] }}
+                                <u>{{ session('loggedInInventoryAdmin')['admin_full_name'] }}</u>
                             </div>
                             <div style="text-align: center">
-                                <span >Admin, {{ $position }}</span>
-                            </div>
+                                <span style="font-weight: normal;">Admin, {{ $position }}</span>
+                            </div>                            
                         </div>
                        
                     </strong>

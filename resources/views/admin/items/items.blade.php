@@ -40,6 +40,10 @@
                     <input type="number" class="form-control" id="quantity" name="quantity[]" placeholder="Enter quantity" min="0">
                 </div>
                 <div class="col-md-1 form-group">
+                    <label for="buffer" class="font-weight-bold">Buffer Stock</label>
+                    <input type="number" class="form-control" id="buffer" name="buffer[]" placeholder="Enter buffer stock" min="0">
+                </div>
+                <div class="col-md-1 form-group">
                     <label for="action" class="font-weight-bold">Action</label>
                     <button type="button" class="remove-add-item btn btn-danger">Remove</button>
                 </div>
@@ -117,13 +121,13 @@
         <div class="col-md-12">
             <table id="itemsTable" class="table-striped table-hover" style="font-size: 11px">
                 <thead class="bg-info">
-                    <th>Date/Time Created</th>
-                    <th>Date/Time Updated</th>
-                    <th>Control Number</th>
-                    <th>Stock on Hand</th>
-                    <th>UoM</th>
+                    <th>Item Number</th>
                     <th width="20%">Category</th>
                     <th width="20%">Item Name</th>
+                    <th>UoM</th>
+                    <th>Stock on Hand</th>
+                    <th>Buffer Stock</th>
+                    <th>Date/Time Created</th>
                     <th>Status</th>
                     <th width="5%">Stock Level</th>
                     <th>Action</th>
@@ -197,7 +201,10 @@
                             <ul class="edit-unit-results" style="display: none; max-height: 200px; overflow-y: auto;"></ul>
                             <input type="text" class="edit-selected-unit-id" name="unitId[]" hidden>
                         </div>
-                        
+                        <div class="form-group">
+                            <label for="buffer" class="font-weight-bold">Buffer Stock</label>
+                            <input type="number" class="form-control" id="edit-buffer" name="buffer[]" placeholder="Enter buffer stock" min="0">
+                        </div>
                 </div>
                 <div class="row">
                     <div class="modal-footer">

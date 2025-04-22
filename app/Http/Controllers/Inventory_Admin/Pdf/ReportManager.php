@@ -530,7 +530,7 @@ class ReportManager extends Controller
                         'defaultFont' => 'sans-serif',
                         'margin-top' => 10,      
                         'margin-right' => 20,  
-                        'margin-bottom' => 10,    
+                        'margin-bottom' => 30,    
                         'margin-left' => 20,      
                     ]);
                     return $pdf->download(time() . '.pdf');

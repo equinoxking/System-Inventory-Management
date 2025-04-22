@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('admin_id')->references('id')->on('admins')->onDelete('cascade');
             $table->string('report_type', 30);
             $table->string('control_number', 30);
-            $table->string('report_name', 100);
             $table->string('report_file', 100);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();

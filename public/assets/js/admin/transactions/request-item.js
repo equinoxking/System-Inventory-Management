@@ -38,6 +38,16 @@ $(document).ready(function() {
                     text: response.message,
                     showConfirmButton: true,
                 })
+            }else if(response.status === 501){
+                    var errorMessages = Object.values(response.message).join('<br>');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        html: errorMessages,
+                        showConfirmButton: true,
+                    }).then(function() {
+                        $('#requestItemSubmit-btn').attr('disabled', false);
+                    });
             }else if(response.status === 400){
                     var errorMessages = Object.values(response.message).join('<br>');
                     Swal.fire({

@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('receivables', function (Blueprint $table) {
             $table->id();
             $table->foreignId('item_id')->references('id')->on('items')->onDelete('cascade');
-            $table->string('control_number')->unique()->nullable();
+            $table->string('control_number')->unique();
+            $table->string('supplier', 50)->nullable();
             $table->string('delivery_type', 50);
             $table->integer('received_quantity');
             $table->integer('received_day', 5);

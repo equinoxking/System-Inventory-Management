@@ -223,28 +223,23 @@ class TransactionsManager extends Controller
         }else{
             $transaction = TransactionModel::findOrFail($request->get('transaction-acceptance-id'));
 
-            // Get the date and time from the transaction
-            $date = $transaction->approved_date; // Example: '2025-04-07'
-            $time = $transaction->approved_time; // Example: '09:37:00'
+            // Combine approved date + released time into one datetime
+            $releasedDateTime = Carbon::createFromFormat('Y-m-d H:i:s', "{$transaction->approved_date} {$transaction->released_time}", 'Asia/Manila');
 
-            // Combine the date and time into a single string
-            $completeDateTimeString = $date . ' ' . $time; // Example: '2025-04-07 09:37:00'
+            // Get the current datetime (when status is being updated)
+            $now = Carbon::now('Asia/Manila');
 
-            // Create a Carbon instance from the combined date and time string
-            $completeTime = Carbon::createFromFormat('Y-m-d H:i:s', $completeDateTimeString);
+            // Calculate the difference in minutes (signed)
+            $minutesDifference = $releasedDateTime->diffInMinutes($now, false); // false gives signed result
 
-            // Get the current time in your desired timezone (e.g., Asia/Manila)
-            $currentDateTime = Carbon::now('Asia/Manila');
+            // Optionally: breakdown
+            $diffInSeconds = $releasedDateTime->diffInSeconds($now, false);
+            $days = floor(abs($diffInSeconds) / 86400);
+            $minutes = floor((abs($diffInSeconds) % 86400) / 60);
+            $seconds = abs($diffInSeconds) % 60;
 
-            // Calculate the difference in seconds between the two dates
-            $diffInSeconds = $completeTime->diffInSeconds($currentDateTime);
-
-            // Break down the difference into days, minutes, and seconds
-            $days = floor($diffInSeconds / 86400); // 1 day = 86400 seconds
-            $minutes = floor(($diffInSeconds % 86400) / 60); // Remaining minutes after dividing by days
-            $seconds = $diffInSeconds % 60; // Remaining seconds after dividing by minutes
-
-            // Format the result as 'X days, Y minutes, Z seconds'
+            // Format it
+            $direction = $minutesDifference >= 0 ? 'after' : 'before';
             $agingString = "{$days} days, {$minutes} minutes, {$seconds} seconds";
 
             // Check if the transaction is valid and save the updated data

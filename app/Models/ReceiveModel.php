@@ -12,6 +12,7 @@ class ReceiveModel extends Model
     protected $fillable = [
         'id',
         'item_id',
+        'supplier',
         'control_number',
         'received_quantity',
         'received_day',

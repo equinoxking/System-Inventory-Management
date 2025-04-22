@@ -17,8 +17,7 @@
                 <thead>
                     <th width="10%">Date/Time Created</th>
                     <th width="10%">Date/Time Updated</th>
-                    <th width="7%">Control Number</th>
-                    <th width="24%">Main Category Name</th>
+                    <th width="7%">Category Number</th>
                     <th width="20%">Category Name</th>
                     <th width="23%">Description</th>
                     <th width="10%" class="text-center">Action</th>
@@ -29,7 +28,6 @@
                             <td>{{ \Carbon\Carbon::parse($category->created_at)->format('F d, Y H:i A') }}</td>
                             <td>{{ \Carbon\Carbon::parse($category->updated_at)->format('F d, Y H:i A') }}</td>
                             <td>{{ $category->control_number }}</td>
-                            <td>{{ $category->subCategory->name }}</td>
                             <td>{{ $category->name }}</td>
                             <td>{{ $category->description }}</td>
                             <td class="text-center">

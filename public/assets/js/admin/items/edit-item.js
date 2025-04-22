@@ -2,6 +2,7 @@ function editItem(data){
     $('#editItemModal').modal('show'); 
     $('#edit-item-id').val(data.item_id);
     $('#edit-item-name').val(data.item_name);
+    $('#edit-buffer').val(data.buffer);
 }
 $('#edit-item-close-btn').click(function(){
     $('#editItemModal').modal('hide');

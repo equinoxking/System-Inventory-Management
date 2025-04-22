@@ -14,7 +14,6 @@ class ReportModel extends Model
         'report_type',
         'control_number',
         'report_file',
-        'report_name',
         'created_at',
         'updated_at'
     ];

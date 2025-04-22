@@ -35,10 +35,10 @@ class ReceivedManager extends Controller
             'receivedItemName.*' => 'required', 
             'receivedQuantity' => 'required|array',
             'receivedQuantity.*' => 'required|numeric|min:1',
-            'delivery_types' => 'required|array',
-            'delivery_types.*' => 'required',
             'control_number' => 'required|array', 
-            'control_number.*' => 'required', 
+            'control_number.*' => 'required',
+            'supplier' => 'required|array', 
+            'supplier.*' => 'required',  
         ]);
         
         if ($validator->fails()) {
@@ -48,7 +48,6 @@ class ReceivedManager extends Controller
             ]);
         } else {
             $allItemsProcessed = true;
-            $deliveryTypes = $request->input('delivery_types'); 
             foreach ($request->receivedItemId as $index => $receivedItemId) {
                 try {
                     $item = ItemModel::findOrFail($receivedItemId);
@@ -74,20 +73,16 @@ class ReceivedManager extends Controller
                     $receive = new ReceiveModel();
                     $receive->item_id = $item->id;
                     $receive->control_number = $request->get('control_number')[$index];
-                    $receive->delivery_type = $deliveryTypes[$index];
                     $receive->received_quantity = $request->receivedQuantity[$index];
                     $receive->received_day = $day;
                     $receive->received_month = $monthInt;
                     $receive->received_year = $year;
-                    if($deliveryTypes[$index] === "Inspection Delivery"){
-                        $receive->remark = "For Inspection";
-                    }else{
-                         $receive->remark = "Completed";
-                    }
+                    $receive->delivery_type = "Receipt for Stock";
+                    $receive->supplier = $request->get('supplier')[$index];
                     $receive->save();
 
                     $inventory = InventoryModel::where('item_id', $receivedItemId)->first();
-                    if ($deliveryTypes[$index] === "Receipt for Stock" && $inventory) {
+                    if ($inventory) {
                         $newQuantity = $inventory->quantity + $receive->received_quantity;
                         $inventory->quantity = $newQuantity;
                         $inventory->save();
@@ -124,7 +119,8 @@ class ReceivedManager extends Controller
             return $item->receives->map(function ($receive) use ($item) {
                 return [
                     'item_id' => $item->id,
-                    'type' => $receive->delivery_type,
+                    'category' => $item->category->name,
+                    'supplier' => $receive->supplier,
                     'remaining_quantity' => $item->inventory->quantity,
                     'received_id' => $receive->id,
                     'remark' => $receive->remark,

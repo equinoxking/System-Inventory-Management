@@ -21,21 +21,6 @@ class IA_mainController extends Controller
         $transaction = TransactionModel::count();
         $receive = ReceiveModel::count();
         // $items = ItemModel::all();
-        $itemCount = ItemModel::count();
-        $counts = TransactionModel::selectRaw('remark, COUNT(*) as count')
-            ->groupBy('remark')
-            ->whereIn('remark', ['For Review', 'For Release', 'Completed', 'Rejected', 'Canceled'])
-            ->get();
-
-        // Prepare the data for the chart
-        $labels = ['For Review',  'For Release', 'Completed', 'Rejected', 'Canceled'];
-        $data = [];
-
-        foreach ($labels as $label) {
-            // Get the count for each category
-            $count = $counts->firstWhere('remark', $label);
-            $data[] = $count ? $count->count : 0;
-        }
         $items = ItemModel::with('transacts.TransactionDetail')->get();
 
         $itemsWithTransactionSums = $items->map(function ($item) {
@@ -50,6 +35,7 @@ class IA_mainController extends Controller
                 'total_transaction_sum' => $totalTransactionSum
             ];
         });
+        $itemCount = ItemModel::count();
         $categories = CategoryModel::all();
         $transactions = TransactionModel::all();
         $notifications = NotificationModel::all();
@@ -58,12 +44,12 @@ class IA_mainController extends Controller
             'transactions' => $transaction,
             'receives' => $receive,
             'items' => $items,
-            'itemCount' => $itemCount,
             'transacts' => $transactions,
             'categories' => $categories,
             'notifications' => $notifications,
+            'itemCount' => $itemCount,
             'itemsWithTransactionSums' => $itemsWithTransactionSums
-        ], compact('data', 'labels'));
+        ]);
     }
     public function goToTransactions(){
         return view('admin.transaction');

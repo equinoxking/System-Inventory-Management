@@ -39,6 +39,7 @@ class UpdateTransactionStatus extends Command
 
         $transactions = TransactionModel::where('released_time', '<=', $currentTime)  
             ->where('status_id', '2')  
+            ->whereNull('released_aging')
             ->get();
 
         if ($transactions->isEmpty()) {
@@ -49,11 +50,11 @@ class UpdateTransactionStatus extends Command
 
             $this->info("Updating transaction ID {$transaction->id}.");
 
-            $transaction->remark = 'Completed';
+            $transaction->remark = 'Released';
             $transaction->save();
 
  
-            $this->info("Transaction ID {$transaction->id} updated to 'Completed'.");
+            $this->info("Transaction ID {$transaction->id} updated to 'Released'.");
         }
     }
 

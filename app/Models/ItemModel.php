@@ -26,7 +26,7 @@ class ItemModel extends Model
     }
     public function inventory()
     {
-        return $this->hasOne(InventoryModel::class, 'item_id');
+        return $this->hasOne(InventoryModel::class, 'item_id', 'id');
     }
     public function status()
     {

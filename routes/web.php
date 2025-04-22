@@ -17,6 +17,7 @@ use App\Http\Controllers\Inventory_Admin\Pdf\ReportManager;
 use App\Http\Controllers\User\Transactions\TransactionsManager;
 use App\Http\Controllers\Inventory_Admin\Report\PdfReportManager;
 use App\Http\Controllers\Inventory_Admin\Accounts\AdminManager;
+use App\Http\Controllers\Inventory_Admin\Charts\ChartManager;
 use App\Http\Controllers\User\User_functionController;
 use App\Http\Controllers\User\Account\UserProfileManager;
 /*
@@ -85,6 +86,7 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::patch('/change-transaction-status', 'updateTransactionStatus');
         Route::get('/admin/refreshTransactions', 'getTransactions');
         Route::post('/request-item-admin', 'requestItemAdmin');
+        Route::get('/admin/refreshActedTransactions', 'getActedTransactions');
     });
     Route::controller(AccountManager::class)->group(function(){
         Route::get('/admin/account', 'goToAccounts');
@@ -101,6 +103,9 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     });
     Route::controller(PdfReportManager::class)->group(function(){
         Route::post('/add-report', 'addReport');
+    });
+    Route::controller(ChartManager::class)->group(function(){
+        Route::get('/admin/reports', 'goToCharts');
     });
     Route::controller(IA_functionController::class)->group(function() {
         Route::get('logoutAdmin', 'logoutAdmin');

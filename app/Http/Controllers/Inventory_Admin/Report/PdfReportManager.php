@@ -13,8 +13,7 @@ class PdfReportManager extends Controller
 {
     public function addReport(Request $request){
         $validator = Validator::make($request->all(), [
-            'report_type' => 'required|unique:reports,report_name', 
-            'report_name' => 'required',
+            'report_type' => 'required', 
             'submitted' => 'required',
             'pdf' => 'required|mimes:pdf|max:10240'
         ]);
@@ -30,11 +29,9 @@ class PdfReportManager extends Controller
                 $file->move(public_path('pdf-reports'), $filename);
         
                 $admin = AdminModel::findOrFail($request->get('submitted'));
-
                 $report = new ReportModel();
                 $report->control_number = $this->generateControlNumber();
                 $report->report_type = $request->get('report_type');
-                $report->report_name = $request->get('report_name');
                 $report->admin_id = $admin->id;
                 $report->report_file = $filename;
                 $report->save();

@@ -84,7 +84,7 @@ body {
                     <table class="table table-bordered table-hover" style="font-size: 14px; width: 100%;" id="notificationTable">  
                         <thead class="thead-light">  
                             <tr>  
-                                <th style="width: 18%;">Date/Time</th>
+                                <th style="width: 18%; text-align:left">Date/Time</th>
                                 <th style="width: 12%;">Control #</th> 
                                 <th style="width: 70%;">Message</th>  
                             </tr>  
@@ -92,7 +92,7 @@ body {
                         <tbody>  
                             @foreach ($notifications as $notification)
                                 <tr>
-                                    <td>{{ \Carbon\Carbon::parse($notification->created_at)->format('F d, Y h:i A') }}</td>
+                                    <td class="text-left">{{ \Carbon\Carbon::parse($notification->created_at)->format('F d, Y h:i A') }}</td>
                                     <td>{{ $notification->control_number }}</td>
                                     <td class="text-left">
                                         {{ $notification->message }} Status |
@@ -116,12 +116,7 @@ body {
           
 
         <!-- Bar Chart Section -->  
-        {{-- <div class="col-md-3 mb-2">  
-            <div class="card">  
-                <h4 class="card-title">Bar Graph</h4>  <br>
-                <canvas id="transactionChart"></canvas>
-            </div>  
-        </div>   --}}
+       
 
         <div class="col-md-3 mt-3">  
             <div class="row">  
@@ -222,9 +217,7 @@ body {
                             <td>{{ $itemData['total_transaction_sum'] }}</td> <!-- Display the total transaction sum -->
                             <td class="text-right">{{ $itemData['item']->inventory->quantity }}</td>
                             <td  class="text-center">
-                                @if($itemData['item']->inventory->quantity == 0)
-                                    <span class="badge badge-noStock"><i class="fas fa-times-circle"></i> No Stock</span>
-                                @elseif ($itemData['item']->inventory->quantity <= 20) 
+                                @if ($itemData['item']->inventory->quantity < $itemData['item']->inventory->min_quantity) 
                                     <span class="badge badge-noStock"><i class="fas fa-times-circle"></i> Critical</span>
                                 @else 
                                     <span class="badge badge-highStock"><i class="fas fa-check-circle"></i> Normal</span>
@@ -236,47 +229,4 @@ body {
             </table>
         </div>
     </div>
-    
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-{{-- <script>
-    var ctx = document.getElementById('transactionChart').getContext('2d');
-    var transactionChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: @json($labels), // labels like Completed, Rejected, etc.
-            datasets: [{
-                label: 'Summary of Transactions',
-                data: @json($data), // the count data from the database
-                backgroundColor: [
-                    'rgba(153, 102, 255, 0.2)', // For Review
-                    'rgba(75, 192, 192, 0.2)', // For Released
-                    'rgba(54, 162, 235, 0.2)', // Completed
-                    'rgba(255, 99, 132, 0.2)', // Rejected
-                    'rgba(255, 159, 64, 0.2)'  // Canceled
-                ],
-                borderColor: [
-                    'rgba(153, 102, 255, 1)', // For Review
-                    'rgba(75, 192, 192, 1)', // For Released
-                    'rgba(54, 162, 235, 1)', // Completed
-                    'rgba(255, 99, 132, 1)', // Rejected
-                    'rgba(255, 159, 64, 1)'  // Canceled
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-        scales: {
-            y: {
-                beginAtZero: true,
-                ticks: {
-                    // Round the y-axis ticks to integer values
-                    callback: function(value) {
-                        return Math.floor(value); // Rounds down the numbers to the nearest integer
-                    }
-                }
-            }
-        }
-    }
-    }); --}}
-</script> 
 @endsection  

@@ -16,21 +16,17 @@
             <table id="unitTable" class="table-striped table-hover" style="font-size: 11px">
                 <thead>
                     <th width="10%">Date/Time Created</th>
-                    <th width="10%">Date/Time Updated</th>
-                    <th width="10%">Control Number</th>
-                    <th width="10%">Unit Name</th>
-                    <th>Unit Symbol</th>
-                    <th width="40%">Description</th>
-                    <th class="text-center">Action</th>
+                    <th width="10%">Unit Number</th>
+                    <th width="20%">Unit Name</th>
+                    <th width="55%">Description</th>
+                    <th width="5%" class="text-center">Action</th>
                 </thead>
                 <tbody>
                     @foreach ($units as $unit)
                         <tr>
                             <td>{{ \Carbon\Carbon::parse($unit->created_at)->format('F d, Y H:i A') }}</td>
-                            <td>{{ \Carbon\Carbon::parse($unit->updated_at)->format('F d, Y H:i A') }}</td>
                             <td>{{ $unit->control_number}}</td>
                             <td>{{ $unit->name }}</td>
-                            <td>{{ $unit->symbol }}</td>
                             <td>{{ $unit->description }}</td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-warning" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="editUnit('{{ addslashes(json_encode($unit)) }}')" title="Edit unit button"><i class="fa fa-edit" style="color: white;"></i></button>
@@ -67,10 +63,6 @@
                         <div class="form-group">
                             <label for="category_name">Unit Name</label>
                             <input type="text" class="form-control" name="unit_name" id="edit-unit-name">
-                        </div>
-                        <div class="form-group">
-                            <label for="category_name">Symbol</label>
-                            <input type="text" class="form-control" name="unit_symbol" id="edit-unit-symbol">
                         </div>
                         <div class="form-group">
                             <label for="unit_description">Description</label>
@@ -135,10 +127,6 @@
                         <div class="form-group">
                             <label for="addUnitName" class="font-weight-bold">Unit Name</label>
                             <input type="text" class="form-control" name="unit_name" id="add-unit-name">
-                        </div>
-                        <div class="form-group">
-                            <label for="addUnitSymbol" class="font-weight-bold">Unit Symbol</label>
-                            <input type="text" class="form-control" name="unit_symbol" id="add-unit-symbol" placeholder="This is optional" >
                         </div>
                         <div class="form-group">
                             <label for="addUnitDescription" class="font-weight-bold">Description</label>

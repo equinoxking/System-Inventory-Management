@@ -63,6 +63,7 @@ class itemManager extends Controller
                 $inventory->item_id = $item->id;
                 $inventory->quantity = $request->quantity[$index];
                 $inventory->unit_id = $selectedUnit->id;
+                $inventory->min_quantity = $request->buffer[$index];
                 $inventory->save();
 
                 $monthToInt = [
@@ -87,6 +88,7 @@ class itemManager extends Controller
                 $receive = new ReceiveModel();
                 $receive->item_id = $item->id;
                 $receive->received_quantity = $request->quantity[$index];
+                $receive->delivery_type = "Receipt for Stock";
                 $receive->received_day = $day;
                 $receive->received_month = $monthInt;
                 $receive->received_year = $year;
@@ -158,6 +160,8 @@ class itemManager extends Controller
             'unit.*' => 'required',
             'unitId' => 'required|array',
             'unitId.*' => 'required|exists:units,id',
+            'buffer' => 'required|array',
+            'buffer.*' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -181,7 +185,6 @@ class itemManager extends Controller
                     $item->status_id = $status->id;
                     $item->name = ucwords($request->get('item_name')[$index]);  
                 } else {
-     
                     $item = new ItemModel();
                     $item->category_id = $selectedCategory->id;
                     $item->status_id = $status->id;
@@ -195,11 +198,11 @@ class itemManager extends Controller
                     continue;  
                 }
                 $inventory = InventoryModel::where('item_id', $item->id)->first();
-        
                 if (!$inventory) {
                     $inventory = new InventoryModel();
-                    $inventory->item_id = $item->id;
+                    $inventory->item_id = $item->id;          
                 }
+                $inventory->min_quantity = $request->get('buffer')[$index];
                 $inventory->unit_id = $selectedUnit->id;
                 try {
                     $inventory->save();
@@ -286,8 +289,7 @@ class itemManager extends Controller
     // Map the items to the required format
     $formatItem = $items->map(function ($item) {
         $quantity = $item->inventory ? $item->inventory->quantity : 0;
-        // $maxQuantity = $item->inventory ? $item->inventory->max_quantity : 0;
-        // $percentage = $maxQuantity > 0 ? ($quantity / $maxQuantity) * 100 : 0;
+        $buffer = $item->inventory->min_quantity;
 
         return [
             'item_id' => $item->id,
@@ -296,7 +298,7 @@ class itemManager extends Controller
             'quantity' => $quantity,
             'unit_name' => $item->inventory && $item->inventory->unit ? $item->inventory->unit->name : null,
             'status_name' => $item->status ? $item->status->name : null,
-            // 'percentage' => $percentage,
+            'buffer' => $buffer,
             'control_number' => $item->controlNumber,
             'created_at' => \Carbon\Carbon::parse($item->created_at)->format('F d, Y H:i A'),
             'updated_at' => \Carbon\Carbon::parse($item->updated_at)->format('F d, Y H:i A')

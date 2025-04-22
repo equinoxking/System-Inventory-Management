@@ -10,17 +10,16 @@ class InventoryModel extends Model
     use HasFactory;
     protected $table = 'inventories';
     protected $fillable = [
-        'id',
         'item_id',
         'unit_id',
         'quantity',
-        'max_quantity',
+        'min_quantity',
         'unit',
         'created_at',
         'updated_at'
     ];
     public function item(){
-        return $this->belongsTo(ItemModel::class, 'item_id');
+        return $this->belongsTo(ItemModel::class, 'item_id', 'id');
     }
     public function unit(){
         return $this->belongsTo(UnitModel::class, 'unit_id');

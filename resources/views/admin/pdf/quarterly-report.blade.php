@@ -9,18 +9,6 @@
         .rightText{
             text-align: right;
         }
-        .header, .footer {
-            text-align: center;
-            position: fixed;
-            left: 0;
-            right: 0;
-        }
-        .header {
-            top: 0;
-            padding: 10px;
-            font-size: 14px;
-            font-weight: bold;
-        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -32,15 +20,6 @@
         }
         .content {
             margin-bottom: 50px;
-        }
-        .footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 10px;
-            padding: 10px;
         }
         table.signatories-table th, table.signatories-table td {
             border: none;
@@ -54,6 +33,40 @@
         .title{
             text-align: center;
         }
+        .header {
+            text-align: center;
+            padding-bottom: 10px;
+            font-size: 14px;
+            position: absolute;
+            top: 30px; /* Space between the header and top of the page */
+            left: 0;
+            right: 0;
+        }
+
+        /* Footer style */
+        .footer {
+            text-align: center;
+            padding-bottom: 10px;
+            font-size: 14px;
+            position: absolute;
+            bottom: 30px; /* Space between the header and top of the page */
+            left: 0;
+            right: 0;
+        }
+
+        /* Page number style */
+        .footer .pagenum:before {
+            content: "Page " counter(page); /* Adds page number */
+        }
+
+        /* Hide header on all pages except first page */
+        .first-page-header {
+            display: block;
+        }
+
+        .not-first-page .first-page-header {
+            display: none;
+        }
     </style>
 </head>
 @php
@@ -65,43 +78,44 @@
     $src1 = 'data:image/png;base64,' . $imageData1;
 @endphp
 <body>
-    <div class="title">
-        <strong>{{ $title }}</strong><br>
-        <strong>{{ $sub_title }}</strong> <br>
-        <strong>As of {{ $endOfMonthFormatted }}</strong>
-    </div>
-    <table class="table table-responsive" width="100%" border="2">
+<div class="header first-page-header">
+    <table style="border: none; border-collapse: collapse;">
+        <tbody>
+            <tr>
+                <th style="border: none;">
+                    <img style="width: 60px; height: 60px; margin: 0 auto; margin-left: 40rem" src="{{ $src1 }}">
+                </th>
+                <td style="text-align: center; border: none;" width="80%">
+                    <p style="margin: 0; font-weight: bold">Republic of the Philippines</p>
+                    <p style="margin: 0; font-weight: none">Province of Nueva Vizcaya</p>
+                    <p style="margin: 0; font-weight: none">Bayombong</p>
+                    <span style="margin: 0; font-size: 13px; font-weight:bold">PROVINCIAL HUMAN RESOURCE AND MANAGEMENT OFFICE</span>
+                </td>
+                <th style="border: none;">
+                    <img style="width: 80px; height: 80px; margin: 0 auto; margin-right: 40rem" src="{{ $src }}">
+                </th>
+            </tr>
+        </tbody>
+    </table>    
+</div>
+<main style="margin-top: 7rem;" class="content">
+<div class="title">
+    <strong>{{ $sub_title }}</strong> <br>
+    <strong>As of {{ $endOfMonthFormatted }}</strong>
+</div>
+    <table class="table table-responsive" width="100%" border="2" style="margin-top: 1rem;">
         <thead>
             <tr style="background-color:lightgrey">
                 <th width="5%" colspan="2" rowspan="2">No.</th>
                 <th style="text-align: center; width: 50%;" colspan="2" rowspan="2">Item Description</th>
                 <th width="5%" colspan="2" rowspan="2">Units</th>
-                <th width="5%" colspan="2" rowspan="2">Stock on Hand <br>  
-                    @if ($getMonth === "January")
-                        4th Quarter
-                    @elseif ($getMonth === "April")
-                        1st Quarter
-                    @elseif ($getMonth === "July")
-                        2nd Quarter
-                    @else 
-                        3rd Quarter
-                    @endif
-                </th>
+                <th width="5%" colspan="2" rowspan="2">Stock on Hand</th>
                 <th width="5%" colspan="2" rowspan="2">
-                    Total Delivered <br> 
-                    @if ($getMonth === "January")
-                        1st Quarter
-                    @elseif ($getMonth === "April")
-                        2nd Quarter
-                    @elseif ($getMonth === "July")
-                        3rd Quarter
-                    @else 
-                        4th Quarter
-                    @endif
+                    Total Delivered 
                 </th>
                 <th width="5%" colspan="2" rowspan="2">Total Stock on Hand</th>
                 <th width="5%" colspan="4">MONTHLY UTILIZATION WITHDRAWAL</th>
-                <th width="5%" colspan="2" rowspan="2">Available Stock as of {{ $formatFinalMonth }}</th>
+                <th width="5%" colspan="2" rowspan="2">Available Stock</th>
             </tr>
             <!-- Second Header Row -->
             <tr style="background-color:lightgrey">
@@ -262,14 +276,13 @@
                             </td>
                         </tr>
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <td><span style="font-size: 9px " >Date Generated: {{ $now }}</span></td>
-                        </tr>
-                    </tfoot>
                 </table>
             </div>
         </div>
     </div>
+</main>
+<div class="footer">
+    <span>Date Generated: {{ $now }}</span> | Page <span class="pagenum"></span>
+</div>
 </body>
 </html>

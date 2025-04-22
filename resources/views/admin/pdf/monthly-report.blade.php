@@ -115,10 +115,10 @@
                 <th width="50%">Item Description</th>
                 <th width="5%">Units</th>
                 <th width="10%">Balance as of {{ $formattedSubDate }}</th>
-                <th width="10%">Delivered for Stocks</th>
+                <th width="10%">New Deliveries</th>
                 <th width="10%">Total Stock on Hand</th>
-                <th width="10%">Total Withdrawn</th>
-                <th width="10%">Available Stock as of {{ $formattedCurrentDate }}</th>
+                <th width="10%">Withdrawal</th>
+                <th width="10%">Available Stock</th>
             </tr>
         </thead>
         <tbody>
@@ -129,7 +129,13 @@
             @endphp
     
             <tr>
-                <td colspan="8" style="font-weight: bold">Part I. Available at procurement services stores</td>
+                <td colspan="2" style="font-weight: bold">Part I. Available at procurement services stores</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
     
             @foreach ($groupedItems as $categoryName => $itemsInCategory)
@@ -140,7 +146,13 @@
                 @endphp
                 @foreach ($subCategories as $subCategoryId => $itemsInSubCategory)
                     <tr>
-                        <td colspan="8"><strong>{{ $categoryName }}</strong></td>
+                        <td colspan="2"><strong>{{ $categoryName }}</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     @foreach ($itemsInSubCategory as $item)
                         <tr>
@@ -160,7 +172,13 @@
             @endforeach
     
             <tr>
-                <td colspan="8" style="font-weight: bold">Part II. Other items not available at ps but regularly purchased from other sources</td>
+                <td colspan="2" style="font-weight: bold">Part II. Other items not available at ps but regularly purchased from other sources</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
             </tr>
     
             @foreach ($groupedItemsPart2 as $categoryName => $itemsInCategory)
@@ -171,7 +189,13 @@
                 @endphp
                 @foreach ($subCategories as $subCategoryId => $itemsInSubCategory)
                     <tr>
-                        <td colspan="8"><strong>{{ $categoryName }}</strong></td>
+                        <td colspan="2"><strong>{{ $categoryName }}</strong></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
                     </tr>
                     @foreach ($itemsInSubCategory as $item)
                         <tr>

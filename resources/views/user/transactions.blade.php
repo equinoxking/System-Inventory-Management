@@ -121,11 +121,16 @@
                                     </span>
                                 @endif
                             </td>     
+                            @php
+                                $approvedMet = \Carbon\Carbon::parse($transaction->approved_date)->isPast();
+                                $releasedMet = \Carbon\Carbon::parse($transaction->released_time)->isPast();
+                            @endphp
                             <td>
-                                @if ($transaction->remark === "For Release")
-                                    <button type="button" class="btn btn-warning edit-btn" onclick="userAcceptance('{{ addslashes(json_encode($transaction) )}}')""><i class="fa fa-edit"></i></button>
+                                @if ($transaction->remark === "Released" && $approvedMet && $releasedMet)
+                                    <button type="button" class="btn btn-warning edit-btn" onclick="userAcceptance('{{ addslashes(json_encode($transaction)) }}')"><i class="fa fa-edit"></i></button>
                                 @endif
-                            </td>      
+                            </td>
+   
                         </tr>
                     @endforeach
                 </tbody>

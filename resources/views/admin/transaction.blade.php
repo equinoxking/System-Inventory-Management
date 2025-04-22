@@ -22,7 +22,7 @@
         </div>
         <div class="row mt-2">
             <div class="col-md-12" style="text-align: left">
-                <h4><strong >CURRENT TRANSACTIONS</strong></h4>
+                <h4><strong >PENDING TRANSACTIONS</strong></h4>
             </div>
         </div>
     </div>
@@ -129,57 +129,12 @@
                     <th>Request Aging</th>
                     <th>Released by</th>
                     <th>Time Released</th>
-                    <th>Acceptance Aging</th>
-                    <th>Status</th>
+                    <th>Availability Aging</th>
+                    <th class="text-center">Status</th>
                     <th>Remarks</th>
                 </thead>
                 <tbody>
-                    @foreach ($transactionHistories as $transaction)
-                    <tr>
-                        <td>{{ \Carbon\Carbon::parse($transaction->created_at)->format('F d, Y h:i A') }}</td>
-                        <td>{{ $transaction->transaction_number }}</td>
-                        <td>{{ $transaction->item->inventory->quantity }}</td>
-                        <td>{{ $transaction->transactionDetail->request_quantity }}</td>
-                        <td>{{ $transaction->item->inventory->unit->name }}</td>
-                        <td>{{ $transaction->item->name }}</td>
-                        <td>{{ $transaction->client ? $transaction->client->full_name :  $transaction->admin->full_name}}</td>
-                        <td>{{ $transaction->approved_time ? \Carbon\Carbon::parse($transaction->approved_date)->format('F d, Y') . ' ' . \Carbon\Carbon::parse($transaction->approved_time)->format('h:i A')  : '' }}</td>
-                        <td>{{ $transaction->request_aging }}</td>
-                        <td>{{ $transaction->adminBy ? $transaction->adminBy->full_name : 'No admin' }}</td>
-                        <td>{{ $transaction->released_time ? \Carbon\Carbon::parse($transaction->released_time)->format('h:i A') : '' }}</td>
-                        <td>{{ $transaction->released_aging }}</td>
-                        <td>
-                            @if($transaction->status && $transaction->status->name == 'Accepted')
-                                <span class="badge badge-success">
-                                    <i class="fas fa-check-circle"></i> Accepted
-                                </span>
-                            @elseif($transaction->status && $transaction->status->name == 'Pending')
-                                <span class="badge badge-pending">
-                                    <i class="fas fa-clock"></i> Pending
-                                </span>
-                            @else
-                                <span class="badge badge-danger">
-                                    <i class="fas fa-times-circle"></i> Rejected
-                                </span>
-                            @endif
-                        </td>
-                        <td>
-                            @if($transaction->remark && $transaction->remark == 'For Review')
-                                <span class="badge badge-forReview">
-                                    <i class="fas fa-search"></i> For Review
-                                </span>
-                            @elseif($transaction->remark && $transaction->remark == 'For Release')
-                                <span class="badge badge-release">
-                                    <i class="fas fa-cloud-upload-alt"></i> For Release
-                                </span>
-                            @else
-                                <span class="badge badge-completed">
-                                    <i class="fas fa-check-circle"></i> Completed
-                                </span>
-                            @endif
-                        </td>
-                    </tr>
-                    @endforeach
+                   
                 </tbody>
                 <tfoot>
 
