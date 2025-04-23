@@ -16,7 +16,7 @@
             <button type="button" class="btn btn-success" id="requestBtn" title="Request item button">
                 <i class="fa-solid fa-handshake"></i>
             </button>
-            <button type="button" class="btn btn-info" title="Generate PDF button">
+            <button type="button" class="btn btn-info" id="pdfGenerationBtn" title="Generate PDF button">
                 <i class="fa-solid fa-file-pdf"></i> 
             </button>
         </div>
@@ -192,10 +192,100 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="generateTransactionPdfModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title" style="color:white;">TRANSACTION PDF CUSTOMIZE FORM</h5>
+                    <button type="button" id="generate-transaction-pdf-close-btn" data-dismiss="modal" class="btn btn-danger" aria-label="Close">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </button>
+                </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form id="generate-transaction-form">
+                    <div class="form-group">
+                        <label for="selectOption">Pdf Option</label>
+                        <select name="selection" id="selection" class="form-control">
+                            <option value="">Select Option</option>
+                            <option value="All">All</option>
+                            <option value="User">User</option>
+                            <option value="Monthly">Monthly</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="display: none">
+                        <label for="user">Users</label>
+                        <select name="user_selection" id="user" class="form-control">
+                            <optgroup label="Users">
+                                @foreach ($transactionUsers as $transaction)
+                                    @if ($transaction->client)
+                                        <option value="user-{{ $transaction->client->id }}">
+                                            {{ $transaction->client->full_name }}
+                                        </option>
+                                    @endif
+                                @endforeach
+                            </optgroup>
+                            <optgroup label="Admins">
+                                @foreach ($transactionUsers as $transaction)
+                                    @if ($transaction->admin)
+                                        <option value="admin-{{ $transaction->admin->id }}">
+                                            {{ $transaction->admin->full_name }}
+                                        </option>
+                                    @endif
+                                @endforeach
+                            </optgroup>
+                        </select>
+                    </div>
+                    <div class="form-group" style="display: none">
+                        <label for="month">Month</label>
+                        <select name="month" id="month" class="form-control">
+                            <option value="">Select Month</option>
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                        <label for="year">Year</label>
+                        <select name="year" id="year" class="form-control">
+                            <option value="">Select Year</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="display: none">
+                        <label for="admin">Prepared By:</label>
+                        <select name="admin" id="admin" class="form-control">
+                            <option value="">Select Admin</option>
+                            @foreach ($admins as $admin)
+                                <option value="{{ $admin->id }}"> {{ $admin->full_name }} </option>
+                            @endforeach
+                        </select>
+                    </div>        
+                </div>
+                <div class="row">
+                    <div class="modal-footer">
+                        <div class="col-md-3 form-group">
+                            <button type="submit" class="btn btn-info" id="transaction-report-submit-btn">SUBMIT</button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="{{ asset('assets/js/admin/transactions/status.js') }}"></script>
 <script src="{{ asset('assets/js/admin/transactions/request-item.js') }}"></script>
 <script src="{{ asset('assets/js/user/items/search-items.js') }}"></script>
+<script src="{{ asset('assets/js/admin/pdf/transaction-report.js') }}"></script>
 <script>
     window.onload = function() {
     const options = { timeZone: 'Asia/Manila', hour12: false };
@@ -227,4 +317,109 @@ function toggleSelection() {
 
     }
 }
+document.addEventListener("DOMContentLoaded", function () {
+    const selection = document.getElementById("selection");
+    const userGroup = document.getElementById("user").closest(".form-group");
+    const monthGroup = document.getElementById("month").closest(".form-group");
+    const adminGroup = document.getElementById("admin").closest(".form-group");
+    const yearSelect = document.getElementById("year");
+
+    // Populate year dropdown
+    const currentYear = new Date().getFullYear();
+    for (let i = 0; i < 10; i++) {
+        const year = currentYear - i;
+        const option = document.createElement("option");
+        option.value = year;
+        option.textContent = year;
+        yearSelect.appendChild(option);
+    }
+
+    // Handle selection changes
+    selection.addEventListener("change", function () {
+        const value = this.value;
+
+        // Show admin for All, User, Monthly
+        if (value === "All" || value === "User" || value === "Monthly") {
+            adminGroup.style.display = "block";
+        } else {
+            adminGroup.style.display = "none";
+        }
+
+        // Show user select only for User
+        userGroup.style.display = value === "User" ? "block" : "none";
+
+        // Show month/year only for Monthly
+        monthGroup.style.display = value === "Monthly" ? "block" : "none";
+    });
+});
+document.addEventListener("DOMContentLoaded", function () {
+    const selection = document.getElementById("selection");
+    const userSelect = document.getElementById("user");
+    const monthSelect = document.getElementById("month");
+    const yearSelect = document.getElementById("year");
+    const adminSelect = document.getElementById("admin");
+    const submitBtn = document.getElementById("transaction-report-submit-btn");
+
+    const userGroup = userSelect.closest(".form-group");
+    const monthGroup = monthSelect.closest(".form-group");
+    const adminGroup = adminSelect.closest(".form-group");
+
+    // Populate Year dropdown
+    const currentYear = new Date().getFullYear();
+    for (let i = 0; i < 10; i++) {
+        const year = currentYear - i;
+        const option = document.createElement("option");
+        option.value = year;
+        option.textContent = year;
+        yearSelect.appendChild(option);
+    }
+
+    function updateVisibilityAndValidation() {
+        const selectedOption = selection.value;
+
+        // Reset visibility
+        userGroup.style.display = "none";
+        monthGroup.style.display = "none";
+        adminGroup.style.display = "none";
+
+        // Show fields based on selection
+        if (["All", "User", "Monthly"].includes(selectedOption)) {
+            adminGroup.style.display = "block";
+        }
+        if (selectedOption === "User") {
+            userGroup.style.display = "block";
+        }
+        if (selectedOption === "Monthly") {
+            monthGroup.style.display = "block";
+        }
+
+        // Validate
+        validateForm();
+    }
+
+    function validateForm() {
+        const selectedOption = selection.value;
+        let isValid = false;
+
+        if (selectedOption === "All") {
+            isValid = adminSelect.value !== "";
+        } else if (selectedOption === "User") {
+            isValid = userSelect.value !== "" && adminSelect.value !== "";
+        } else if (selectedOption === "Monthly") {
+            isValid = monthSelect.value !== "" && yearSelect.value !== "" && adminSelect.value !== "";
+        }
+
+        submitBtn.disabled = !isValid;
+    }
+
+    // Event listeners
+    selection.addEventListener("change", updateVisibilityAndValidation);
+    userSelect.addEventListener("change", validateForm);
+    monthSelect.addEventListener("change", validateForm);
+    yearSelect.addEventListener("change", validateForm);
+    adminSelect.addEventListener("change", validateForm);
+
+    // Initial check
+    updateVisibilityAndValidation();
+});
 </script>

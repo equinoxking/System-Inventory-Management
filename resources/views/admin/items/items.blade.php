@@ -122,8 +122,8 @@
             <table id="itemsTable" class="table-striped table-hover" style="font-size: 11px">
                 <thead class="bg-info">
                     <th>Item Number</th>
-                    <th width="20%">Category</th>
-                    <th width="20%">Item Name</th>
+                    <th width="15%">Category</th>
+                    <th width="25%">Item Name</th>
                     <th>UoM</th>
                     <th>Stock on Hand</th>
                     <th>Buffer Stock</th>

@@ -11,6 +11,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use App\Models\RoleModel;
+use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
+
 class RegisterController extends Controller
 {
     public function registration (Request $request){
@@ -59,7 +61,12 @@ class RegisterController extends Controller
                     $client->status = "Active";
                     $client->role_id = $role;
                     $client->save();
-        
+                    
+                    $admin_id = null;
+                    $user_id = $client->id;
+                    $activity = "Registered into the system.";
+                    (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
+
                     return response()->json([
                         'message' => 'Registration successful!',
                         'status' => 200,

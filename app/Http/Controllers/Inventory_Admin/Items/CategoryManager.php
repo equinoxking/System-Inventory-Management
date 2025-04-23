@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Carbon;
+use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
 
 class CategoryManager extends Controller
 {
@@ -53,6 +54,11 @@ class CategoryManager extends Controller
             $category->save();
 
             if($category){
+                $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                $user_id = null;
+                $activity = "Edited a category: " .   $category->name . ".";
+                (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
+
                 return response()->json([
                     'message' => 'Category updated successful!',
                     'status' => 200
@@ -75,8 +81,14 @@ class CategoryManager extends Controller
                 'message' => $validator->errors()
             ]);
         } else {
-            $category = CategoryModel::where('id', $request->get('category_id'))->delete();
+            $category = CategoryModel::find($request->get('category_id'));
             if($category){
+                $categoryName = $category->name;
+                $category->delete();
+                $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                $user_id = null;
+                $activity = "Deleted a category: " .   $categoryName . ".";
+                (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
                 return response()->json([
                     'message' => 'Category deleted successful!',
                     'status' => 200
@@ -106,10 +118,14 @@ class CategoryManager extends Controller
             $category->sub_category_id = $request->get('main_category');
             $category->description = ucfirst($request->get('category_description'));
             $category->save();
-
             if($category){
+                $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                $user_id = null;
+                $activity = "Added a category: " .    $category->name . ".";
+
+                (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
                 return response()->json([
-                    'message' => 'Category deleted successful!',
+                    'message' => 'Category added successful!',
                     'status' => 200
                 ]);
             }else{

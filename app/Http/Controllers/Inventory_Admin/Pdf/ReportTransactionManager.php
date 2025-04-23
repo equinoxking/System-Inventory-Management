@@ -1,0 +1,188 @@
+<?php
+
+namespace App\Http\Controllers\Inventory_Admin\Pdf;
+
+use App\Http\Controllers\Controller;
+use App\Models\AdminModel;
+use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\InventoryModel;
+use App\Models\ItemModel;
+use App\Models\TransactionModel;
+use Illuminate\Support\Facades\Validator;
+use Carbon\Carbon;
+use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
+use DateTime;
+class ReportTransactionManager extends Controller
+{
+    public function generateTransactionReport(Request $request){
+        $validator = Validator::make($request->all(), [
+            'selection' => 'required',
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'message' => $validator->errors()
+            ]);
+        } else {
+            $selectedOption = $request->get('selection');
+            switch($selectedOption){
+                case "All" :
+                    $transactions = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'])
+                    ->where('remark', 'Completed')
+                    ->get();
+                    $now = Carbon::now('Asia/Manila')->format('F j, Y h:i A');
+                    $preparedBy = AdminModel::where('id', $request->get('admin'))->first();
+                    $data = [
+                        'transactions' => $transactions,
+                        'preparedBy' => $preparedBy
+                    ];
+
+                    $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                    $user_id = null;
+                    $activity = "Generated transaction PDF - All Records.";
+                    (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
+
+                    $pdf = PDF::loadView('admin.pdf.all-transactions', $data, compact('now'))
+                        ->setPaper('legal', 'landscape')
+                        ->setOptions([
+                            'isHtml5ParserEnabled' => true,
+                            'isRemoteEnabled' => true,
+                            'defaultFont' => 'sans-serif',
+                            'margin-top' => 10,      
+                            'margin-right' => 20,  
+                            'margin-bottom' => 10,    
+                            'margin-left' => 20,  
+                            'isPhpEnabled' => true    
+                        ]);
+                        $canvas = $pdf->getCanvas();
+                        $canvas->page_text(270, 770, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0,0,0));
+                        $filename = 'transaction-report-' . date('F-Y') . '.pdf';    
+                    return $pdf->stream($filename);
+                break;
+                case "User" :
+                    $now = Carbon::now('Asia/Manila')->format('F j, Y h:i A');
+                    $rawSelection = $request->input('user_selection');
+                    $selection = trim($rawSelection); // Remove whitespace just in case
+                    [$type, $id] = explode('-', $selection);
+                    if ($type === 'user') {
+                        $transactions = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'])
+                            ->where('remark', 'Completed')
+                            ->where('user_id', $id)
+                            ->get();
+                    } elseif ($type === 'admin') {
+                        $transactions = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'])
+                            ->where('remark', 'Completed')
+                            ->where('admin_id', $id)
+                            ->get();
+                    } else {
+                        return back()->with('error', 'Unknown selection type.');
+                    }
+                    $preparedBy = AdminModel::where('id', $request->get('admin'))->first();
+                   
+
+                   // Retrieve the first transaction for the given user_id
+                    $transaction = TransactionModel::with(['client', 'admin'])->where('user_id', $request->get('user'))->first();
+
+                    // Check if a transaction was found
+                    if ($transaction) {
+                        // Now you can safely check the properties of the $transaction
+                        if ($transaction->user_id && $transaction->client) {
+                            // It's a user/client
+                            $type = 'User';
+                            $owner_id = $transaction->client->id;
+                            $owner_name = $transaction->client->full_name;
+                        } elseif ($transaction->admin) {
+                            // It's an admin
+                            $type = 'Admin';
+                            $owner_id = $transaction->admin->id;
+                            $owner_name = $transaction->admin->full_name;
+                        } else {
+                            // Handle if neither client nor admin is found
+                            $type = 'Unknown';
+                            $owner_id = null;
+                            $owner_name = 'Unknown';
+                        }
+                    } else {
+                        // Handle the case where no transaction is found
+                        $type = 'Not Found';
+                        $owner_id = null;
+                        $owner_name = 'N/A';
+                    }
+
+                    $data = [
+                        'transactions' => $transactions,
+                        'preparedBy' => $preparedBy
+                    ];
+                    
+                    $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                    $user_id = null;
+                    $activity = "Generated transaction PDF of " . $owner_name . ".";
+
+                    (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
+
+                    $pdf = PDF::loadView('admin.pdf.all-transactions', $data, compact('now'))
+                        ->setPaper('legal', 'landscape')
+                        ->setOptions([
+                            'isHtml5ParserEnabled' => true,
+                            'isRemoteEnabled' => true,
+                            'defaultFont' => 'sans-serif',
+                            'margin-top' => 10,      
+                            'margin-right' => 20,  
+                            'margin-bottom' => 10,    
+                            'margin-left' => 20,  
+                            'isPhpEnabled' => true    
+                        ]);
+                        $canvas = $pdf->getCanvas();
+                        $canvas->page_text(270, 770, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0,0,0));
+                        $filename = 'transaction'. '-report of ' . $owner_name . date('F-Y') . '.pdf';    
+                    return $pdf->stream($filename);
+                break;
+                case "Monthly" :
+                    $year = $request->get('year');
+                    $month = $request->get('month');
+                    $dateObj = DateTime::createFromFormat('!m', $month);
+                    $monthName = $dateObj->format('F');
+                    $transactions = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'])
+                    ->where('remark', 'Completed')
+                    ->whereHas('transactionDetail', function($query) use ($year, $month) {
+                        $query->where('request_year', $year)
+                                ->where('request_month', $month);
+                    })
+                    ->get();
+                    $now = Carbon::now('Asia/Manila')->format('F j, Y h:i A');
+                    $preparedBy = AdminModel::where('id', $request->get('admin'))->first();
+                    $data = [
+                        'transactions' => $transactions,
+                        'preparedBy' => $preparedBy
+                    ];
+                    $user = TransactionModel::where('user_id', $request->get('user'))->first();
+
+                    $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                    $user_id = null;
+                    $activity = "Generated transaction for " . $monthName . " " . $year . ".";
+                    (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
+
+                    $pdf = PDF::loadView('admin.pdf.all-transactions', $data, compact('now'))
+                        ->setPaper('legal', 'landscape')
+                        ->setOptions([
+                            'isHtml5ParserEnabled' => true,
+                            'isRemoteEnabled' => true,
+                            'defaultFont' => 'sans-serif',
+                            'margin-top' => 10,      
+                            'margin-right' => 20,  
+                            'margin-bottom' => 10,    
+                            'margin-left' => 20,  
+                            'isPhpEnabled' => true    
+                        ]);
+                        $canvas = $pdf->getCanvas();
+                        $canvas->page_text(270, 770, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0,0,0));
+                        $filename = 'transaction-monthly-report of ' . $month . date('F-Y') . '.pdf';    
+                    return $pdf->stream($filename);              
+                break;
+                default :
+
+            }
+        }
+    }
+}

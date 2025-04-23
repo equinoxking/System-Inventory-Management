@@ -12,6 +12,8 @@ use App\Models\InventoryModel;
 use App\Models\ReceiveModel;
 use App\Models\TransactionModel;
 use App\Models\TransactionDetailModel;
+use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
+
 class ReceivedManager extends Controller
 {
     public function searchItem(Request $request){
@@ -86,6 +88,10 @@ class ReceivedManager extends Controller
                         $newQuantity = $inventory->quantity + $receive->received_quantity;
                         $inventory->quantity = $newQuantity;
                         $inventory->save();
+                        $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                        $user_id = null;
+                        $activity = "Delivered an item: " .  $item->name . " Quantity:" .  $receive->received_quantity;
+                        (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
                     }
                     if (!$inventory) {
                         $allItemsProcessed = false;
@@ -96,7 +102,6 @@ class ReceivedManager extends Controller
                     break;
                 }
             }
-
             if ($allItemsProcessed) {
                 return response()->json([
                     'message' => "All items successfully received!",

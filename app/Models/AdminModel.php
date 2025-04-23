@@ -32,5 +32,8 @@ class AdminModel extends Model
     {
         return $this->hasMany(TransactionModel::class, 'released_by', 'id');
     }
-
+    public function trail()
+    {
+        return $this->hasMany(TrailModel::class, 'admin_id', 'id');
+    }
 }

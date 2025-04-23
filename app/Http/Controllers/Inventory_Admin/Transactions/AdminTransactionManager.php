@@ -15,6 +15,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 use App\Models\ItemModel;
 use App\Models\NotificationModel;
+use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
 
 class AdminTransactionManager extends Controller
 {
@@ -46,12 +47,30 @@ class AdminTransactionManager extends Controller
         ->orWhere('remark', 'Ready for Release')
         ->orWhere('remark', 'Released')
         ->get();
+        $transactionUsers = TransactionModel::with([
+            'transactionDetail',
+            'client',
+            'item',
+            'item.inventory.unit',
+            'status',
+            'adminBy',
+            'admin'
+        ])
+        ->where(function ($query) {
+            $query->where('remark', 'Completed');
+        })
+        ->get();   
         $statuses = TransactionStatusModel::all();
-
+        $admins = AdminModel::all();
+        $clients = ClientModel::all();
+        
         return view('admin.transaction' ,[
             'transactions' => $transactions,
             'statuses' => $statuses,
-            'transactionHistories' => $transactionHistories
+            'transactionHistories' => $transactionHistories,
+            'admins' => $admins,
+            'clients' => $clients,
+            'transactionUsers' => $transactionUsers
         ]);
     }
         public function updateTransactionStatus(Request $request){
@@ -145,7 +164,12 @@ class AdminTransactionManager extends Controller
                             $notification->message = $message;
                             $notification->status = "Issued";
                             $notification->save();
-                            
+
+                            $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                            $user_id = null;
+                            $activity = "Updated the remarks of Transaction No." . $transaction->transaction_number . " Into " . $transaction->remark . ".";
+                            (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
+
                             if (!$inventory || !$notification) {
                                 $allItemsProcessed = false;
                                 break;
@@ -180,6 +204,11 @@ class AdminTransactionManager extends Controller
                             $transaction->status_id = $status->id;
                             $transaction->reason = ucfirst($request->get('reason'));
                             $transaction->save();
+                            
+                            $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                            $user_id = null;
+                            $activity = "Updated the remarks of Transaction No." . $transaction->transaction_number . " Into " . $transaction->remark . " Due to " . $transaction->reason . ".";
+                            (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
 
                             if($transaction){
                                 return response()->json([
@@ -354,6 +383,11 @@ class AdminTransactionManager extends Controller
             $notification->message = $message;
             $notification->status = "Accepted";
             $notification->save();
+            
+            $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+            $user_id = null;
+            $activity = "Requested an item with the transaction number of " . $transaction->transaction_number . ".";
+            (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
         }
     
         if ($allItemsRequested) {

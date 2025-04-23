@@ -12,7 +12,10 @@ use App\Models\ItemStatusModel;
 use App\Models\UnitModel;
 use App\Models\ReceiveModel;
 use Illuminate\Support\Carbon;
+use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
 use Illuminate\Support\Facades\Log;
+
+
 class itemManager extends Controller
 {
     public function addItem(Request $request){
@@ -93,6 +96,11 @@ class itemManager extends Controller
                 $receive->received_month = $monthInt;
                 $receive->received_year = $year;
                 $receive->save();
+
+                $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                $user_id = null;
+                $activity = "Added a new item: " .  $item->name . ".";
+                (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
                 
             }
             return response()->json([
@@ -132,8 +140,16 @@ class itemManager extends Controller
                 'message' => $validator->errors()
             ]);
         } else {
-            $item = ItemModel::where('id', $request->get('delete-item-id'))->delete();
+            $item = ItemModel::find($request->get('delete-item-id'));
             if($item){
+                $itemName = $item->name; 
+                $item->delete();
+
+                $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                $user_id = null;
+                $activity = "Deleted an item: " .  $itemName . ".";
+                (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
+
                 return response()->json([
                     'message' => 'Item successfully deleted.',
                     'status' => 200
@@ -205,6 +221,11 @@ class itemManager extends Controller
                 $inventory->min_quantity = $request->get('buffer')[$index];
                 $inventory->unit_id = $selectedUnit->id;
                 try {
+                    $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                    $user_id = null;
+                    $activity = "Edited an item: " .  $item->name . ".";
+                    (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
+
                     $inventory->save();
                 } catch (\Exception $e) {
                     continue;  

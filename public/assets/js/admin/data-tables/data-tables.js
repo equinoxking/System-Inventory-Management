@@ -259,9 +259,8 @@ $(function () {
         table.ajax.reload(null, false);  
     }, 6000);
 });
-
 $(function () {
-    var table = $('#auditTable').dataTable({
+    var table = $('#auditTable').DataTable({
         "aLengthMenu": [[10, 15, 25, 50, 75 , 100, -1],[10, 15, 25, 50, 75 , 100, "All"]],
         "pageLength": 10,
         "responsive": {
@@ -272,9 +271,19 @@ $(function () {
                 { name: 'sm', width: 768 },
                 { name: 'xs', width: 576 }
             ]
-        }
+        },
+        "order": [[0, 'desc']], // Keeps the first column (0) sorted by default
+        "columnDefs": [
+            {
+                "targets": 0, // Target the first column
+                "visible": false, // Hide the column
+                "searchable": false, // Make it non-searchable
+                "orderable": false // Optional: Make it non-sortable (remove if you want to keep sorting)
+            }
+        ]
     });
 });
+
 $(function () {
     var table = $('#categoryTable').dataTable({
         "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
@@ -409,7 +418,7 @@ $(function () {
                 { name: 'xs', width: 576 }
             ]
         },
-        "order": [[2, 'desc']],
+        "order": [[1, 'desc']],
     });
 });
 $(function () {

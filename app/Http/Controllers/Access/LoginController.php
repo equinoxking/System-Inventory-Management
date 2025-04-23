@@ -10,6 +10,8 @@ use App\Models\ClientModel;
 use Illuminate\Support\Facades\Http;
 use App\Models\AdminModel;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
+
 
 class LoginController extends Controller
 {
@@ -48,7 +50,6 @@ class LoginController extends Controller
             'password' => $request->password,
         ]);
         if ($response->successful()) {
-        
             if (Hash::check($request->password, $client->password)) {
                 $roles = [
                     1 => 'loggedInInventoryAdmin',
@@ -67,6 +68,7 @@ class LoginController extends Controller
                     'username' => $client->username,
                     'role' => $client->role->name,
                     'division' => $client->division,
+                    'position' => $client->position,
                 ]);
 
                 $roleIds = [
@@ -80,6 +82,12 @@ class LoginController extends Controller
                 $token = $data['token'] ?? null;
                 $username = $data['username'] ?? null; 
                 if ($token) {
+                    if($client->role->name === "User"){
+                        $admin_id = null;
+                        $user_id = session()->get('loginCheckUser')['id'];
+                        $activity = "Logged in into the system.";
+                        (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
+                    }
                     $request->session()->put('token', $token); 
                     return response()->json([
                         'roleId' => $roleKey,
@@ -112,23 +120,40 @@ class LoginController extends Controller
             'message' => 'Internal Server Error!'
         ]);
     }
-    public function setSelectedAdmin(Request $request){
+    public function setSelectedAdmin(Request $request)
+    {
+    // Validate that the selected admin exists
     $request->validate([
         'admin_id' => 'required|exists:admins,id',
     ]);
+
+    // Retrieve the admin
     $admin = AdminModel::find($request->admin_id);
+
+    // Define session key and get existing session data if any
     $sessionKey = 'loggedInInventoryAdmin';
     $sessionData = $request->session()->get($sessionKey, []); 
 
+    // Merge new admin data into session
     $sessionData = array_merge($sessionData, [
         'admin_id' => $admin->id, 
         'admin_full_name' => $admin->full_name,
         'admin_position' => $admin->position
     ]);
+
+    // Save updated session data
     $request->session()->put($sessionKey, $sessionData);
+
+    // Prepare trail values
+    $admin_id  = $admin->id;
+    $user_id   = null; 
+    $activity  = "Logged in into the system.";
     
+    // Create trail record
+    (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
     return response()->json(['message' => 'Admin selected successfully.']);
     }
+
     public function getAvailableAdmins(){
 
     $admins = AdminModel::select('id', 'full_name')->get();

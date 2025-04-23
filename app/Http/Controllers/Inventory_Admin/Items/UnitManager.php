@@ -8,6 +8,7 @@ use App\Models\UnitModel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Carbon;
+use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
 
 class UnitManager extends Controller
 {
@@ -49,6 +50,11 @@ class UnitManager extends Controller
             $unit->save();
 
             if($unit){
+                $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                $user_id = null;
+                $activity = "Updated a unit: " .   $unit->name . ".";
+                (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
+
                 return response()->json([
                     'message' => 'Unit updated successful!',
                     'status' => 200
@@ -71,8 +77,14 @@ class UnitManager extends Controller
                 'message' => $validator->errors()
             ]);
         } else {
-            $unit = UnitModel::where('id', $request->get('unit_id'))->delete();
+            $unit = UnitModel::find($request->get('unit_id'));
             if($unit){
+                $unitName = $unit->name;
+                $unit->delete();
+                $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                $user_id = null;
+                $activity = "Deleted a unit: " .   $unitName . ".";
+                (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
                 return response()->json([
                     'message' => 'Unit deleted successful!',
                     'status' => 200
@@ -103,6 +115,10 @@ class UnitManager extends Controller
             $unit->save();
 
             if($unit){
+                $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                $user_id = null;
+                $activity = "Added a new unit: " .   $unit->name . ".";
+                (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
                 return response()->json([
                     'message' => 'Unit added successful!',
                     'status' => 200

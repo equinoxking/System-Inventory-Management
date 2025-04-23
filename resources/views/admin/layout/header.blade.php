@@ -38,8 +38,8 @@
                 </li>
                 
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/admin/audit') }}" 
-                       style="{{ (Request::is('admin/audit')) ? 'background-color: #3d5c99;' : '' }}">
+                    <a class="nav-link" href="{{ url('/admin/trails') }}" 
+                       style="{{ (Request::is('admin/trails')) ? 'background-color: #3d5c99;' : '' }}">
                        <i class="fas fa-history mr-1"></i>Activity Logs   
                     </a>
                 </li>

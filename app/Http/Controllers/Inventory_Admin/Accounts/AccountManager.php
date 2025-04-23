@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\ClientModel;
 use App\Models\RoleModel;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
+
 
 class AccountManager extends Controller
 {
@@ -40,8 +42,13 @@ class AccountManager extends Controller
                 $client = ClientModel::where('id' , $request->get('user_id'))->first();
                 $client->role_id = $request->get('role_id');
                 $client->save();
-
+                
                 if($client){
+                    $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                    $user_id = null;
+                    $activity = "Set a role of " .  $client->full_name . " into " . $client->role->name . ".";
+                    (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
+
                     return response()->json([
                         'status' => 200,
                         'message' => "Set role successful!"
@@ -83,6 +90,11 @@ class AccountManager extends Controller
                     $client->save();
 
                     if($client){
+                        $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                        $user_id = null;
+                        $activity = "Updated the status of " .  $client->full_name . " into  " . $client->status . ".";
+                        (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
+
                         return response()->json([
                             'status' => 200,
                             'message' => "Change user status successful!"
@@ -101,6 +113,10 @@ class AccountManager extends Controller
                     $client->save();
 
                     if($client){
+                        $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                        $user_id = null;
+                        $activity = "Updated the status of " .  $client->full_name . " into  " . $client->status . ".";
+                        (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
                         return response()->json([
                             'status' => 200,
                             'message' => "Change user status successful!"

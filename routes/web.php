@@ -18,6 +18,8 @@ use App\Http\Controllers\User\Transactions\TransactionsManager;
 use App\Http\Controllers\Inventory_Admin\Report\PdfReportManager;
 use App\Http\Controllers\Inventory_Admin\Accounts\AdminManager;
 use App\Http\Controllers\Inventory_Admin\Charts\ChartManager;
+use App\Http\Controllers\Inventory_Admin\Pdf\ReportTransactionManager;
+use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
 use App\Http\Controllers\User\User_functionController;
 use App\Http\Controllers\User\Account\UserProfileManager;
 /*
@@ -47,7 +49,6 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::get('admin/', 'goToDashboard');
         Route::get('admin/request', 'goToRequest');
         Route::get('admin/report', 'goToReport');
-        Route::get('admin/audit', 'goToAudits');
     });
     Route::controller(CategoryManager::class)->group(function() {
         Route::get('/search-categories', 'searchCategory')->name('search.categories');
@@ -101,11 +102,17 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     Route::controller(ReportManager::class)->group(function(){
         Route::post('/generate-report', 'generateReport');
     });
+    Route::controller(ReportTransactionManager::class)->group(function(){
+        Route::post('/generate-transaction-report', 'generateTransactionReport');
+    });
     Route::controller(PdfReportManager::class)->group(function(){
         Route::post('/add-report', 'addReport');
     });
     Route::controller(ChartManager::class)->group(function(){
         Route::get('/admin/reports', 'goToCharts');
+    });
+    Route::controller(TrailManager::class)->group(function(){
+        Route::get('/admin/trails', 'goToTrails');
     });
     Route::controller(IA_functionController::class)->group(function() {
         Route::get('logoutAdmin', 'logoutAdmin');

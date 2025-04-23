@@ -39,4 +39,8 @@ class ClientModel extends Model
     {
         return $this->hasMany(NotificationModel::class, 'user_id', 'id');
     }
+    public function trail()
+    {
+        return $this->hasMany(TrailModel::class, 'user_id', 'id');
+    }
 }

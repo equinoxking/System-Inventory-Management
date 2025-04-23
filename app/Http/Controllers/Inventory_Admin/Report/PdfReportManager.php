@@ -8,6 +8,7 @@ use App\Models\AdminModel;
 use App\Models\ReportModel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
+use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
 
 class PdfReportManager extends Controller
 {
@@ -36,6 +37,11 @@ class PdfReportManager extends Controller
                 $report->report_file = $filename;
                 $report->save();
                 
+                $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                $user_id = null;
+                $activity = "Added a new report with transaction number: " .  $report->control_number . ".";
+                (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
+
                 return response()->json([
                     'message' => 'Report successfully added!',
                     'status' => 200
