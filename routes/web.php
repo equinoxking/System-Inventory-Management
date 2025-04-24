@@ -128,8 +128,11 @@ Route::group(['middleware' => 'loginCheckUser'], function () {
         Route::get('user/transactions', 'goToTransactions');
         Route::get('/searchRequestItem', 'searchItem');
         Route::post('/request-item', 'requestItem');
-        Route::get('user/history', 'goToHistory');
+        Route::get('/user/voids', 'goToHistory');
         Route::patch('/user/acceptance-transactions', 'updateTransaction');
+        Route::get('/user/refreshTransactions', 'getTransactions');
+        Route::patch('/user/cancel-transaction','cancelTransaction');
+        Route::get('/user/refreshActedTransactions', 'getActedTransactions');
     });
     Route::controller(UserProfileManager::class)->group(function(){
         Route::get('user/profile', 'goToProfile');

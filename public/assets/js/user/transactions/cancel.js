@@ -1,24 +1,24 @@
-function userAcceptance(transaction){
-    var modal = new bootstrap.Modal(document.getElementById('acceptanceTransactionModal'));
+function userCancel(transaction){
+    var modal = new bootstrap.Modal(document.getElementById('cancelTransactionModal'));
     modal.show();
-    $('#transaction-acceptance-id').val(transaction.id);
+    $('#transaction-cancel-id').val(transaction.id);
 }
 $(document).ready(function () {
-    $('#transaction-acceptance-close-btn').click(function () {
-        const modalEl = document.getElementById('acceptanceTransactionModal');
+    $('#transaction-cancel-close-btn').click(function () {
+        const modalEl = document.getElementById('cancelTransactionModal');
         const instance = bootstrap.Modal.getInstance(modalEl);
         if (instance) instance.hide();
     });
 });
 $(document).ready(function(){
-    $(document).on('submit', '#transaction-acceptance-form', function(event){
+    $(document).on('submit', '#transaction-cancel-form', function(event){
         event.preventDefault();
-        var formData = $('#transaction-acceptance-form').serialize();
+        var formData = $('#transaction-cancel-form').serialize();
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            url: '/user/acceptance-transactions',
+            url: '/user/cancel-transaction',
             type: 'PATCH',
             data: formData,
             beforeSend: function() {
@@ -47,7 +47,7 @@ $(document).ready(function(){
                             html: response.message,
                             showConfirmButton: true,
                         }).then(function() {
-                            $('#transaction-acceptance-submit-btn').attr('disabled', false);
+                            $('#transaction-cancel-submit-btn').attr('disabled', false);
                         });
                 }else if(response.status === 200){
                     Swal.fire({
@@ -57,7 +57,7 @@ $(document).ready(function(){
                     showConfirmButton: true,
                     }).then(function(){
                         window.location.reload();
-                        $('#acceptanceTransactionModal').modal('hide');
+                        $('#cancelTransactionModal').modal('hide');
                     });
                 }
             },error: function(error){

@@ -80,7 +80,7 @@
 <div class="container-fluid card w-100">
     <div class="row">
         <div class="col-md-12">
-            <table id="transactionTable" style="font-size: 11px">
+            <table id="transactionTable" style="font-size: 10px">
                 <thead>
                     <th>Time Request</th>
                     <th>Transaction Number</th>
@@ -116,7 +116,7 @@
 <div class="container-fluid card w-100">
     <div class="row">
         <div class='col-md-12'>
-            <table id="transactionHistoryTable" style="font-size: 11px">
+            <table id="transactionHistoryTable" style="font-size: 10px;">
                 <thead>
                     <th>Time Request</th>
                     <th>Transaction Number</th>
@@ -136,9 +136,6 @@
                 <tbody>
                    
                 </tbody>
-                <tfoot>
-
-                </tfoot>
             </table>
         </div>
     </div>

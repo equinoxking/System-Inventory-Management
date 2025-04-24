@@ -270,7 +270,8 @@ class AdminTransactionManager extends Controller
         $transactions = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'])
         ->where(function ($query) {
             $query->where('status_id', 2)
-            ->orWhere('status_id', 3);
+            ->orWhere('status_id', 3)
+            ->orWhere('status_id', 4);
         })
         ->get();     
 

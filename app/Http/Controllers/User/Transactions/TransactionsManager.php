@@ -207,7 +207,7 @@ class TransactionsManager extends Controller
             $query->where('remark', 'Completed')
                   ->orWhere('status_id', 3);
         })->get();
-        return view('user.history', [
+        return view('user.voids', [
             'transactions' => $transactions
         ]);
     }
@@ -260,5 +260,109 @@ class TransactionsManager extends Controller
             }
 
         }
+    }
+    public function cancelTransaction(Request $request){
+        $validator = Validator::make($request->all(), [
+            'transaction-cancel-id' => 'required|exists:transactions,id', 
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'message' => $validator->errors()
+            ]);
+        }else{
+            $transaction = TransactionModel::findOrFail($request->get('transaction-cancel-id'));
+            $transaction->status_id = 4;
+            $transaction->remark = "Completed";
+            $transaction->save();
+            if($transaction){
+                return response()->json([
+                    'message' => "Transaction successfully updated!",
+                    'status' => 200
+                ]);
+            }else{
+                return response()->json([
+                    'message' => "Check your internet connection!",
+                    'status' => 500
+                ]);
+            }
+        }
+    }
+    public function getTransactions(Request $request)
+    {
+        $client_id = session()->get('loginCheckUser')['id'];
+
+        $transactions = TransactionModel::with([
+            'client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'
+        ])
+        ->where(function ($query) use ($client_id) {
+            $query->where('status_id', 1)
+                ->orWhere('status_id', 2)
+                ->where('user_id', $client_id)
+                ->where('remark', "!=" , "Completed");
+        })
+        ->get();        
+        $formattedTransactions = $transactions->map(function ($transaction) {
+            return [
+                'id' => $transaction->id,
+                'time_request' => \Carbon\Carbon::parse($transaction->created_at)->format('F d, Y h:i A'),
+                'transaction_number' => $transaction->transaction_number,
+                'client_name' => $transaction->client ? $transaction->client->full_name : $transaction->admin->full_name,
+                'item_name' => $transaction->item->name,
+                'unit' => $transaction->item->inventory->unit->name,
+                'stock_on_hand' => $transaction->item->inventory->quantity,
+                'quantity' => $transaction->transactionDetail->request_quantity,
+                'released_by' => $transaction->adminBy ? $transaction->adminBy->full_name : '',
+                'request_aging' => $transaction->request_aging,
+                'time_released' => $transaction->released_time ? \Carbon\Carbon::parse($transaction->released_time)->format('h:i A') : '',
+                'time_approved' => $transaction->approved_time ? \Carbon\Carbon::parse($transaction->approved_time)->format('h:i A') : '',
+                'date_approved' => $transaction->approved_date ? \Carbon\Carbon::parse($transaction->approved_date)->format('F d, Y') : '',
+                'released_aging' => $transaction->released_aging,
+                'status' => $transaction->status ? $transaction->status->name : '',
+                'remarks' => $transaction->remark,
+            ];
+        });
+    
+        return response()->json([
+            'data' => $formattedTransactions
+        ]);
+    }
+    public function getActedTransactions(Request $request)
+    {
+        $client_id = session()->get('loginCheckUser')['id'];
+        $transactions = TransactionModel::with([
+            'client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'
+        ])
+        ->where(function ($query) use ($client_id) {
+            $query->Where('status_id', 2)
+                ->where('user_id', $client_id)
+                ->where('remark', "Completed");
+        })
+        ->get();   
+
+        $formattedTransactions = $transactions->map(function ($transaction) {
+            return [
+                'id' => $transaction->id,
+                'time_request' => \Carbon\Carbon::parse($transaction->created_at)->format('F d, Y h:i A'),
+                'transaction_number' => $transaction->transaction_number,
+                'client_name' => $transaction->client ? $transaction->client->full_name : $transaction->admin->full_name,
+                'item_name' => $transaction->item->name,
+                'unit' => $transaction->item->inventory->unit->name,
+                'stock_on_hand' => $transaction->item->inventory->quantity,
+                'quantity' => $transaction->transactionDetail->request_quantity,
+                'released_by' => $transaction->adminBy ? $transaction->adminBy->full_name : '',
+                'request_aging' => $transaction->request_aging,
+                'time_released' => $transaction->released_time ? \Carbon\Carbon::parse($transaction->released_time)->format('h:i A') : '',
+                'time_approved' => $transaction->approved_time ? \Carbon\Carbon::parse($transaction->approved_time)->format('h:i A') : '',
+                'date_approved' => $transaction->approved_date ? \Carbon\Carbon::parse($transaction->approved_date)->format('F d, Y') : '',
+                'released_aging' => $transaction->released_aging,
+                'status' => $transaction->status ? $transaction->status->name : '',
+                'remarks' => $transaction->remark,
+                'reason' => $transaction->reason,
+            ];
+        });
+        return response()->json([
+            'data' => $formattedTransactions
+        ]);
     }
 }

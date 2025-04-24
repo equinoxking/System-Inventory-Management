@@ -12,11 +12,9 @@ class User_mainController extends Controller
         return view('user.index');
     }
 
-   
-
     public function goToHistory()
     {
-        return view('user.history');
+        return view('user.voids');
     }
 
     public function goToProfile()

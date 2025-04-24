@@ -20,8 +20,7 @@
                        <i class="fas fa-credit-card"></i> Transactions
                     </a>
                 </li>
-                <li class="nav-item"><a class="nav-link" href="{{ url('/user/history') }}"><i class="fas fa-history"></i> History</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url('/user/profile') }}"><i class="fas fa-id-card"></i> Profile</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url('/user/voids') }}" style="{{ Request::is('user/voids*') ? 'background-color: #3d5c99;' : '' }}"><i class="fas fa-history"></i> Voids</a></li>
             </ul>
             <ul class="navbar-nav logout">
                 <button class="btn btn-danger" id="signOutButton" title="Logout button"><i class="fa fa-power-off"></i></button>
