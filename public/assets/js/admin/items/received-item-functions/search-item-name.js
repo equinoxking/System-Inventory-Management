@@ -115,3 +115,13 @@ $(document).on('click', function(e) {
         $('.item-results').hide();
     }
 });
+$(document).on('input', '.search-items', function () {
+    const $input = $(this);
+    const $row = $input.closest('.receive-item-row');
+
+    if ($input.val().trim() === '') {
+        $row.find('.remaining_quantity').val('');
+        $row.find('#max_quantity').val('');
+        $row.find('.selected-item-id').val('');
+    }
+});

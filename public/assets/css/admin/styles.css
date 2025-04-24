@@ -267,3 +267,31 @@ a {
 .container-fluid {
     font-size: 13px !important;
 }
+.request-item-row {
+    position: relative; /* This makes absolutely positioned children align correctly */
+}
+
+.item-results {
+    position: absolute;
+    top: 100%; /* Right under the input field */
+    left: 0;   /* Align left edge with parent */
+    z-index: 9999;
+    width: 100%; /* Match the input width */
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: none;
+    max-height: 200px;
+    overflow-y: auto;
+    text-align: left; /* Make sure text is aligned left */
+}
+
+.item-results li {
+    cursor: pointer;
+    padding: 8px 12px;
+}
+
+.item-results li.highlighted {
+    background-color: #f0f0f0;
+}

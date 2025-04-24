@@ -106,11 +106,11 @@ body {
                                         </span>
                                         @elseif ($notification->status === "Accepted")
                                         <span class="badge badge-success">
-                                            <i class="fas fa-ban"></i> Item Received
+                                            <i class="fas fa-box-open"></i> Item Received
                                         </span>
                                         @elseif ($notification->status === "Canceled")
                                         <span class="badge badge-secondary">
-                                            <i class="fas fa-ban"></i> Canceled
+                                            <i class="fas fa-times-circle"></i> Canceled
                                         </span>
                                         @else
                                             <span class="badge badge-success">

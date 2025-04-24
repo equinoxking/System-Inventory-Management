@@ -29,6 +29,11 @@
     </div>
     <!-- Form Body -->
     <form action="" id="requestItem-form" class="p-3">
+        <div class="col-md-12 d-flex justify-content-end">
+            <button type="button" id="requestItemReceived-btn" class="btn btn-primary rounded px-4 py-2">
+                Request more item
+            </button>
+        </div>
         @csrf
         <div id="requestItem-container">
             <div class="row mb-3 mt-2 request-item-row">
@@ -53,13 +58,14 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12 d-flex justify-content-between">
-                <button type="button" id="requestItemReceived-btn" class="btn btn-primary rounded px-4 py-2">
-                    Request more item
-                </button>
-                <div>
-                    <button type="reset" class="btn btn-secondary rounded px-4 py-2 me-3">Clear</button>
-                    <button type="submit" id="requestItemSubmit-btn" class="btn btn-success rounded px-4 py-2">Submit</button>
+            <div class="col-md-12 d-flex justify-content-end">
+                <div class="col-md-1 form-group">
+                    <label for="" class="font-weight-bold">&nbsp</label>
+                    <button type="reset" class="btn btn-secondary rounded px-4 py-2 me-3 w-100">Clear</button>
+                </div>
+                <div class="col-md-1 form-group">
+                    <label for="" class="font-weight-bold">&nbsp</label>
+                    <button type="submit" id="requestItemSubmit-btn" class="btn btn-success rounded px-4 py-2 w-100">Submit</button>
                 </div>
             </div>
         </div>
