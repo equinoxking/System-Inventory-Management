@@ -45,7 +45,7 @@
                                         <i class="fas fa-check-circle"></i> Denied
                                     </span>
                                 @elseif($transaction->status && $transaction->status_id == 4)
-                                    <span class="badge badge-danger">
+                                    <span class="badge badge-secondary">
                                         <i class="fas fa-times-circle mr-1"></i> Canceled
                                     </span>
                                 @endif

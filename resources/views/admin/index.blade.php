@@ -100,6 +100,18 @@ body {
                                             <span class="badge badge-warning">
                                                 <i class="fas fa-clock"></i> Pending
                                             </span>
+                                        @elseif ($notification->status === "Denied")
+                                        <span class="badge badge-danger">
+                                            <i class="fas fa-ban"></i> Denied
+                                        </span>
+                                        @elseif ($notification->status === "Accepted")
+                                        <span class="badge badge-success">
+                                            <i class="fas fa-ban"></i> Item Received
+                                        </span>
+                                        @elseif ($notification->status === "Canceled")
+                                        <span class="badge badge-secondary">
+                                            <i class="fas fa-ban"></i> Canceled
+                                        </span>
                                         @else
                                             <span class="badge badge-success">
                                                 <i class="fas fa-check"></i> Issued

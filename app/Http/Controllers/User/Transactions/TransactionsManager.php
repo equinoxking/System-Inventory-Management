@@ -9,11 +9,11 @@ use App\Models\ItemModel;
 use App\Models\TransactionModel;
 use App\Models\TransactionStatusModel;
 use App\Models\TransactionDetailModel;
-use App\Models\InventoryModel;
 use App\Models\NotificationModel;
-use Illuminate\Notifications\Notification;
+use App\Models\UserNotificationModel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
+use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
 
 class TransactionsManager extends Controller
 {
@@ -142,7 +142,7 @@ class TransactionsManager extends Controller
             $detail->request_year = $year;
             $detail->save();
 
-            $notification = new NotificationModel;
+            $notification = new NotificationModel();
             $notification->user_id = $client->id;
             $notification->control_number = $this->generateNotificationNumber();
             $message = "Requestor: " . $client->full_name . 
@@ -153,8 +153,23 @@ class TransactionsManager extends Controller
             $notification->status = "Pending";
             $notification->save();
             
+            $user = new UserNotificationModel();
+            $user->user_id = $client->id;
+            $user->control_number = $this->generateUserNotificationNumber();
+            $user->status = "Pending";
+            $message = "Your request with transaction number " . 
+            $transaction->transaction_number . 
+            " is now on pending, and this transaction has been marked as " . $transaction->remark . ".";
+            $user->message = $message;
+            $user->save();
+
+            $admin_id = null;
+            $user_id =  session()->get('loginCheckUser')['id'];
+            $activity = "Created a new request with a transaction number of " . $transaction->transaction_number . ".";
+            (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
+
             // If anything fails during the transaction processing, mark the flag as false
-            if (!$transaction || !$detail || !$notification) {
+            if (!$transaction || !$detail || !$notification || !$user) {
                 $allItemsRequested = false;
             }
         }
@@ -201,7 +216,22 @@ class TransactionsManager extends Controller
         $incrementedNumber = intval($lastFiveDigits) + 1;
         $paddedNumber = str_pad($incrementedNumber, 5, '0', STR_PAD_LEFT);
         return $currentYearAndMonth . '-' . $paddedNumber;
-    }          
+    }
+    private function generateUserNotificationNumber(){
+        $currentYearAndMonth = Carbon::now()->format('Y-m'); 
+        $lastControlNumber = UserNotificationModel::whereYear('created_at', Carbon::now()->year)
+                                                  ->whereMonth('created_at', Carbon::now()->month)
+                                                  ->orderBy('control_number', 'desc')
+                                                  ->pluck('control_number')
+                                                  ->first();
+        if (!$lastControlNumber) {
+            return $currentYearAndMonth . '-00001';
+        }
+        $lastFiveDigits = substr($lastControlNumber, -5);
+        $incrementedNumber = intval($lastFiveDigits) + 1;
+        $paddedNumber = str_pad($incrementedNumber, 5, '0', STR_PAD_LEFT);
+        return $currentYearAndMonth . '-' . $paddedNumber;
+    }                    
     public function goToHistory(){
         $transactions = TransactionModel::where(function ($query) {
             $query->where('remark', 'Completed')
@@ -247,6 +277,32 @@ class TransactionsManager extends Controller
                 $transaction->remark = "Completed";
                 $transaction->released_aging = $agingString;
                 $transaction->save();
+                $detail = TransactionDetailModel::where('transaction_id', $transaction->id)->first();
+                $notification = new NotificationModel;
+      
+                $notification->control_number = $this->generateNotificationNumber();
+                $message = "Requestor: " . $transaction->client->full_name .
+                    " | Transaction: " . $transaction->transaction_number .
+                    " | Item: " . $detail->request_item .
+                    " | Quantity: " . $detail->request_quantity . ".";
+                $notification->message = $message;
+                $notification->status = "Accepted";
+                $notification->save();
+
+                $user = new UserNotificationModel();
+                $user->user_id = $transaction->user_id;
+                $user->control_number = $this->generateUserNotificationNumber();
+                $user->status = "Pending";
+                $message = "Your request with transaction number " . 
+                $transaction->transaction_number . 
+                " has been received, and this transaction has been marked as Completed.";
+                $user->message = $message;
+                $user->save();
+
+                $admin_id = null;
+                $user_id =  session()->get('loginCheckUser')['id'];
+                $activity = "Updated own request with a transaction number of " . $transaction->transaction_number . " into " . $transaction->remark . ".";
+                (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
 
                 return response()->json([
                     'message' => "Transaction successfully updated!",
@@ -275,7 +331,34 @@ class TransactionsManager extends Controller
             $transaction->status_id = 4;
             $transaction->remark = "Completed";
             $transaction->save();
+
+            $detail = TransactionDetailModel::where('transaction_id', $transaction->id)->first();
             if($transaction){
+                $user = new UserNotificationModel();
+                $user->user_id = $transaction->user_id;
+                $user->control_number = $this->generateUserNotificationNumber();
+                $user->status = "Pending";
+                $message = "Your request with transaction number " . 
+                $transaction->transaction_number . 
+                " has been canceled, and this transaction has been marked as Completed.";
+                $user->message = $message;
+                $user->save();
+
+                $notification = new NotificationModel();
+                $notification->control_number = $this->generateNotificationNumber();
+                $message = "Requestor: " . $transaction->client->full_name .
+                    " | Transaction: " . $transaction->transaction_number .
+                    " | Item: " . $detail->request_item .
+                    " | Quantity: " . $detail->request_quantity . ".";
+                $notification->message = $message;
+                $notification->status = "Canceled";
+                $notification->save();
+
+                $admin_id = null;
+                $user_id =  session()->get('loginCheckUser')['id'];
+                $activity = "Updated the status of transaction No." . $transaction->transaction_number . " into canceled.";
+
+                (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
                 return response()->json([
                     'message' => "Transaction successfully updated!",
                     'status' => 200

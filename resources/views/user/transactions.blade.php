@@ -21,7 +21,7 @@
         </div>
     </div>
 </div>
-<div class="container-fluid card w-100 shadow rounded p-4" id="requestForm" style="max-height: 300px; overflow-y: auto; background-color: #f8f9fa; display:none; border: 2px solid #ddd;">
+<div class="container-fluid card w-100 shadow rounded p-4" id="requestForm" style="max-height: 500px; overflow-y: auto; background-color: #f8f9fa; display:none; border: 2px solid #ddd;">
     <!-- Form Header -->
     <div class="d-flex justify-content-between align-items-center bg-success text-light p-3 rounded-top">
         <h4 class="m-0 text-center flex-grow-1"><strong>REQUEST ITEM FORM</strong></h4>

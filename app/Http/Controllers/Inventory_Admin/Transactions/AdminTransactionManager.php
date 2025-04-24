@@ -12,9 +12,9 @@ use App\Models\TransactionModel;
 use App\Models\TransactionStatusModel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 use App\Models\ItemModel;
 use App\Models\NotificationModel;
+use App\Models\UserNotificationModel;
 use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
 
 class AdminTransactionManager extends Controller
@@ -165,9 +165,19 @@ class AdminTransactionManager extends Controller
                             $notification->status = "Issued";
                             $notification->save();
 
+                            $user = new UserNotificationModel();
+                            $user->user_id = $transaction->user_id;
+                            $user->control_number = $this->generateUserNotificationNumber();
+                            $user->status = "Pending";
+                            $message = "Your request with transaction number " . 
+                            $transaction->transaction_number . 
+                            " has been accepted, and this transaction has been marked as " . $transaction->remark . ".";
+                            $user->message = $message;
+                            $user->save();
+
                             $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
                             $user_id = null;
-                            $activity = "Updated the remarks of Transaction No." . $transaction->transaction_number . " Into " . $transaction->remark . ".";
+                            $activity = "Updated the remarks of Transaction No." . $transaction->transaction_number . " into item received.";
                             (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
 
                             if (!$inventory || !$notification) {
@@ -204,11 +214,34 @@ class AdminTransactionManager extends Controller
                             $transaction->status_id = $status->id;
                             $transaction->reason = ucfirst($request->get('reason'));
                             $transaction->save();
-                            
+                            $details = TransactionDetailModel::where('transaction_id', $transaction->id)->first();
                             $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
                             $user_id = null;
                             $activity = "Updated the remarks of Transaction No." . $transaction->transaction_number . " Into " . $transaction->remark . " Due to " . $transaction->reason . ".";
                             (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
+
+                            $message = "Admin: " . $admin->full_name .
+                            " | Transaction: " . $transaction->transaction_number .
+                            " | Item: " . $details->request_item .
+                            " | Quantity: " . $details->request_quantity . ".";
+
+                            $notification = new NotificationModel();
+                            $notification->control_number = $this->generateNotificationNumber();
+                            $notification->user_id = $transaction->user_id;
+                            $notification->admin_id = $admin->id;
+                            $notification->message = $message;
+                            $notification->status = "Denied";
+                            $notification->save();
+
+                            $user = new UserNotificationModel();
+                            $user->user_id = $transaction->user_id;
+                            $user->control_number = $this->generateUserNotificationNumber();
+                            $user->status = "Pending";
+                            $message = "Your request with transaction number " . 
+                            $transaction->transaction_number . 
+                            " has been denied due to ". $transaction->reason . ", and this transaction has been marked as completed.";
+                            $user->message = $message;
+                            $user->save();
 
                             if($transaction){
                                 return response()->json([
@@ -434,4 +467,19 @@ class AdminTransactionManager extends Controller
         $paddedNumber = str_pad($incrementedNumber, 5, '0', STR_PAD_LEFT);
         return $currentYearAndMonth . '-' . $paddedNumber;
     }     
+    private function generateUserNotificationNumber(){
+        $currentYearAndMonth = Carbon::now()->format('Y-m'); 
+        $lastControlNumber = UserNotificationModel::whereYear('created_at', Carbon::now()->year)
+                                                  ->whereMonth('created_at', Carbon::now()->month)
+                                                  ->orderBy('control_number', 'desc')
+                                                  ->pluck('control_number')
+                                                  ->first();
+        if (!$lastControlNumber) {
+            return $currentYearAndMonth . '-00001';
+        }
+        $lastFiveDigits = substr($lastControlNumber, -5);
+        $incrementedNumber = intval($lastFiveDigits) + 1;
+        $paddedNumber = str_pad($incrementedNumber, 5, '0', STR_PAD_LEFT);
+        return $currentYearAndMonth . '-' . $paddedNumber;
+    }  
 }

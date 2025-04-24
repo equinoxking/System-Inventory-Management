@@ -72,21 +72,22 @@ $(document).ready(function() {
             return;
         }
 
-        $items.removeClass('highlighted');
+        $items.removeClass('request-highlight');
         if (currentRequestItemIndex >= 0) {
-            $items.eq(currentRequestItemIndex).addClass('highlighted');
+            $items.eq(currentRequestItemIndex).addClass('request-highlight');
         }
+
     });
 
     $(document).on('mouseover', '.requestItemName', function() {
-        $('.requestItemName').removeClass('highlighted');
-        $(this).addClass('highlighted');
+        $('.requestItemName').removeClass('request-highlight');
+        $(this).addClass('request-highlight');
         currentRequestItemIndex = $(this).index();
     });
-
+    
     $(document).on('mouseout', '.requestItemName', function() {
-        $(this).removeClass('highlighted');
-    });
+        $(this).removeClass('request-highlight');
+    });    
 
     $(document).on('click', '.requestItemName', function() {
         selectRequestItem($(this));

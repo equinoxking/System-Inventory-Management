@@ -105,6 +105,16 @@ th {
     display: inline-flex;
     margin-left: 1rem;
 }
+.badge-secondary {
+    color: ffffff;
+    background-color: gray; 
+    padding: 5px 10px;
+    border-radius: 3px;
+    text-align: center;
+    align-items: center;
+    display: inline-flex;
+    margin-left: 1rem;
+}
 .badge-pending {
     color: ffffff;
     background-color: #FF9800; 
@@ -195,12 +205,21 @@ th {
     color: white; /* White text */
     transition: none !important; /* Ensure no fade effect */
 }
+.request-highlight {
+    background-color: #007bff !important; /* A soft green highlight */
+    color: #fff !important;
+    cursor: pointer;
+}
 
 /* Optional: Mouse hover effect for better UX */
 .category-item.highlighted {
     background-color: #007bff;
     color: white;
     cursor: pointer;
+}
+.highlighted {
+    background-color: #007bff;
+    color: white;
 }
 .unit-item.highlighted {
     background-color: #007bff;
