@@ -22,6 +22,7 @@ use App\Http\Controllers\Inventory_Admin\Pdf\ReportTransactionManager;
 use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
 use App\Http\Controllers\User\User_functionController;
 use App\Http\Controllers\User\Account\UserProfileManager;
+use Intervention\Image\ImageManagerStatic as Image;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -113,9 +114,6 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     });
     Route::controller(TrailManager::class)->group(function(){
         Route::get('/admin/trails', 'goToTrails');
-    });
-    Route::controller(IA_functionController::class)->group(function() {
-        Route::get('logoutAdmin', 'logoutAdmin');
     });
 });
 /* -- USER -- */

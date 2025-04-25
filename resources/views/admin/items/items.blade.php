@@ -118,23 +118,29 @@
                     @endforeach
             </select>
         </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
         <div class="col-md-12">
-            <table id="itemsTable" class="table-striped table-hover" style="font-size: 11px">
-                <thead class="bg-info">
-                    <th>Item Number</th>
-                    <th width="15%">Category</th>
-                    <th width="25%">Item Name</th>
-                    <th>UoM</th>
-                    <th>Stock on Hand</th>
-                    <th>Buffer Stock</th>
-                    <th>Date/Time Created</th>
-                    <th>Status</th>
-                    <th width="5%">Stock Level</th>
-                    <th>Action</th>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+            <div class="col-md-12">
+                <table id="itemsTable" class="table-striped table-hover" style="font-size: 11px">
+                    <thead class="bg-info">
+                        <th>Item Number</th>
+                        <th width="15%">Category</th>
+                        <th width="25%">Item Name</th>
+                        <th>UoM</th>
+                        <th>Stock on Hand</th>
+                        <th>Buffer Stock</th>
+                        <th>Date/Time Created</th>
+                        <th>Status</th>
+                        <th width="5%">Stock Level</th>
+                        <th>Action</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

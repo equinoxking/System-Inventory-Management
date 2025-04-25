@@ -12,6 +12,7 @@ use App\Models\TransactionModel;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
+use Intervention\Image\Facades\Image;
 use DateTime;
 class ReportTransactionManager extends Controller
 {
@@ -33,9 +34,15 @@ class ReportTransactionManager extends Controller
                     ->get();
                     $now = Carbon::now('Asia/Manila')->format('F j, Y h:i A');
                     $preparedBy = AdminModel::where('id', $request->get('admin'))->first();
+                    $logoPh = $this->getCompressedBase64Image('assets/images/LOGO-PH.png', 'png');
+                    $logoWebp = $this->getCompressedBase64Image('assets/images/LOGO.webp', 'webp');
+                    $generatedBy = AdminModel::where('id', session()->get('loggedInInventoryAdmin')['id'])->first();
                     $data = [
                         'transactions' => $transactions,
-                        'preparedBy' => $preparedBy
+                        'preparedBy' => $preparedBy,
+                        'logo' => $logoWebp,
+                        'logoPh' => $logoPh,
+                        'generatedBy' => $generatedBy
                     ];
 
                     $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
@@ -110,9 +117,16 @@ class ReportTransactionManager extends Controller
                         $owner_name = 'N/A';
                     }
 
+                    $logoPh = $this->getCompressedBase64Image('assets/images/LOGO-PH.png', 'png');
+                    $logoWebp = $this->getCompressedBase64Image('assets/images/LOGO.webp', 'webp');
+                    $generatedBy = AdminModel::where('id', session()->get('loggedInInventoryAdmin')['id'])->first();
+
                     $data = [
                         'transactions' => $transactions,
-                        'preparedBy' => $preparedBy
+                        'preparedBy' => $preparedBy,
+                        'logo' => $logoWebp,
+                        'logoPh' => $logoPh,
+                        'generatedBy' => $generatedBy
                     ];
                     
                     $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
@@ -152,9 +166,17 @@ class ReportTransactionManager extends Controller
                     ->get();
                     $now = Carbon::now('Asia/Manila')->format('F j, Y h:i A');
                     $preparedBy = AdminModel::where('id', $request->get('admin'))->first();
+
+                    $logoPh = $this->getCompressedBase64Image('assets/images/LOGO-PH.png', 'png');
+                    $logoWebp = $this->getCompressedBase64Image('assets/images/LOGO.webp', 'webp');
+                    $generatedBy = AdminModel::where('id', session()->get('loggedInInventoryAdmin')['id'])->first();
+
                     $data = [
                         'transactions' => $transactions,
-                        'preparedBy' => $preparedBy
+                        'preparedBy' => $preparedBy,
+                        'logo' => $logoWebp,
+                        'logoPh' => $logoPh,
+                        'generatedBy' => $generatedBy
                     ];
                     $user = TransactionModel::where('user_id', $request->get('user'))->first();
 
@@ -185,4 +207,20 @@ class ReportTransactionManager extends Controller
             }
         }
     }
+    private function getCompressedBase64Image($relativePath, $mimeType = 'png', $width = 300){
+        $fullPath = public_path($relativePath);
+    
+        if (!file_exists($fullPath)) {
+            return '';
+        }
+    
+        $image = Image::make($fullPath)
+            ->resize($width, null, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            })
+            ->encode($mimeType, 75); // 75% quality
+    
+        return 'data:image/' . $mimeType . ';base64,' . base64_encode($image);
+        }
 }

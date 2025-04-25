@@ -11,7 +11,7 @@ use App\Models\ItemModel;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Models\ClientModel;
-use Error;
+use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Log;
 class ReportManager extends Controller
 {
@@ -209,9 +209,11 @@ class ReportManager extends Controller
                     $client = ClientModel::where('id', $sessionLogin)->first();
                     $now = Carbon::now('Asia/Manila')->format('F j, Y h:i A');
                     $preparedBy = AdminModel::where('id', $request->get('prepared'))->first();
-
+                    $logoPh = $this->getCompressedBase64Image('assets/images/LOGO-PH.png', 'png');
+                    $logoWebp = $this->getCompressedBase64Image('assets/images/LOGO.webp', 'webp');
+                    $generatedBy = AdminModel::where('id', session()->get('loggedInInventoryAdmin')['id'])->first();
                     $data = [
-                        'title' => 'INVENTORY REPORT OF SUPPLIES FOR THE MONTH OF ' . strtoupper($formattedDateNow) ,
+                        'title' => "SUPPLIES UTILIZATION MONTHLY REPORT",
                         'itemsPart1' => $itemsPart1,
                         'itemsPart2' => $itemsPart2,
                         'inventories' => $inventories,
@@ -221,7 +223,10 @@ class ReportManager extends Controller
                         'client' => $client,
                         'now' => $now,
                         'formattedDateNow' => $formattedDateNow,
-                        'preparedBy' => $preparedBy
+                        'preparedBy' => $preparedBy,
+                        'logo' => $logoWebp,
+                        'logoPh' => $logoPh,
+                        'generatedBy' => $generatedBy
                     ];
                     $now = now()->setTimezone('Asia/Manila')->format('F d, Y h:i A');
                     $pdf = PDF::loadView('admin.pdf.monthly-report', $data, compact('now'))
@@ -503,12 +508,15 @@ class ReportManager extends Controller
                         $endOfMonthFormatted = $endOfMonth->format('F d, Y');
                         $now = Carbon::now('Asia/Manila')->format('F j, Y h:i A');
                         $preparedBy = AdminModel::where('id', $request->get('prepared'))->first();
+                        $logoPh = $this->getCompressedBase64Image('assets/images/LOGO-PH.png', 'png');
+                        $logoWebp = $this->getCompressedBase64Image('assets/images/LOGO.webp', 'webp');
+                        $generatedBy = AdminModel::where('id', session()->get('loggedInInventoryAdmin')['id'])->first();
                     } else {
                         $items = collect();  
                     }
                     $data = [
                         'title' => "PROVINCIAL HUMAN RESOURCE MANAGEMENT OFFICE",
-                        'sub_title' => "SUPPLIES UTILIZATION REPORT",
+                        'sub_title' => "SUPPLIES UTILIZATION QUARTERLY REPORT",
                         'itemsPart1' => $itemsPart1,
                         'itemsPart2' => $itemsPart2,
                         'explodeQuarters' => $explodeQuarters,
@@ -519,7 +527,10 @@ class ReportManager extends Controller
                         'monthAbbreviations' => $monthAbbreviations,
                         'endOfMonthFormatted' => $endOfMonthFormatted,
                         'preparedBy' => $preparedBy,
-                        'getMonth' => $getFirstMonth
+                        'getMonth' => $getFirstMonth,
+                        'logo' => $logoWebp,
+                        'logoPh' => $logoPh,
+                        'generatedBy' => $generatedBy
                         
                     ];
                     $pdf = PDF::loadView('admin.pdf.quarterly-report', $data)
@@ -538,5 +549,21 @@ class ReportManager extends Controller
                 break;
             }
         }
+    }
+    private function getCompressedBase64Image($relativePath, $mimeType = 'png', $width = 300){
+    $fullPath = public_path($relativePath);
+
+    if (!file_exists($fullPath)) {
+        return '';
+    }
+
+    $image = Image::make($fullPath)
+        ->resize($width, null, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        })
+        ->encode($mimeType, 75); // 75% quality
+
+    return 'data:image/' . $mimeType . ';base64,' . base64_encode($image);
     }
 }

@@ -1,7 +1,7 @@
 $(document).ready(function () {
     var table = $('#itemsTable').DataTable({
-        "aLengthMenu": [[5, 10, 25, 50, 75, 100], [5, 10, 25, 50, 75, 100]],
-        "pageLength": 1000000000,
+        "pageLength": -1,
+        "lengthChange": false,
         "responsive": true,
         "autoWidth": false,
         "processing": false,

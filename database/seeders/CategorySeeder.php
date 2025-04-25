@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\CategoryModel;
+use Illuminate\Support\Carbon;
 class CategorySeeder extends Seeder
 {
     /**
@@ -85,9 +86,33 @@ class CategorySeeder extends Seeder
                 'name' => 'Other New Items', 'description' => 'Miscellaneous new products not falling under specific categories.',
                 'sub_category_id' => 2
             ],
+            [
+                'name' => 'Manufacturing Components and Supplies', 'description' => 'Items used for manufacturing.',
+                'sub_category_id' => 1
+            ],
         ];        
         foreach ($categories as $category) {
+            $category['control_number'] = $this->generateControlNumber();
+            $category['created_at'] = now();
+            $category['updated_at'] = now();
             CategoryModel::create($category);
         }
     }
+    private function generateControlNumber() {
+        $currentYearAndMonth = Carbon::now()->format('Y-m');
+        $controlNumber = CategoryModel::whereYear('created_at', Carbon::now()->year)
+                                ->whereMonth('created_at', Carbon::now()->month)
+                                ->orderBy('control_number', 'desc')
+                                ->pluck('control_number')
+                                ->first();
+    
+        if (!$controlNumber) {
+            return $currentYearAndMonth . '-00001';
+        }
+    
+        $numberPart = intval(substr($controlNumber, -5)) + 1; 
+        $paddedNumber = str_pad($numberPart, 5, '0', STR_PAD_LEFT);
+    
+        return $currentYearAndMonth . '-' . $paddedNumber;
+    }  
 }

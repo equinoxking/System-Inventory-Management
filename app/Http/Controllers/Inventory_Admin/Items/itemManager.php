@@ -291,11 +291,20 @@ class itemManager extends Controller
             $query->where('quantity', '<=', $request->maxQuantity); // Filter by maximum quantity in inventory
         });
     }
-    if ($request->status) {
-        $itemsQuery->whereHas('status', function ($query) use ($request) {
-            $query->where('name', $request->status); // Filter by maximum quantity in inventory
-        });
-    }
+    // if ($request->status) {
+    //     if ($request->status == 'Critical') {
+    //         // If the status is 'Critical', filter based on min_quantity in the inventory table
+    //         $itemsQuery->whereHas('inventory', function ($query) use ($minQuantity) {
+    //             $query->where('min_quantity', '<', $minQuantity); // Filter items where min_quantity < $minQuantity
+    //         });
+    //     } else {
+    //         // If the status is not 'Critical', filter based on status relationship
+    //         $itemsQuery->whereHas('status', function ($query) use ($request) {
+    //             $query->where('name', $request->status); // Filter by status name
+    //         });
+    //     }
+    // }
+   
     $items = $itemsQuery
     ->orderBy('controlNumber', 'desc')
     ->get();

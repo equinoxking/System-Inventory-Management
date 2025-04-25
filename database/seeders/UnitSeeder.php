@@ -22,17 +22,18 @@ class UnitSeeder extends Seeder
             ['name' => 'piece',    'description' => 'Single item or unit',                           'symbol' => 'pc'],
             ['name' => 'pad',      'description' => 'Stack of sheets fastened together',             'symbol' => 'pd'],
             ['name' => 'ream',     'description' => 'Bundle of 500 sheets of paper',                 'symbol' => 'rm'],
-            ['name' => 'packs',    'description' => 'Collection of items wrapped together',          'symbol' => 'pk'],
-            ['name' => 'books',    'description' => 'Bound set of written or printed pages',         'symbol' => 'bk'],
+            ['name' => 'pack',     'description' => 'Collection of items wrapped together',          'symbol' => 'pk'],
+            ['name' => 'book',     'description' => 'Bound set of written or printed pages',         'symbol' => 'bk'],
             ['name' => 'jar',      'description' => 'Glass or plastic container with a lid',         'symbol' => 'jr'],
             ['name' => 'roll',     'description' => 'Item wound into a cylindrical shape',           'symbol' => 'rl'],
-            ['name' => 'bars',     'description' => 'Solid blocks, typically of food or metal',      'symbol' => 'br'],
+            ['name' => 'bar',     'description' => 'Solid blocks, typically of food or metal',       'symbol' => 'br'],
             ['name' => 'gallon',   'description' => 'Unit of liquid capacity (3.785 L in US)',       'symbol' => 'gal'],
             ['name' => 'unit',     'description' => 'Generic single item or quantity',               'symbol' => 'u'],
             ['name' => 'bundle',   'description' => 'Group of items fastened together',              'symbol' => 'bdl'],
             ['name' => 'set',      'description' => 'Collection of related items',                   'symbol' => 'set'],
-            ['name' => 'cart',     'description' => 'Wheeled container for transporting items',      'symbol' => 'crt'],
+            ['name' => 'cart',     'description' => 'Measured by quantity or volume (for ink/toner)','symbol' => 'crt'],
             ['name' => 'booklet',  'description' => 'Small book with few pages',                     'symbol' => 'bkt'],
+            ['name' => 'pair',     'description' => 'Always two as one',                             'symbol' => 'bkt'],
         ];        
         foreach ($units as $unit) {
             $unit['control_number'] = $this->generateControlNumber();
