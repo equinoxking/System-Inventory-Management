@@ -13,10 +13,10 @@
         </div>
         <div class="col-md-10 text-end">
             <div>
-                <label for="action" class="font-weight-bold">Action</label>
+                <label for="action" class="font-weight-bold">Request</label>
             </div>
             <button type="button" class="btn btn-success" id="requestBtn" title="Request item button">
-                <i class="fa-solid fa-handshake"></i>
+                <i class="fa-solid fa-plus"></i>
             </button>
         </div>
     </div>
@@ -30,8 +30,8 @@
     <!-- Form Body -->
     <form action="" id="requestItem-form" class="p-3">
         <div class="col-md-12 d-flex justify-content-end">
-            <button type="button" id="requestItemReceived-btn" class="btn btn-primary rounded px-4 py-2">
-                Request more item
+            <button type="button" id="requestItemReceived-btn" class="btn btn-primary rounded px-4 py-2" title="Add more request item row">
+                <i class="fa-solid fa-plus"></i>
             </button>
         </div>
         @csrf
@@ -52,8 +52,8 @@
                     <input type="number" class="form-control quantity requestMaxQuantity" name="requestMaxQuantity[]" id="requestMaxQuantity" readonly>
                 </div>
                 <div class="col-md-1 form-group">
-                    <label for="action" class="font-weight-bold">Action</label>
-                    <button type="button" class="remove-request-item btn btn-danger">Remove</button>
+                    <label for="action" class="font-weight-bold">Action</label><br>
+                    <button type="button" class="remove-request-item btn btn-danger title="Remove item request row"><i class="fa-solid fa-eraser"></i></button>
                 </div>
             </div>
         </div>
@@ -142,9 +142,6 @@
         <div class="modal-content">
                 <div class="modal-header bg-warning">
                     <h5 class="modal-title" style="color:white;">ACCEPTANCE TRANSACTION FORM</h5>
-                    <button type="button" id="transaction-acceptance-close-btn" data-dismiss="modal" class="btn btn-danger" aria-label="Close">
-                        <i class="fa-solid fa-circle-xmark"></i>
-                    </button>
                 </div>
             <div class="modal-body">
                 <div class="row">
@@ -155,14 +152,15 @@
                             <input type="text" class="form-control" name="transaction-acceptance-id" id="transaction-acceptance-id">
                         </div>
                         <div class="form-group">
-                            <strong class="text-danger">Are you sure that they delivered your item?</strong>
+                            <strong class="text-danger">Are you sure that you received your item?</strong>
                         </div>                        
                 </div>
                 <div class="row">
                     <div class="modal-footer">
-                        <div class="col-md-3 form-group">
-                            <button type="submit" class="btn btn-warning" id="transaction-acceptance-submit-btn">SUBMIT</button>
-                        </div>
+                        <div class="modal-footer d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-danger" id="transaction-acceptance-close-btn">NO</button>
+                            <button type="submit" class="btn btn-success" id="transaction-acceptance-submit-btn">YES</button>
+                        </div>  
                     </div>
                     </form>
                 </div>
@@ -175,9 +173,6 @@
         <div class="modal-content">
                 <div class="modal-header bg-danger">
                     <h5 class="modal-title" style="color:white;">CANCEL TRANSACTION FORM</h5>
-                    <button type="button" id="transaction-cancel-close-btn" data-dismiss="modal" class="btn btn-light" aria-label="Close">
-                        <i class="fa-solid fa-circle-xmark"></i>
-                    </button>
                 </div>
             <div class="modal-body">
                 <div class="row">
@@ -192,11 +187,10 @@
                         </div>                        
                 </div>
                 <div class="row">
-                    <div class="modal-footer">
-                        <div class="col-md-3 form-group">
-                            <button type="submit" class="btn btn-danger" id="transaction-cancel-submit-btn">SUBMIT</button>
-                        </div>
-                    </div>
+                    <div class="modal-footer d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-success" id="transaction-cancel-close-btn">NO</button>
+                        <button type="submit" class="btn btn-danger" id="transaction-cancel-submit-btn">YES</button>
+                    </div>                    
                     </form>
                 </div>
             </div>
@@ -211,17 +205,21 @@
 <script src="{{ asset('assets/js/user/transactions/cancel.js') }}"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    const requestQuantity = document.getElementById("requestQuantity");
-    const maxQuantity = document.getElementById('requestMaxQuantity');
-    requestQuantity.addEventListener('input', function () {
-        if (Number(requestQuantity.value) > Number(maxQuantity.value)) {
-            $('#requestQuantity').val(maxQuantity.value);
+    $(document).on('input', '.requestQuantity', function () {
+        const $input = $(this);
+        const $row = $input.closest('.request-item-row');
+        const maxQuantity = Number($row.find('.requestMaxQuantity').val());
+        const inputQuantity = Number($input.val());
+
+        if (inputQuantity > maxQuantity) {
+            $input.val(maxQuantity);
         }
-        if(Number(requestQuantity.value) < 0){
-            $('#requestQuantity').val(1);
+        if (inputQuantity < 1) {
+            $input.val(1);
         }
     });
 });
+
 
 
 </script>

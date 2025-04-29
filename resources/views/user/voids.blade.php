@@ -42,7 +42,7 @@
                             <td class="text-center">
                                 @if($transaction->status && $transaction->status_id == 3)
                                     <span class="badge badge-danger">
-                                        <i class="fas fa-check-circle"></i> Denied
+                                        <i class="fas fa-check-circle  mr-1"></i> Denied
                                     </span>
                                 @elseif($transaction->status && $transaction->status_id == 4)
                                     <span class="badge badge-secondary">
@@ -60,6 +60,14 @@
                                     <span class="badge badge-release">
                                         <i class="fas fa-cloud-upload-alt"></i> For Release
                                     </span>
+                                @elseif($transaction->remark && $transaction->remark == 'Denied')
+                                <span class="badge badge-denied">
+                                    <i class="fas fa-ban"></i> Denied
+                                </span>
+                                @elseif($transaction->remark && $transaction->remark == 'Canceled')
+                                <span class="badge badge-canceled">
+                                    <i class="fas fa-ban"></i> Canceled
+                                </span>
                                 @else
                                     <span class="badge badge-completed">
                                         <i class="fas fa-check-circle"></i> Completed

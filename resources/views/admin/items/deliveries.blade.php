@@ -1,4 +1,4 @@
-<div class="container-fluid card w-100 shadow rounded p-4" id="receivedItemForm" style="max-height: 300px; overflow-y: auto; background-color: #f8f9fa; display:none; border: 2px solid #ddd;">
+<div class="container-fluid card w-100 shadow rounded p-4" id="receivedItemForm" style="max-height: 500px; overflow-y: auto; background-color: #f8f9fa; display:none; border: 2px solid #ddd;">
     <!-- Form Header -->
     <div class="d-flex justify-content-between align-items-center bg-warning text-dark p-3 rounded-top">
         <h4 class="m-0 text-center flex-grow-1"><strong>DELIVERY FORM</strong></h4>
@@ -7,8 +7,8 @@
     <!-- Form Body -->
     <form action="" id="receivedItem-form" class="p-3">
         <div class="col-md-12 d-flex justify-content-end">
-            <button type="button" id="addRequest-btn" class="btn btn-primary rounded px-4 py-2">
-                Deliver more item
+            <button type="button" id="addRequest-btn" class="btn btn-primary rounded px-4 py-2" title="add more delivery row">
+                <i class="fa-solid fa-plus"></i>
             </button>
         </div>
         <div id="receivedItem-container">
@@ -36,8 +36,8 @@
                     <input type="number" class="form-control remaining_quantity" name="remainingQuantity[]" id="remaining_quantity" placeholder="Enter quantity" min="0" readonly>
                 </div>
                 <div class="col-md-1 form-group">
-                    <label for="action" class="font-weight-bold">Action</label>
-                    <button type="button" class="remove-deliver-item btn btn-danger">Remove</button>
+                    <label for="action" class="font-weight-bold">Action</label><br>
+                    <button type="button" class="remove-deliver-item btn btn-danger"><i class="fa-solid fa-eraser"></i></button>
                 </div>
             </div>
         </div>
@@ -61,8 +61,8 @@
             <h4><strong>DELIVERIES</strong></h4>
         </div>
         <div class="col-md-3" style="text-align: right">
-            <button type="button" class="btn btn-warning" id="receivedBtn" title="Deliver item button">
-                <i class="fa-solid fa-cart-plus" style="color: #ffffff;"></i>
+            <button type="button" class="btn btn-success" id="receivedBtn" title="Deliver item button">
+                <i class="fa-solid fa-plus "></i>
             </button>
         </div>
     </div>

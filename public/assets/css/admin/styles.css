@@ -143,9 +143,36 @@ th {
     width: 6rem; 
     white-space: nowrap;
 }
+.badge-release {
+    color: ffffff;
+    background-color: #4CAF50; 
+    padding: 5px;
+    border-radius: 3px;
+    display: inline-block; 
+    width: 6rem; 
+    white-space: nowrap;
+}
+.badge-canceled {
+    color: ffffff;
+    background-color: gray;
+    padding: 5px;
+    border-radius: 3px;
+    display: inline-block; 
+    width: 6rem; 
+    white-space: nowrap;
+}
 .badge-released {
     color: ffffff;
-    background-color: #17a2b8;
+    background-color: #0dcaf0;
+    padding: 5px;
+    border-radius: 3px;
+    display: inline-block; 
+    width: 6rem; 
+    white-space: nowrap;
+}
+.badge-denied {
+    color: ffffff;
+    background-color: #dc3545;
     padding: 5px;
     border-radius: 3px;
     display: inline-block; 
@@ -205,6 +232,11 @@ th {
     color: white; /* White text */
     transition: none !important; /* Ensure no fade effect */
 }
+.highlighted {
+    background-color: #007bff; /* Blue background */
+    color: white; /* White text */
+    transition: none !important; /* Ensure no fade effect */
+}
 .request-highlight {
     background-color: #007bff !important; /* A soft green highlight */
     color: #fff !important;
@@ -217,6 +249,15 @@ th {
     color: white;
     cursor: pointer;
 }
+.user-highlighted {
+    background-color: #007bff; /* Bootstrap primary blue */
+    color: white;
+}
+.admin-highlighted {
+    background-color: #007bff !important;
+    color: white !important;
+}
+
 .highlighted {
     background-color: #007bff;
     color: white;
@@ -294,4 +335,20 @@ a {
 
 .item-results li.highlighted {
     background-color: #f0f0f0;
+}
+.site-footer {
+    font-size: 12px;
+    padding: 8px 12px;
+    text-align: center;
+    color: #6c757d;
+    background-color: #f1f1f1;
+    margin-top: auto; /* Ensures the footer is at the bottom */
+}
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.main-content {
+    flex-grow: 1;
 }

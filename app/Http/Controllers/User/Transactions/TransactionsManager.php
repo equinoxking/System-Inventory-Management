@@ -234,9 +234,14 @@ class TransactionsManager extends Controller
     }                    
     public function goToHistory(){
         $transactions = TransactionModel::where(function ($query) {
-            $query->where('remark', 'Completed')
-                  ->orWhere('status_id', 3);
+            $client_id = session()->get('loginCheckUser')['id'];
+            $query->where(function ($subQuery) {
+                $subQuery->where('status_id', 2)
+                         ->orWhere('status_id', 3)
+                         ->orWhere('status_id', 4);
+            })->where('user_id', $client_id);
         })->get();
+        
         return view('user.voids', [
             'transactions' => $transactions
         ]);
@@ -292,7 +297,7 @@ class TransactionsManager extends Controller
                 $user = new UserNotificationModel();
                 $user->user_id = $transaction->user_id;
                 $user->control_number = $this->generateUserNotificationNumber();
-                $user->status = "Pending";
+                $user->status = "Accepted";
                 $message = "Your request with transaction number " . 
                 $transaction->transaction_number . 
                 " has been received, and this transaction has been marked as Completed.";
@@ -329,7 +334,7 @@ class TransactionsManager extends Controller
         }else{
             $transaction = TransactionModel::findOrFail($request->get('transaction-cancel-id'));
             $transaction->status_id = 4;
-            $transaction->remark = "Completed";
+            $transaction->remark = "Canceled";
             $transaction->save();
 
             $detail = TransactionDetailModel::where('transaction_id', $transaction->id)->first();
@@ -337,10 +342,10 @@ class TransactionsManager extends Controller
                 $user = new UserNotificationModel();
                 $user->user_id = $transaction->user_id;
                 $user->control_number = $this->generateUserNotificationNumber();
-                $user->status = "Pending";
+                $user->status = "Canceled";
                 $message = "Your request with transaction number " . 
                 $transaction->transaction_number . 
-                " has been canceled, and this transaction has been marked as Completed.";
+                " has been canceled, and this transaction has been marked as Canceled.";
                 $user->message = $message;
                 $user->save();
 

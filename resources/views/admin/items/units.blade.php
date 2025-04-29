@@ -14,20 +14,21 @@
     <div class="row">
         <div class="col-md-12">
             <table id="unitTable" class="table-striped table-hover" style="font-size: 11px">
-                <thead>
-                    <th width="10%">Date/Time Created</th>
+                <thead>                    
                     <th width="10%">Unit Number</th>
                     <th width="20%">Unit Name</th>
                     <th width="55%">Description</th>
+                    <th width="10%">Date/Time Created</th>
                     <th width="5%" class="text-center">Action</th>
+                   
                 </thead>
                 <tbody>
                     @foreach ($units as $unit)
                         <tr>
-                            <td>{{ \Carbon\Carbon::parse($unit->created_at)->format('F d, Y H:i A') }}</td>
                             <td>{{ $unit->control_number}}</td>
                             <td>{{ $unit->name }}</td>
                             <td>{{ $unit->description }}</td>
+                            <td>{{ \Carbon\Carbon::parse($unit->created_at)->format('F d, Y H:i A') }}</td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-warning" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="editUnit('{{ addslashes(json_encode($unit)) }}')" title="Edit unit button"><i class="fa fa-edit" style="color: white;"></i></button>
                                 <button type="button" class="btn btn-danger" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="deleteUnit('{{ addslashes(json_encode($unit)) }}')" title="Delete unit button"><i class="fa fa-trash" style="color: white;"></i></button>
@@ -86,9 +87,6 @@
         <div class="modal-content">
                 <div class="modal-header bg-danger">
                     <h5 class="modal-title" style="color:white;">DELETE UNIT FORM</h5>
-                    <button type="button" id="delete-unit-close-btn" data-dismiss="modal" class="btn" aria-label="Close" style="background-color: white">
-                        <i class="fa-solid fa-circle-xmark"></i>
-                    </button>
                 </div>
             <div class="modal-body">
                 <div class="row">
@@ -97,14 +95,13 @@
                             <label for="deleteUnitId">uint ID</label>
                             <input type="text" class="form-control" name="unit_id" id="delete-unit-id">
                         </div>
-                        <strong>Are you sure to delete this unit?</strong>
+                        <strong>Are you sure you want to delete this unit?</strong>
                 </div>
                 <div class="row">
-                    <div class="modal-footer">
-                        <div class="col-md-3 form-group">
-                            <button type="submit" class="btn btn-danger" id="delete-unit-submit-btn">SUBMIT</button>
-                        </div>
-                    </div>
+                    <div class="modal-footer d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-success" id="delete-unit-close-btn">NO</button>
+                        <button type="submit" class="btn btn-danger" id="delete-unit-submit-btn">YES</button>
+                    </div>   
                 </form>
                 </div>
             </div>

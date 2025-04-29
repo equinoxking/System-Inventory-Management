@@ -72,6 +72,10 @@ function highlightStatusWords($message)
         'Released'  => [
             'style' => 'background-color: #17A2B8; color: #fff;',  
             'icon'  => '<i class="fas fa-truck"></i>'                
+        ],
+        'Ready for Release'  => [
+            'style' => 'background-color: #17A2B8; color: #fff;',  
+            'icon'  => '<i class="fas fa-concierge-bell"></i>'                
         ]
     ];
 

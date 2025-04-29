@@ -115,11 +115,22 @@ class AdminTransactionManager extends Controller
 
                         if($checkInventory->quantity < $requestItem->request_quantity){
                             $status = TransactionStatusModel::where('name', 'Denied')->first();
-                            $transaction->remark = "Completed";
+                            $transaction->remark = "Denied";
                             $transaction->status_id = $status->id;
                             $transaction->reason = "Insufficient Inventory";
                             $transaction->save();
                             if($transaction){
+                                $message = "Admin: " . $admin->full_name .
+                                " | Transaction: " . $transaction->transaction_number .
+                                " | Item: " . $requestItem->request_item .
+                                " | Quantity: " . $requestItem->request_quantity . ".";
+                                $notification = new NotificationModel();
+                                $notification->control_number = $this->generateNotificationNumber();
+                                $notification->user_id = $transaction->user_id;
+                                $notification->admin_id = $admin->id;
+                                $notification->message = $message;
+                                $notification->status = "Denied";
+                                $notification->save();
                                 return response()->json([
                                     'message' => "This request will be denied automatically due to insufficient inventory!",
                                     'status' => 501
@@ -168,7 +179,7 @@ class AdminTransactionManager extends Controller
                             $user = new UserNotificationModel();
                             $user->user_id = $transaction->user_id;
                             $user->control_number = $this->generateUserNotificationNumber();
-                            $user->status = "Pending";
+                            $user->status = "Issued";
                             $message = "Your request with transaction number " . 
                             $transaction->transaction_number . 
                             " has been accepted, and this transaction has been marked as " . $transaction->remark . ".";
@@ -210,7 +221,7 @@ class AdminTransactionManager extends Controller
                             ]);
                         } else{
                             $status = TransactionStatusModel::where('name', 'Denied')->first();
-                            $transaction->remark = "Completed";
+                            $transaction->remark = "Denied";
                             $transaction->status_id = $status->id;
                             $transaction->reason = ucfirst($request->get('reason'));
                             $transaction->save();
@@ -236,10 +247,10 @@ class AdminTransactionManager extends Controller
                             $user = new UserNotificationModel();
                             $user->user_id = $transaction->user_id;
                             $user->control_number = $this->generateUserNotificationNumber();
-                            $user->status = "Pending";
+                            $user->status = "Denied";
                             $message = "Your request with transaction number " . 
                             $transaction->transaction_number . 
-                            " has been denied due to ". $transaction->reason . ", and this transaction has been marked as completed.";
+                            " has been denied due to ". $transaction->reason . ", and this transaction has been marked as Denied.";
                             $user->message = $message;
                             $user->save();
 

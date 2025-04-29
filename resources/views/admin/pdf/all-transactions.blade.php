@@ -128,14 +128,14 @@
                         <td>{{ $transaction->item->name }}</td>
                         <td>{{ $transaction->client ? $transaction->client->full_name : $transaction->admin->full_name }}</td>
                         <td>
-                            {{ $transaction->approved_date ? \Carbon\Carbon::parse($transaction->approved_date)->format('F d, Y') : '' }}
-                            {{ $transaction->approved_time ? \Carbon\Carbon::parse($transaction->approved_time)->format('h:i A') : '' }}
+                            {{ $transaction->approved_date ? \Carbon\Carbon::parse($transaction->approved_date)->format('F d, Y') : '--' }}
+                            {{ $transaction->approved_time ? \Carbon\Carbon::parse($transaction->approved_time)->format('h:i A') : '--' }}
                         </td>
                         
-                        <td>{{ $transaction->request_aging }}</td>
-                        <td>{{ $transaction->adminBy ? $transaction->adminBy->full_name : '' }}</td>
-                        <td>{{ $transaction->released_time ? \Carbon\Carbon::parse($transaction->released_time)->format('h:i A') : '' }}</td>
-                        <td>{{ $transaction->released_aging }}</td>
+                        <td>{{ $transaction->request_aging ? $transaction->request_aging : '--' }}</td>
+                        <td>{{ $transaction->adminBy ? $transaction->adminBy->full_name : '--' }}</td>
+                        <td>{{ $transaction->released_time ? \Carbon\Carbon::parse($transaction->released_time)->format('h:i A') : '--' }}</td>
+                        <td>{{ $transaction->released_aging }}{{ $transaction->released_aging ? $transaction->released_aging : '--' }}</td>
                         <td>{{ $transaction->remark }}</td>
                     </tr>
                 @endforeach

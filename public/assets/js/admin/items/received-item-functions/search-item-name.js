@@ -74,20 +74,20 @@ $(document).on('keydown', '.search-items', function(e) {
         return;
     }
 
-    $items.removeClass('highlighted');
+    $items.removeClass('admin-highlighted');
     if (currentItemIndex >= 0) {
-        $items.eq(currentItemIndex).addClass('highlighted');
+        $items.eq(currentItemIndex).addClass('admin-highlighted');
     }
 });
 
 $(document).on('mouseover', '.itemName-item', function() {
-    $('.itemName-item').removeClass('highlighted');
-    $(this).addClass('highlighted');
+    $('.itemName-item').removeClass('admin-highlighted');
+    $(this).addClass('admin-highlighted');
     currentItemIndex = $(this).index();
 });
 
 $(document).on('mouseout', '.itemName-item', function() {
-    $(this).removeClass('highlighted');
+    $(this).removeClass('admin-highlighted');
 });
 
 $(document).on('click', '.itemName-item', function() {

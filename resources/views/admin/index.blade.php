@@ -84,7 +84,7 @@ body {
                     <table class="table table-bordered table-hover" style="font-size: 14px; width: 100%;" id="notificationTable">  
                         <thead class="thead-light">  
                             <tr>  
-                                <th style="width: 18%; text-align:left">Date/Time</th>
+                                <th style="width: 15%; text-align:left">Date/Time</th>
                                 <th style="width: 12%;">Control #</th> 
                                 <th style="width: 70%;">Message</th>  
                             </tr>  
@@ -92,9 +92,9 @@ body {
                         <tbody>  
                             @foreach ($notifications as $notification)
                                 <tr>
-                                    <td class="text-left">{{ \Carbon\Carbon::parse($notification->created_at)->format('F d, Y h:i A') }}</td>
+                                    <td class="text-left"  style="font-size:12px">{{ \Carbon\Carbon::parse($notification->created_at)->format('F d, Y h:i A') }}</td>
                                     <td>{{ $notification->control_number }}</td>
-                                    <td class="text-left">
+                                    <td class="text-left" >
                                         {{ $notification->message }} Status |
                                         @if ($notification->status === "Pending")
                                             <span class="badge badge-warning">
@@ -105,7 +105,7 @@ body {
                                             <i class="fas fa-ban"></i> Denied
                                         </span>
                                         @elseif ($notification->status === "Accepted")
-                                        <span class="badge badge-success">
+                                        <span class="badge badge-completed">
                                             <i class="fas fa-box-open"></i> Item Received
                                         </span>
                                         @elseif ($notification->status === "Canceled")

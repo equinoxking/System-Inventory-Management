@@ -14,7 +14,7 @@
         <div class="col-md-4 text-end">
             <!-- Generate PDF Button Properly Aligned -->
             <button type="button" class="btn btn-success" id="requestBtn" title="Request item button">
-                <i class="fa-solid fa-handshake"></i>
+                <i class="fa-solid fa-plus"></i>
             </button>
             <button type="button" class="btn btn-info" id="pdfGenerationBtn" title="Generate PDF button">
                 <i class="fa-solid fa-file-pdf"></i> 
@@ -38,7 +38,7 @@
         @csrf
         <div class="col-md-12 d-flex justify-content-end">
             <button type="button" id="requestItemReceived-btn" class="btn btn-primary rounded px-4 py-2">
-                Request more item
+                <i class="fa-solid fa-plus"></i>
             </button>
         </div>
         <div id="requestItem-container">
@@ -58,8 +58,8 @@
                     <input type="number" class="form-control quantity requestMaxQuantity" name="requestMaxQuantity[]" id="requestMaxQuantity" readonly>
                 </div>
                 <div class="col-md-1 form-group">
-                    <label for="action" class="font-weight-bold">Action</label>
-                    <button type="button" class="remove-request-item btn btn-danger">Remove</button>
+                    <label for="action" class="font-weight-bold">Action</label><br>
+                    <button type="button" class="remove-request-item btn btn-danger"> <i class="fa-solid fa-eraser mr-1"></i></button>
                 </div>
             </div>
         </div>
@@ -162,7 +162,7 @@
                             <select name="status" id="status" class="form-control" onchange="toggleSelection()">
                                 <option value="">Select Status</option>
                                 @foreach ($statuses as $status)
-                                    @if ($status->name != 'Pending')
+                                    @if ($status->name != 'Pending' && $status->name != 'Canceled')
                                         <option value="{{ $status->id }}">{{ $status->name }}</option> 
                                     @endif
                                 @endforeach
@@ -215,24 +215,37 @@
                         <label for="user">Users</label>
                         <select name="user_selection" id="user" class="form-control">
                             <optgroup label="Users">
+                                @php
+                                    $uniqueUsers = collect();
+                                @endphp
                                 @foreach ($transactionUsers as $transaction)
-                                    @if ($transaction->client)
+                                    @if ($transaction->client && !$uniqueUsers->contains('id', $transaction->client->id))
+                                        @php
+                                            $uniqueUsers->push($transaction->client);
+                                        @endphp
                                         <option value="user-{{ $transaction->client->id }}">
                                             {{ $transaction->client->full_name }}
                                         </option>
                                     @endif
                                 @endforeach
                             </optgroup>
+                        
                             <optgroup label="Admins">
+                                @php
+                                    $uniqueAdmins = collect();
+                                @endphp
                                 @foreach ($transactionUsers as $transaction)
-                                    @if ($transaction->admin)
+                                    @if ($transaction->admin && !$uniqueAdmins->contains('id', $transaction->admin->id))
+                                        @php
+                                            $uniqueAdmins->push($transaction->admin);
+                                        @endphp
                                         <option value="admin-{{ $transaction->admin->id }}">
                                             {{ $transaction->admin->full_name }}
                                         </option>
                                     @endif
                                 @endforeach
                             </optgroup>
-                        </select>
+                        </select>                        
                     </div>
                     <div class="form-group" style="display: none">
                         <label for="month">Month</label>

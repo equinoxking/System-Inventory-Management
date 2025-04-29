@@ -206,7 +206,7 @@ const itemStockChart = new Chart(ctxb2, {
         plugins: {
             title: {
                 display: true,
-                text: 'Inventory and Issued Summary for {{ now()->format('F Y') }}',
+                text: 'Issued and Inventory Summary {{ now()->format('F Y') }}',
                 font: { size: 16 }
             }
         },
@@ -236,7 +236,7 @@ const itemIssuedChart = new Chart(ctx4, {
         plugins: {
             title: {
                 display: true,
-                text: 'Most Issued Items This Month – Top 10 ({{ now()->format('F Y') }})',
+                text: 'Top 10 Commonly Used Items for {{ now()->format('F Y') }}',
                 font: { size: 16 }
             }
         },
@@ -277,7 +277,7 @@ const topIssuedItemsChart = new Chart(chartCtx, {
         plugins: {
             title: {
                 display: true,
-                text: 'All-Time Top 10 Most Issued Items',
+                text: 'Top 10 Commonly Used Items',
                 font: { size: 16 }
             }
         },
@@ -320,16 +320,16 @@ var inventoryChart = new Chart(ctxb, {
                     stepSize: 5
                 }
             },
-            x: {
-                display: false
-            }
+            // x: {
+            //     display: false
+            // }
         },
         responsive: true,
         maintainAspectRatio: false,
         plugins: {
             title: {
                 display: true,
-                text: 'Comprehensive Item Inventory and Issued Summary',
+                text: 'Overall Summary of Issued and Inventory',
                 font: { size: 16 }
             }
         },

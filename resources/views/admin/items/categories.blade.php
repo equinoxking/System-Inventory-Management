@@ -15,21 +15,19 @@
         <div class="col-md-12">
             <table id="categoryTable" class="table-striped table-hover" style="font-size: 11px">
                 <thead>
-                    <th width="10%">Date/Time Created</th>
-                    <th width="10%">Date/Time Updated</th>
                     <th width="7%">Category Number</th>
                     <th width="20%">Category Name</th>
                     <th width="23%">Description</th>
-                    <th width="10%" class="text-center">Action</th>
+                    <th width="10%">Date/Time Created</th>
+                    <th width="5%" class="text-center">Action</th>
                 </thead>
                 <tbody>
                     @foreach ($categories as $category)
                         <tr>
-                            <td>{{ \Carbon\Carbon::parse($category->created_at)->format('F d, Y H:i A') }}</td>
-                            <td>{{ \Carbon\Carbon::parse($category->updated_at)->format('F d, Y H:i A') }}</td>
                             <td>{{ $category->control_number }}</td>
                             <td>{{ $category->name }}</td>
                             <td>{{ $category->description }}</td>
+                            <td>{{ \Carbon\Carbon::parse($category->created_at)->format('F d, Y H:i A') }}</td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-warning" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="editCategory('{{ addslashes(json_encode($category)) }}')" title="Edit category button"><i class="fa fa-edit" style="color: white;"></i></button>
                                 <button type="button" class="btn btn-danger" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="deleteCategory('{{ addslashes(json_encode($category)) }}')" title="Delete category button"><i class="fa fa-trash" style="color: white;"></i></button>
@@ -96,9 +94,6 @@
         <div class="modal-content">
                 <div class="modal-header bg-danger">
                     <h5 class="modal-title" style="color:white;">DELETE CATEGORY FORM</h5>
-                    <button type="button" id="delete-category-close-btn" data-dismiss="modal" class="btn" aria-label="Close" style="background-color: white">
-                        <i class="fa-solid fa-circle-xmark"></i>
-                    </button>
                 </div>
             <div class="modal-body">
                 <div class="row">
@@ -107,14 +102,13 @@
                             <label for="deleteCategoryId">category ID</label>
                             <input type="text" class="form-control" name="category_id" id="delete-category-id">
                         </div>
-                        <strong>Are you sure to delete this category?</strong>
+                        <strong>Are you sure you want to delete this category?</strong>
                 </div>
                 <div class="row">
-                    <div class="modal-footer">
-                        <div class="col-md-3 form-group">
-                            <button type="submit" class="btn btn-danger" id="delete-category-submit-btn">SUBMIT</button>
-                        </div>
-                    </div>
+                    <div class="modal-footer d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-success" id="delete-category-close-btn">NO</button>
+                        <button type="submit" class="btn btn-danger" id="delete-category-submit-btn">YES</button>
+                    </div>   
                 </form>
                 </div>
             </div>

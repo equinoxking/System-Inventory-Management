@@ -22,4 +22,4 @@ function signOut() {
         }
     });
 }
-document.getElementById('signOutButton').addEventListener('click', signOut);
+document.getElementById('signOutButton1').addEventListener('click', signOut);

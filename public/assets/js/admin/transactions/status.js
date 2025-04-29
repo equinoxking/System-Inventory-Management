@@ -47,6 +47,16 @@ $(document).ready(function(){
                         }).then(function() {
                             $('#transaction-status-submit-btn').attr('disabled', false);
                         });
+                }else if(response.status === 501){
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error!",
+                        text: response.message,
+                        showConfirmButton: true,
+                    }).then(function() {
+                        $('#transaction-status-submit-btn').attr('disabled', false);
+                        $('#transactionStatusModal').modal('hide');
+                    });
                 }else if(response.status === 200){
                     Swal.fire({
                     icon: "success",

@@ -16,8 +16,8 @@
                     <th width="8%">System Role</th>
                     <th width="5%">Office</th>
                     <th width="8%">Position</th>
-                    <th width="5%">Status</th>
                     <th width="10%">Date/Time Created</th>
+                    <th width="5%">Status</th>
                     <th width="5%">Action</th>
                 </thead>
                 <tbody>
@@ -30,6 +30,7 @@
                                 <td>{{ $client->role->name }}</td>
                                 <td>{{ $client->office }}</td>
                                 <td>{{ $client->position }}</td>
+                                <td>{{ \Carbon\Carbon::parse($client->created_at)->format('F d, Y H:i A') }}</td>
                                 <td id="user_status" class="text-center">
                                     @if($client->status && $client->status == 'Active')
                                         <span class="badge badge-success" style="width: 4rem; font-size: 10px;" id="status-badge">
@@ -41,7 +42,6 @@
                                         </span>
                                     @endif
                                 </td>
-                                <td>{{ \Carbon\Carbon::parse($client->created_at)->format('F d, Y H:i A') }}</td>
                                 <td class="text-center">
                                     <button type="button" class="btn btn-warning" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="setUser('{{ addslashes(json_encode($client)) }}')" title="Set permission"><i class="fa fa-user" style="color: white;"></i></button>
                                     <button type="button" class="btn btn-danger" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="changeUserStatus('{{ addslashes(json_encode($client)) }}')" title="Change user status"><i class="fa fa-trash"></i></button>
@@ -75,8 +75,8 @@
                     <th>Full Name</th>
                     <th width="10%">System Role</th>
                     <th width="10%">Office Position</th>
-                    <th width="10%">Status</th>
                     <th width="10%">Date/Time Created</th>
+                    <th width="10%">Status</th>
                     <th width="5%">Action</th>
                 </thead>
                 <tbody>
@@ -89,6 +89,7 @@
                                 {{ preg_replace('/([a-z])([A-Z])/', '$1 $2', $admin->role->name) }}
                             </td>
                             <td>{{ $admin->position }}</td>
+                            <td>{{ \Carbon\Carbon::parse($admin->created_at)->format('F d, Y H:i A') }}</td>
                             <td id="user_status" class="text-center">
                                 @if($admin->status && $admin->status == 'Active')
                                     <span class="badge badge-success" style="width: 4rem; font-size: 10px;" id="status-badge">
@@ -100,7 +101,6 @@
                                     </span>
                                 @endif
                             </td>
-                            <td>{{ \Carbon\Carbon::parse($admin->created_at)->format('F d, Y H:i A') }}</td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-warning" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="editAdmin('{{ addslashes(json_encode($admin)) }}')" title="Edit admin button"><i class="fa fa-edit" style="color: white;"></i></button>
                                 <button type="button" class="btn btn-danger" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="deleteAdmin('{{ addslashes(json_encode($admin)) }}')" title="Delete admin button"><i class="fa fa-trash"></i></button>
@@ -276,8 +276,11 @@
                             <select name="system_role" id="edit-system-role" class="form-control">
                                 <option value="">Select System Role</option>
                                 @foreach ($roles as $role)
-                                    <option value="{{ $role->id }}">Admin</option>
-                                    @break;
+                                    @if ($role->name != 'User')
+                                        <option value="{{ $role->id }}">
+                                            {{ preg_replace('/([a-z])([A-Z])/', '$1 $2', $role->name) }}
+                                        </option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
@@ -311,9 +314,6 @@
         <div class="modal-content">
                 <div class="modal-header bg-danger">
                     <h5 class="modal-title" style="color:white;">DELETE ADMIN FORM</h5>
-                    <button type="button" id="delete-admin-close-btn" data-dismiss="modal" class="btn" aria-label="Close" style="background-color: white">
-                        <i class="fa-solid fa-circle-xmark"></i>
-                    </button>
                 </div>
             <div class="modal-body">
                 <div class="row">
@@ -322,14 +322,13 @@
                             <label for="deleteAdmin">ADMIN ID</label>
                             <input type="text" class="form-control" name="admin_id" id="delete-admin-id">
                         </div>
-                        <strong>Are you sure to delete this admin?</strong>
+                        <strong>Are you sure you want to delete this admin?</strong>
                 </div>
                 <div class="row">
-                    <div class="modal-footer">
-                        <div class="col-md-3 form-group">
-                            <button type="submit" class="btn btn-danger" id="delete-admin-submit-btn">SUBMIT</button>
-                        </div>
-                    </div>
+                    <div class="modal-footer d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-success" id="delete-admin-close-btn">NO</button>
+                        <button type="submit" class="btn btn-danger" id="delete-admin-submit-btn">YES</button>
+                    </div>   
                 </form>
                 </div>
             </div>

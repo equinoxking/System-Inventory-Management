@@ -72,20 +72,22 @@ $(document).ready(function() {
             return;
         }
 
-        $items.removeClass('highlighted');
+        $items.removeClass('user-highlighted');
         if (currentRequestItemIndex >= 0) {
-            $items.eq(currentRequestItemIndex).addClass('highlighted');
+            $items.eq(currentRequestItemIndex).addClass('user-highlighted');
         }
+        
+
     });
 
     $(document).on('mouseover', '.requestItemName', function() {
-        $('.requestItemName').removeClass('highlighted');
-        $(this).addClass('highlighted');
+        $('.requestItemName').removeClass('user-highlighted');
+        $(this).addClass('user-highlighted');
         currentRequestItemIndex = $(this).index();
     });
 
     $(document).on('mouseout', '.requestItemName', function() {
-        $(this).removeClass('highlighted');
+        $(this).removeClass('user-highlighted');
     });
 
     $(document).on('click', '.requestItemName', function() {
@@ -126,5 +128,4 @@ $(document).ready(function() {
             $row.find('.selected-item-id').val('');
         }
     });
-    
 });

@@ -31,6 +31,8 @@ class ReportTransactionManager extends Controller
                 case "All" :
                     $transactions = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'])
                     ->where('remark', 'Completed')
+                    ->orWhere('remark', 'Denied')
+                    ->orWhere('remark', 'Canceled')
                     ->get();
                     $now = Carbon::now('Asia/Manila')->format('F j, Y h:i A');
                     $preparedBy = AdminModel::where('id', $request->get('admin'))->first();
@@ -149,7 +151,9 @@ class ReportTransactionManager extends Controller
                         ]);
                         $canvas = $pdf->getCanvas();
                         $canvas->page_text(270, 770, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0,0,0));
-                        $filename = 'transaction'. '-report of ' . $owner_name . date('F-Y') . '.pdf';    
+                        $owner_name_clean = str_replace(['/', '\\'], '-', $owner_name);
+
+                        $filename = 'transaction-report of ' . $owner_name_clean . date('F-Y') . '.pdf';    
                     return $pdf->stream($filename);
                 break;
                 case "Monthly" :

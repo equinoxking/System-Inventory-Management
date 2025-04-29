@@ -115,6 +115,9 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     Route::controller(TrailManager::class)->group(function(){
         Route::get('/admin/trails', 'goToTrails');
     });
+    Route::controller(IA_functionController::class)->group(function(){
+        Route::get('/logoutAdmin', 'logoutAdmin');
+    });
 });
 /* -- USER -- */
 Route::group(['middleware' => 'loginCheckUser'], function () {

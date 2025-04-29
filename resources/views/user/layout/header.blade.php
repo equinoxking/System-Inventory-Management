@@ -25,6 +25,24 @@
             <ul class="navbar-nav logout">
                 <button class="btn btn-danger" id="signOutButton" title="Logout button"><i class="fa fa-power-off"></i></button>
             </ul>
+            <ul class="navbar-nav logout ml-3">
+                <li class="nav-item mr-3 mt-1 text-light">
+                    <strong>
+                        <div>
+                            <div>
+                                <u>{{ session('loginCheckUser')['full_name'] }}</u>
+                            </div>
+                            <div style="text-align: center">
+                                <span style="font-weight: normal;">User, {{ session('loginCheckUser')['position'] }}</span>
+                            </div>                            
+                        </div>
+                       
+                    </strong>
+                </li>
+                <li class="nav-item">
+                    <button class="btn btn-danger" id="signOutButton1" title="Logout button"><i class="fa fa-power-off"></i></button>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>

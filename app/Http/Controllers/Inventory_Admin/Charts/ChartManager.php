@@ -16,14 +16,13 @@ class ChartManager extends Controller
     $month = now()->format('F Y');
     $startOfMonth = now()->startOfMonth();
     $endOfMonth = now()->endOfMonth();
-
+    
     // 1. Count transactions grouped by remark
     $counts = TransactionModel::selectRaw('remark, COUNT(*) as total')
         ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
         ->whereIn('remark', ['For Review', 'Ready for Release', 'Released', 'Completed', 'Denied', 'Canceled'])
         ->groupBy('remark')
         ->get();
-
     $labels1 = ['For Review', 'Ready for Release', 'Released', 'Completed', 'Denied', 'Canceled'];
     $data1 = [];
 
@@ -48,7 +47,8 @@ class ChartManager extends Controller
     // 3. Calculate transaction sums per item (with monthly filter)
     $itemsTransactionSumsMonthly = $allItems1->map(function ($item) use ($startOfMonth, $endOfMonth) {
         $itemsTransactionSumsMonthly = $item->transacts
-            ->where('status_id', 2)  // Filter by completed transactions
+            ->where('status_id', 2) 
+            ->where('remark', "Completed") // Filter by completed transactions
             ->filter(function ($transaction) use ($startOfMonth, $endOfMonth) {
                 // Filter transactions based on the date range (monthly filter)
                 return Carbon::parse($transaction->created_at)->between($startOfMonth, $endOfMonth);
@@ -86,58 +86,113 @@ class ChartManager extends Controller
         'issuedData' => $totalIssuedQuantity1,
     ];
     // 8. Prepare monthly top issued items
-    $itemsForMonth = ItemModel::with(['transacts.transactionDetail' => function ($query) use ($startOfMonth, $endOfMonth) {
-        $query->whereBetween('created_at', [$startOfMonth, $endOfMonth]);
+    $currentMonth = Carbon::now()->month; // Get current month as integer (1 = Jan, 2 = Feb...)
+
+    $itemsForMonth = ItemModel::with(['transacts.transactionDetail' => function ($query) use ($currentMonth) {
+        $query->where('request_month', $currentMonth);
     }])->get();
+
+    $top10IssuedItems = $allItems1->map(function ($item) {
+        $totalIssuedQty = 0; // Initialize totalIssuedQty to 0 for each item
     
-    $itemSummaries = $itemsForMonth->map(function ($item) {
-        $totalIssuedThisMonth = $item->transacts
-            ->where('status_id', 2) // Apply the status filter here
-            ->sum(function ($transaction) {
-                return $transaction->transactionDetail->sum('request_quantity');
-            });
+        // Loop through each transaction related to the item
+        $item->transacts->each(function ($transaction) use (&$totalIssuedQty) {
+            // If status_id is an object, extract the actual id
+            // Skip "Denied" transactions (status_id == 3)
+            if ($transaction->status_id  == 3) {
+                return; // Skip this transaction completely
+            }
     
+            // Process only completed transactions (status_id == 2)
+            if ($transaction->status_id == 2 && $transaction->remark == 'Completed') {
+                // Log the transaction details being summed
+                if ($transaction->transactionDetail) { // Ensure transactionDetail exists
+                    // Track if the quantity has already been added
+                    $addedQty = 0;
+    
+                    $transaction->transactionDetail->each(function ($detail) use (&$totalIssuedQty, &$addedQty) {
+                        $requestQuantity = $detail->request_quantity ?? 0;
+    
+                        // Only add the quantity if it's not already added
+                        if ($addedQty === 0) {
+                            $totalIssuedQty += $requestQuantity; // Sum the request_quantity only once
+                            $addedQty = $requestQuantity; // Mark that the quantity was added
+                        }
+                    });
+                }
+            }
+        });
         return [
             'item' => $item,
-            'total_issued' => $totalIssuedThisMonth
+            'total_issued' => $totalIssuedQty
         ];
-    });
-    
-    $topIssuedItems = $itemSummaries->filter(function ($summary) {
-        return $summary['total_issued'] > 0;
-    })->sortByDesc('total_issued')->take(10);
-    
-    $itemNames = [];
-    $itemIssued = [];
-    
-    foreach ($topIssuedItems as $summary) {
-        $itemNames[] = $summary['item']->name;
-        $itemIssued[] = $summary['total_issued'];
-    }
+        })->filter(function ($data) {
+            return $data['total_issued'] > 0; // Only include items with issued quantities > 0
+        })->sortByDesc('total_issued') // Sort by total_issued_qty in descending order
+        ->take(10); // Limit to the top 10 items
+
+        $topIssuedItems = $top10IssuedItems->filter(function ($summary) {
+            return $summary['total_issued'] > 0;
+        })->sortByDesc('total_issued')->take(10);
+
+        $itemNames = [];
+        $itemIssued = [];
+
+        foreach ($topIssuedItems as $summary) {
+            $itemNames[] = $summary['item']->name;
+            $itemIssued[] = $summary['total_issued'];
+        }
     
 
     // 9. Prepare all-time top issued items
     $allItems = ItemModel::with(['transacts.transactionDetail'])->get();
-
     $top10IssuedItems = $allItems->map(function ($item) {
-        // Only sum transactions where status_id == 2
-        $totalIssuedQty = $item->transacts
-            ->where('status_id', 2)
-            ->sum(function ($transaction) {
-                return $transaction->transactionDetail->sum('request_quantity');
-            });
+        $totalIssuedQty = 0; // Initialize totalIssuedQty to 0 for each item
+    
+        // Loop through each transaction related to the item
+        $item->transacts->each(function ($transaction) use (&$totalIssuedQty) {
+            if ($transaction->status_id instanceof TransactionStatusModel) {
+                $statusId = $transaction->status_id->id;  // Access the actual ID if it's an object
+            } else {
+                $statusId = $transaction->status_id;  // If it's already an integer, use it directly
+            }
+    
+            // Skip "Denied" transactions (status_id == 3)
+            if ($statusId == 3) {
+                return; // Skip this transaction completely
+            }
+    
+            // Process only completed transactions (status_id == 2)
+            if ($statusId == 2 && $transaction->remark == 'Completed') {
+                // Log the transaction details being summed
+                if ($transaction->transactionDetail) { // Ensure transactionDetail exists
+                    // Track if the quantity has already been added
+                    $addedQty = 0; 
+    
+                    $transaction->transactionDetail->each(function ($detail) use (&$totalIssuedQty, &$addedQty) {
+                        $requestQuantity = $detail->request_quantity ?? 0;
+    
+                        // Only add the quantity if it's not already added
+                        if ($addedQty === 0) {
+                            $totalIssuedQty += $requestQuantity; // Sum the request_quantity only once
+                            $addedQty = $requestQuantity; // Mark that the quantity was added
+                        }
+                    });
+                }
+            }
+        });
     
         return [
             'item' => $item,
             'total_issued_qty' => $totalIssuedQty
         ];
     })->filter(function ($data) {
-        return $data['total_issued_qty'] > 0;
-    })->sortByDesc('total_issued_qty')->take(10);
-    
+        return $data['total_issued_qty'] > 0; // Only include items with issued quantities > 0
+    })->sortByDesc('total_issued_qty') // Sort by total_issued_qty in descending order
+      ->take(10); // Limit to the top 10 items
     $topItemsNames = [];
     $topItemsIssuedQty = [];
-    
+
     foreach ($top10IssuedItems as $data) {
         $topItemsNames[] = $data['item']->name;
         $topItemsIssuedQty[] = $data['total_issued_qty'];
@@ -146,6 +201,7 @@ class ChartManager extends Controller
     $itemsWithTransactionSums = $items->map(function ($item) {
         $totalTransactionSum = $item->transacts
             ->where('status_id', 2)
+            ->where('remark', "Completed")
             ->sum(function ($transact) {
                 return $transact->transactionDetail ? $transact->transactionDetail->request_quantity : 0;
             });

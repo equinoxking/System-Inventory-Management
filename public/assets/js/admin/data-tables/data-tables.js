@@ -217,16 +217,38 @@ $(function () {
             { "data": "item_name" },
             { "data": "client_name" },
             {
-                data: null, // No direct data
+                data: null,
                 render: function(data, type, row) {
-                    return row.date_approved + ' ' + row.time_approved;
+                    let date = row.date_approved || '--';
+                    let time = row.time_approved;
+                    return date + ' ' + time;
                 },
-                title: 'Date/Time Acted' // Title for the merged column
+                title: 'Date/Time Acted'
             },
-            { "data": "request_aging" },
-            { "data": "released_by" },
-            { "data": "time_released" },
-            { "data": "released_aging" },
+            {
+                data: "request_aging",
+                render: function(data) {
+                    return data === null || data === "" ? "--" : data;
+                }
+            },
+            {
+                data: "released_by",
+                render: function(data) {
+                    return data === null || data === "" ? "--" : data;
+                }
+            },
+            {
+                data: "time_released",
+                render: function(data) {
+                    return data === null || data === "" ? "--" : data;
+                }
+            },
+            {
+                data: "released_aging",
+                render: function(data) {
+                    return data === null || data === "" ? "--" : data;
+                }
+            },            
             {
                 "data": "status",
                 "render": function(data, type, row) {
@@ -248,6 +270,10 @@ $(function () {
                         return '<span class="badge badge-released"><i class="fas fa-box-open"></i> Released</span>';
                     } else if (data === 'Ready for Release') {
                         return '<span class="badge badge-release"><i class="fas fa-cloud-upload-alt"></i> Ready for Release</span>';
+                    }else if (data === 'Denied') {
+                        return '<span class="badge badge-denied"><i class="fas fa-ban"></i> Denied</span>';
+                    }else if (data === 'Canceled') {
+                        return '<span class="badge badge-canceled"><i class="fas fa-times"></i> Canceled</span>';
                     } else {
                         return '<span class="badge badge-completed"><i class="fas fa-check-circle"></i> Completed</span>';
                     }
@@ -368,6 +394,7 @@ $(function () {
 });
 $(function () {
     var table = $('#notificationTable').DataTable({
+        "aLengthMenu": [[5, 10, 25, 50, 75, 100], [5, 10, 25, 50, 75, 100]],
         "pageLength": 5,
         "lengthChange": false ,
         "responsive": {
