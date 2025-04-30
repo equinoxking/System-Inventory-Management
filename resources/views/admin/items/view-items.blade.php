@@ -8,48 +8,14 @@
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a href="{{ url('admin/') }}">Home</a></li>
                     <li class="breadcrumb-item active" aria-current="page">Lookup Tables</li>
+                    <li class="breadcrumb-item active" aria-current="page">Items</li>
                 </ol>
             </nav>
-        </div>
-        <div class="col-md-1 text-right">
-            <label for="container">Tables</label>
-        </div>
-        <div class="col-md-2">
-            <select name="container" id="container" class="form-control">
-                <option value="items" {{ $activeSection == 'items' ? 'selected' : '' }}>Items</option>
-                <option value="deliveries" {{ $activeSection == 'deliveries' ? 'selected' : '' }}>Deliveries</option>
-                <option value="reports" {{ $activeSection == 'reports' ? 'selected' : '' }}>Reports</option>
-                <option value="accounts" {{ $activeSection == 'accounts' ? 'selected' : '' }}>User Accounts</option>
-                <option value="categories" {{ $activeSection == 'categories' ? 'selected' : '' }}>Categories</option>
-                <option value="units" {{ $activeSection == 'units' ? 'selected' : '' }}>Units</option>
-            </select>
-        </div>
-        <div class="col-md-7 text-end">
-            
         </div>
     </div>
 </div>
 <div id="items-container" class="table-container" style="display: block;">
     @include('admin.items.items')
-</div>
-<div class="table-container" id="deliveries-container">
-    @include('admin.items.deliveries')
-</div>
-<div class="table-container" id="reports-container">
-    @include('admin.items.reports')
-</div>
-
-<div class="table-container" id="accounts-container">
-    @include('admin.items.accounts')
-</div>
-<div class="table-container" id="categories-container">
-    @include('admin.items.categories')
-</div>
-<div class="table-container" id="units-container">
-    @include('admin.items.units')
-</div>
-<div class="table-container" id="admins-container">
-    @include('admin.items.admins')
 </div>
 <script src="{{ asset('assets/js/admin/items/other-functions.js') }}"></script>
 @endsection

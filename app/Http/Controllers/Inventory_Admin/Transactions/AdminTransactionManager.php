@@ -73,7 +73,7 @@ class AdminTransactionManager extends Controller
             'transactionUsers' => $transactionUsers
         ]);
     }
-        public function updateTransactionStatus(Request $request){
+    public function updateTransactionStatus(Request $request){
         $validator = Validator::make($request->all(), [
             'status' => 'required', 
         ]);
@@ -492,5 +492,5 @@ class AdminTransactionManager extends Controller
         $incrementedNumber = intval($lastFiveDigits) + 1;
         $paddedNumber = str_pad($incrementedNumber, 5, '0', STR_PAD_LEFT);
         return $currentYearAndMonth . '-' . $paddedNumber;
-    }  
+    }
 }

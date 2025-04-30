@@ -1,3 +1,19 @@
+@extends('admin.layout.admin-layout')
+@section('content')
+<div class="container-fluid mt-3 mb-3">
+    <div class="row align-items-center">
+        <div class="col-md-12">
+            <!-- Breadcrumb Navigation -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="{{ url('admin/') }}">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Lookup Tables</li>
+                    <li class="breadcrumb-item active" aria-current="page">User Accounts and Admins</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+</div>
 <div class="container-fluid mt-3">
     <div class="row">
         <div class="col-md-9" style="text-align: left">
@@ -112,6 +128,8 @@
         </div>
     </div>
 </div>
+@endsection
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <div class="modal fade" id="setUserModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">

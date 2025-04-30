@@ -148,4 +148,15 @@ class UnitManager extends Controller
     
         return $currentYearAndMonth . '-' . $paddedNumber;
     }  
+    public function getControlNumber($id){
+    // Find the unit by ID
+    $unit = UnitModel::find($id);
+
+    // Check if the unit exists and return the control number
+    if ($unit) {
+        return response()->json(['control_number' => $unit->control_number]);
+    } else {
+        return response()->json(['control_number' => null], 404); // Return 404 if not found
+    }
+}
 }

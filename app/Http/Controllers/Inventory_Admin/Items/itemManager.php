@@ -211,7 +211,7 @@ class itemManager extends Controller
                 try {
                     $item->save();
                 } catch (\Exception $e) {
-                    continue;  
+                    continue;
                 }
                 $inventory = InventoryModel::where('item_id', $item->id)->first();
                 if (!$inventory) {
@@ -237,111 +237,5 @@ class itemManager extends Controller
                 'message' => 'Items and inventories have been updated successfully.',
             ]);
         }
-        
     }
-    public function getItem(Request $request){
-    // Start the query with eager loading
-    $itemsQuery = ItemModel::with(['category', 'category.subCategory', 'inventory', 'inventory.unit', 'status']);
-    
-    // Handle search filter (if present)
-    if ($request->has('search') && $request->search['value']) {
-        $search = $request->search['value'];
-        $itemsQuery->where(function ($query) use ($search) {
-            $query->where('name', 'like', "%$search%")
-                ->orWhereHas('category', function ($query) use ($search) {
-                    $query->where('name', 'like', "%$search%");
-                  })
-                ->orWhereHas('status', function ($query) use ($search) {
-                    $query->where('name', 'like', "%$search%");
-                });
-        });
-    }
-
-    // Apply category filter if specified
-    if ($request->category) {
-        $itemsQuery->whereHas('category', function ($query) use ($request) {
-            $query->where('name', $request->category); // Filter based on the category name
-        });
-    }
-
-
-    // Apply unit filter if specified
-    if ($request->minQuantity) {
-        $itemsQuery->whereHas('inventory', function ($query) use ($request) {
-            $query->where('quantity', '>=', $request->minQuantity); // Filter by minimum quantity in inventory
-        });
-    }
-    // Apply status filter if specified
-    if ($request->unit) {
-        $itemsQuery->whereHas('inventory', function ($query) use ($request) {
-            $query->whereHas('unit', function ($query) use ($request) {
-                $query->where('name', $request->unit); // Filter by unit name inside inventory
-            });
-        });
-    }
-
-    // Apply quantity filters
-    if ($request->minQuantity) {
-        $itemsQuery->whereHas('inventory', function ($query) use ($request) {
-            $query->where('quantity', '>=', $request->minQuantity); // Filter by minimum quantity in inventory
-        });
-    }
-    if ($request->maxQuantity) {
-        $itemsQuery->whereHas('inventory', function ($query) use ($request) {
-            $query->where('quantity', '<=', $request->maxQuantity); // Filter by maximum quantity in inventory
-        });
-    }
-    // if ($request->status) {
-    //     if ($request->status == 'Critical') {
-    //         // If the status is 'Critical', filter based on min_quantity in the inventory table
-    //         $itemsQuery->whereHas('inventory', function ($query) use ($minQuantity) {
-    //             $query->where('min_quantity', '<', $minQuantity); // Filter items where min_quantity < $minQuantity
-    //         });
-    //     } else {
-    //         // If the status is not 'Critical', filter based on status relationship
-    //         $itemsQuery->whereHas('status', function ($query) use ($request) {
-    //             $query->where('name', $request->status); // Filter by status name
-    //         });
-    //     }
-    // }
-   
-    $items = $itemsQuery
-    ->orderBy('controlNumber', 'desc')
-    ->get();
-
-    // Handle stock level filtering in memory
-
-    // Get the filtered records count (for recordsFiltered)
-    $totalFilteredRecords = $itemsQuery->count();
-
-    // Apply pagination (skip and take) for the DataTable
-    $items = $items->slice($request->start, $request->length);
-    // Map the items to the required format
-    $formatItem = $items->map(function ($item) {
-        $quantity = $item->inventory ? $item->inventory->quantity : 0;
-        $buffer = $item->inventory->min_quantity;
-
-        return [
-            'item_id' => $item->id,
-            'category_name' => $item->category ? $item->category->name : null,
-            'item_name' => $item->name,
-            'quantity' => $quantity,
-            'unit_name' => $item->inventory && $item->inventory->unit ? $item->inventory->unit->name : null,
-            'status_name' => $item->status ? $item->status->name : null,
-            'buffer' => $buffer,
-            'control_number' => $item->controlNumber,
-            'created_at' => \Carbon\Carbon::parse($item->created_at)->format('F d, Y H:i A'),
-            'updated_at' => \Carbon\Carbon::parse($item->updated_at)->format('F d, Y H:i A')
-        ];
-    });
-
-    // Return the response in the DataTable expected format
-    return response()->json([
-        'draw' => (int)$request->draw, // Echo the draw count from the request
-        'recordsTotal' => $totalFilteredRecords, // Total records after filtering
-        'recordsFiltered' => $totalFilteredRecords, // Records after applying filter
-        'data' => $formatItem // Data to populate the table
-    ]);
-}
-
 }

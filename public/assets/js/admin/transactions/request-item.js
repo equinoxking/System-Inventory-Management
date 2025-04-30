@@ -9,6 +9,9 @@ $(document).ready(function() {
             "display": "none",        
         });
     });
+    $('#requestBtnDashboard').click(function(){
+        $('#requestForm').modal('show');
+    });
     $(document).on('submit', '#requestItem-form', function(event){
         event.preventDefault();
     
@@ -84,3 +87,7 @@ $(document).ready(function() {
         });
     });
 });
+
+
+
+

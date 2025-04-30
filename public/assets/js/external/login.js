@@ -55,67 +55,46 @@ $(document).ready(function(){
                         title: "All set!",
                         html: response.message + ' ' + response.username,
                         showConfirmButton: true,
-                      }).then(function () {
+                    }).then(function () {
                         const roleUrls = {
-                          1: "/admin/",
-                          2: "/checker_admin/",
-                          3: "/head_admin/",
-                          4: "/user/"
+                            1: "/admin/",
+                            2: "/checker_admin/",
+                            3: "/head_admin/",
+                            4: "/user/"
                         };
-                      
+                    
                         const redirectUrl = roleUrls[response.roleId];
-                      
+                    
                         if (response.roleId === 1) {
-                          // Only show admin selection modal if roleId is 1 (admin)
-                          fetch('/get-available-admins')
+                            // No need for checking, directly set the session and redirect
+                            fetch('/set-admin-session', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                },
+                                body: JSON.stringify({
+                                    client_id: response.clientId  // Send the clientId from the login response
+                                })
+                            })
                             .then(res => res.json())
-                            .then(admins => {
-                                let adminOptions = admins.map(admin => 
-                                `<option value="${admin.id}">${admin.full_name}</option>`
-                                ).join('');
-
-                                Swal.fire({
-                                title: 'Select Admin',
-                                html: `
-                                    <label for="adminSelect">Choose Admin:</label>
-                                    <select id="adminSelect" class="swal2-input">
-                                    ${adminOptions}
-                                    </select>
-                                `,
-                                confirmButtonText: 'Continue',
-                                focusConfirm: false,
-                                preConfirm: () => {
-                                    const selectedAdminId = document.getElementById('adminSelect').value;
-                                    if (!selectedAdminId) {
-                                    Swal.showValidationMessage('Please select an admin');
-                                    }
-                                    return fetch('/set-selected-admin', {
-                                    method: 'POST',
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                                    },
-                                    body: JSON.stringify({ admin_id: selectedAdminId })
-                                    });
-                                }
-                                }).then(() => {
-                                // Redirect or whatever comes next
+                            .then(data => {
+                                // After setting the session, redirect the user
                                 window.location = '/admin/';
-                                });
                             })
                             .catch(error => {
-                                console.error('Error fetching admins:', error);
-                                Swal.fire('Oops!', 'Failed to load admin list.', 'error');
+                                console.error('Error setting session:', error);
+                                Swal.fire('Oops!', 'Failed to set session.', 'error');
                             });
                         } else {
-                          // Just redirect for other roles
-                          if (redirectUrl) {
-                            window.location = redirectUrl;
-                          } else {
-                            console.error("Unknown roleId:", response.roleId);
-                          }
+                            // Just redirect for other roles
+                            if (redirectUrl) {
+                                window.location = redirectUrl;
+                            } else {
+                                console.error("Unknown roleId:", response.roleId);
+                            }
                         }
-                      }); 
+                    });                    
                 }
             },error: function(error){
                 console.log(error);

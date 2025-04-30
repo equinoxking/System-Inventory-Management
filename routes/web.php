@@ -20,6 +20,7 @@ use App\Http\Controllers\Inventory_Admin\Accounts\AdminManager;
 use App\Http\Controllers\Inventory_Admin\Charts\ChartManager;
 use App\Http\Controllers\Inventory_Admin\Pdf\ReportTransactionManager;
 use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
+use App\Http\Controllers\Inventory_Admin\Dashboard\DashboardAccountManager;
 use App\Http\Controllers\User\User_functionController;
 use App\Http\Controllers\User\Account\UserProfileManager;
 use Intervention\Image\ImageManagerStatic as Image;
@@ -40,7 +41,7 @@ Route::controller(MainNavigationController::class)->group(function() {
 //Route for Access
 Route::controller(LoginController::class)->group(function(){
     Route::post('/login-user', 'login');
-    Route::post('/set-selected-admin', 'setSelectedAdmin');
+    Route::post('/set-admin-session', 'setAdminSession');
     Route::get('/get-available-admins','getAvailableAdmins');
 });
 /* -- Inventory Admin --*/
@@ -58,6 +59,7 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::patch('/update-category','updateCategory');
         Route::delete('/delete-category', 'deleteCategory');
         Route::post('/add-category', 'addCategory');
+        Route::get('/get-category-control-number/{id}', 'getControlNumber');
     });
     Route::controller(UnitManager::class)->group(function() {
         Route::get('/search-units', 'searchUnit')->name('search.units');
@@ -66,6 +68,7 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::patch('/update-unit','updateUnit');
         Route::delete('/delete-unit', 'deleteUnit');
         Route::post('/add-unit','addUnit');
+        Route::get('/get-unit-control-number/{id}', 'getControlNumber');
     });
     Route::controller(itemManager::class)->group(function() {
         Route::post('/add-item', 'addItem');
@@ -74,7 +77,11 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::get('/admin/refreshItems', 'getItem');
     });
     Route::controller(InventoryManager::class)->group(function() {
-        Route::get('/admin/lookup-tables', 'showItems');
+        Route::get('/admin/lookup-tables/items', 'showItems');
+        Route::get('/admin/lookup-tables/deliveries', 'showDeliveries');
+        Route::get('/admin/lookup-tables/categories','showCategories');
+        Route::get('/admin/lookup-tables/units','showUnits');
+        Route::get('/admin/lookup-tables/user-accounts','showAccounts');
     });
     Route::controller(ReceivedManager::class)->group(function(){
         Route::get('/searchItem', 'searchItem')->name('search.itemName');
@@ -108,12 +115,18 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     });
     Route::controller(PdfReportManager::class)->group(function(){
         Route::post('/add-report', 'addReport');
+        Route::get('/admin/reports/monthly-report','goToMonthlyReports');
+        Route::get('/admin/reports/quarterly-report','goToQuarterlyReports');
     });
     Route::controller(ChartManager::class)->group(function(){
         Route::get('/admin/reports', 'goToCharts');
     });
     Route::controller(TrailManager::class)->group(function(){
         Route::get('/admin/trails', 'goToTrails');
+    });
+    Route::controller(DashboardAccountManager::class)->group(function(){
+        Route::patch('/dashboard-change-user-status', 'setUserRole');
+        Route::patch('/dashboard-change-transaction-status', 'updateTransactionStatus');
     });
     Route::controller(IA_functionController::class)->group(function(){
         Route::get('/logoutAdmin', 'logoutAdmin');

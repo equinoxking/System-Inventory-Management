@@ -13,8 +13,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
 
 
-class LoginController extends Controller
-{
+class LoginController extends Controller {
     public function login(Request $request){
         $validator = Validator::make($request->all(), [
             'username' => 'required|string|max:30',
@@ -44,120 +43,100 @@ class LoginController extends Controller
                 'message' => 'Account Locked!'
             ]);
         }
-    
-        $response = Http::post('http://authentication.local/api/login', [
-            'username' => $request->username,
-            'password' => $request->password,
-        ]);
-        if ($response->successful()) {
-            if (Hash::check($request->password, $client->password)) {
-                $roles = [
-                    1 => 'loggedInInventoryAdmin',
-                    2 => 'loggedInCheckerAdmin',
-                    3 => 'loggedInHeadAdmin',
-                    4 => 'loginCheckUser',
-                ];
-    
-                $roleKey = $client->role_id;
-                $sessionKey = $roles[$roleKey] ?? null;
-                
-                $request->session()->put($sessionKey, [
-                    'id' => $client->id,
-                    'full_name' => $client->full_name,
-                    'email' => $client->email,
-                    'username' => $client->username,
-                    'role' => $client->role->name,
-                    'division' => $client->division,
-                    'position' => $client->position,
-                ]);
+        if (Hash::check($request->password, $client->password)) {
+            $roles = [
+                1 => 'loggedInInventoryAdmin',
+                2 => 'loggedInCheckerAdmin',
+                3 => 'loggedInHeadAdmin',
+                4 => 'loginCheckUser',
+            ];
 
-                $roleIds = [
-                    1 => 'InventoryAdmin',
-                    2 => 'CheckerAdmin',
-                    3 => 'HeadAdmin',
-                    4 => 'User'
-                ];
-    
-                $data = $response->json();
-                $token = $data['token'] ?? null;
-                $username = $data['username'] ?? null; 
-                if ($token) {
-                    if($client->role->name === "User"){
-                        $admin_id = null;
-                        $user_id = session()->get('loginCheckUser')['id'];
-                        $activity = "Logged in into the system.";
-                        (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
-                    }
-                    $request->session()->put('token', $token); 
-                    return response()->json([
-                        'roleId' => $roleKey,
-                        'roleName' => $roleIds[$roleKey] ?? 'Unknown',
-                        'message' => 'Welcome',
-                        'status' => 200,
-                        'username' => $username,
-                        'token' => $token, 
-                    ]);
-                } else {
-                    return response()->json([
-                        'status' => 400,
-                        'message' => 'Token not found in the authentication response.',
-                    ]);
-                }
-            } else {
-                return response()->json([
-                    'status' => 404,
-                    'message' => 'Invalid username or password!'
-                ]);
+            $roleKey = $client->role_id;
+            $sessionKey = $roles[$roleKey] ?? null;
+            
+            $request->session()->put($sessionKey, [
+                'id' => $client->id,
+                'full_name' => $client->full_name,
+                'email' => $client->email,
+                'username' => $client->username,
+                'role' => $client->role->name,
+                'division' => $client->division,
+                'position' => $client->position,
+            ]);
+
+            $roleIds = [
+                1 => 'InventoryAdmin',
+                2 => 'CheckerAdmin',
+                3 => 'HeadAdmin',
+                4 => 'User'
+            ];
+
+            if($client->role->name === "User"){
+                $admin_id = null;
+                $user_id = session()->get('loginCheckUser')['id'];
+                $activity = "Logged in into the system.";
+                (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
             }
-        } else {
             return response()->json([
-                'status' => 401,
-                'message' => 'Invalid Credentials.'
+                'roleId' => $roleKey,
+                'roleName' => $roleIds[$roleKey] ?? 'Unknown',
+                'message' => 'Welcome',
+                'status' => 200,
+                'username' => $username,
+            ]);
+        }else{
+            return response()->json([
+                'status' => 500,
+                'message' => 'Internal Server Error!'
             ]);
         }
-        return response()->json([
-            'status' => 500,
-            'message' => 'Internal Server Error!'
-        ]);
     }
-    public function setSelectedAdmin(Request $request)
-    {
-    // Validate that the selected admin exists
-    $request->validate([
-        'admin_id' => 'required|exists:admins,id',
-    ]);
-
-    // Retrieve the admin
-    $admin = AdminModel::find($request->admin_id);
-
-    // Define session key and get existing session data if any
+    public function setAdminSession(Request $request)
+{
+    // Get the client ID from the session
     $sessionKey = 'loggedInInventoryAdmin';
-    $sessionData = $request->session()->get($sessionKey, []); 
+    $sessionData = $request->session()->get($sessionKey, []);
 
-    // Merge new admin data into session
+    if (empty($sessionData)) {
+        return response()->json(['error' => 'Client session not found'], 404);
+    }
+
+    // Retrieve the client ID from the session
+    $clientId = $sessionData['id'];
+
+    // Retrieve the admin associated with the client_id
+    $admin = AdminModel::where('client_id', $clientId)->first();
+
+    if (!$admin) {
+        return response()->json(['error' => 'Admin not found for this client'], 404);
+    }
+
+    // Merge admin details into the existing session data
     $sessionData = array_merge($sessionData, [
-        'admin_id' => $admin->id, 
+        'admin_id' => $admin->id,
         'admin_full_name' => $admin->full_name,
-        'admin_position' => $admin->position
+        'admin_position' => $admin->position,
     ]);
 
-    // Save updated session data
+    // Update the session with the merged data
     $request->session()->put($sessionKey, $sessionData);
 
-    // Prepare trail values
-    $admin_id  = $admin->id;
-    $user_id   = null; 
-    $activity  = "Logged in into the system.";
-    
-    // Create trail record
+    // Log the activity (optional, depending on your app's needs)
+    $admin_id = $admin->id;
+    $user_id = null;  // Assuming no user is involved here
+    $activity = "Admin details updated for the client.";
     (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
-    return response()->json(['message' => 'Admin selected successfully.']);
-    }
+
+    return response()->json(['message' => 'Admin session updated successfully']);
+}
+
 
     public function getAvailableAdmins(){
-
-    $admins = AdminModel::select('id', 'full_name')->get();
-
+    $sessionKey = 'loggedInInventoryAdmin';
+    $sessionID = session()->get($sessionKey)['id'];
+    $admins = AdminModel::select('id', 'full_name')
+    ->where('client_id', $sessionID)
+    ->get();
     return response()->json($admins);
     }
 

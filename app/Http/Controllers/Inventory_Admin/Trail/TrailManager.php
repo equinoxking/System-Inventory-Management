@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Inventory_Admin\Trail;
 
 use App\Http\Controllers\Controller;
+use App\Models\AdminModel;
 use Illuminate\Http\Request;
 use App\Models\TrailModel;
 use Illuminate\Support\Carbon;
@@ -21,6 +22,7 @@ class TrailManager extends Controller
     }
     public function goToTrails(){
         $trails = TrailModel::with(['client', 'admin'])->get();
-        return view('admin.trails', compact('trails'));
+        $admins = AdminModel::all();
+        return view('admin.trails', compact('trails', 'admins'));
     }
 }

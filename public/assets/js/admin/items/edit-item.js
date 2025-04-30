@@ -1,9 +1,11 @@
-function editItem(data){
+function editItem(item) {
+    var item = JSON.parse(item);
     $('#editItemModal').modal('show'); 
-    $('#edit-item-id').val(data.item_id);
-    $('#edit-item-name').val(data.item_name);
-    $('#edit-buffer').val(data.buffer);
+    $('#edit-item-id').val(item.id); 
+    $('#edit-item-name').val(item.name);
+    $('#edit-buffer').val(item.inventory.min_quantity); 
 }
+
 $('#edit-item-close-btn').click(function(){
     $('#editItemModal').modal('hide');
 });

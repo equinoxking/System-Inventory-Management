@@ -13,6 +13,8 @@ use Carbon\Carbon;
 use App\Models\ClientModel;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use App\Models\ReportModel;
 class ReportManager extends Controller
 {
     public function generateReport(Request $request){
@@ -213,7 +215,7 @@ class ReportManager extends Controller
                     $logoWebp = $this->getCompressedBase64Image('assets/images/LOGO.webp', 'webp');
                     $generatedBy = AdminModel::where('id', session()->get('loggedInInventoryAdmin')['id'])->first();
                     $data = [
-                        'title' => "SUPPLIES UTILIZATION MONTHLY REPORT",
+                        'title' => "MONTHLY INVENTORY REPORT",
                         'itemsPart1' => $itemsPart1,
                         'itemsPart2' => $itemsPart2,
                         'inventories' => $inventories,
@@ -229,21 +231,48 @@ class ReportManager extends Controller
                         'generatedBy' => $generatedBy
                     ];
                     $now = now()->setTimezone('Asia/Manila')->format('F d, Y h:i A');
+
+                    // Generate a unique timestamp (this will give a number like 1745391496 based on current time)
+                    $uniqueId = time();  // Unix timestamp, e.g., 1745391496
+
+                    // Create the filename with the unique ID, report name, and month/year
+                    $filename = $uniqueId . '_inventory-report-' . date('F-Y') . '.pdf';
+                    $filePath = public_path('pdf-reports/' . $filename);
+
+                    // Generate PDF
                     $pdf = PDF::loadView('admin.pdf.monthly-report', $data, compact('now'))
                         ->setPaper('legal', 'landscape')
                         ->setOptions([
                             'isHtml5ParserEnabled' => true,
                             'isRemoteEnabled' => true,
                             'defaultFont' => 'sans-serif',
-                            'margin-top' => 10,      
-                            'margin-right' => 20,  
-                            'margin-bottom' => 10,    
-                            'margin-left' => 20,  
-                            'isPhpEnabled' => true    
+                            'margin-top' => 10,
+                            'margin-right' => 20,
+                            'margin-bottom' => 10,
+                            'margin-left' => 20,
+                            'isPhpEnabled' => true
                         ]);
-                        $canvas = $pdf->getCanvas();
-                        $canvas->page_text(270, 770, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0,0,0));
-                        $filename = 'monthly-report-' . date('F-Y') . '.pdf';    
+
+                    $canvas = $pdf->getCanvas();
+                    $canvas->page_text(270, 770, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, [0, 0, 0]);
+
+                    // Ensure directory exists
+                    if (!file_exists(public_path('reports'))) {
+                        mkdir(public_path('reports'), 0755, true);
+                    }
+
+                    // Save to public/reports/
+                    file_put_contents($filePath, $pdf->output());
+
+                    // Save to database
+                    $report = new ReportModel();
+                    $report->admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                    $report->report_type = 'Monthly';
+                    $report->control_number = $this->generateControlNumber();
+                    $report->report_file = $filename;
+                    $report->save();
+
+                    // Return the PDF stream
                     return $pdf->stream($filename);
                     }
                 break;
@@ -533,18 +562,50 @@ class ReportManager extends Controller
                         'generatedBy' => $generatedBy
                         
                     ];
-                    $pdf = PDF::loadView('admin.pdf.quarterly-report', $data)
-                    ->setPaper('legal', 'landscape')
-                    ->setOptions([
-                        'isHtml5ParserEnabled' => true,
-                        'isRemoteEnabled' => true,
-                        'defaultFont' => 'sans-serif',
-                        'margin-top' => 10,      
-                        'margin-right' => 20,  
-                        'margin-bottom' => 30,    
-                        'margin-left' => 20,      
-                    ]);
-                    return $pdf->download(time() . '.pdf');
+                    $now = now()->setTimezone('Asia/Manila')->format('F d, Y h:i A');
+
+                    // Generate a unique timestamp (this will give a number like 1745391496 based on current time)
+                    $uniqueId = time();  // Unix timestamp, e.g., 1745391496
+
+                    // Create the filename with the unique ID, report name, and month/year
+                    $filename = $uniqueId . '_inventory-report-' . date('F-Y') . '.pdf';
+                    $filePath = public_path('pdf-reports/' . $filename);
+
+                    // Generate PDF
+                    $pdf = PDF::loadView('admin.pdf.quarterly-report', $data, compact('now'))
+                        ->setPaper('legal', 'landscape')
+                        ->setOptions([
+                            'isHtml5ParserEnabled' => true,
+                            'isRemoteEnabled' => true,
+                            'defaultFont' => 'sans-serif',
+                            'margin-top' => 10,
+                            'margin-right' => 20,
+                            'margin-bottom' => 10,
+                            'margin-left' => 20,
+                            'isPhpEnabled' => true
+                        ]);
+
+                    $canvas = $pdf->getCanvas();
+                    $canvas->page_text(270, 770, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, [0, 0, 0]);
+
+                    // Ensure directory exists
+                    if (!file_exists(public_path('reports'))) {
+                        mkdir(public_path('reports'), 0755, true);
+                    }
+
+                    // Save to public/reports/
+                    file_put_contents($filePath, $pdf->output());
+
+                    // Save to database
+                    $report = new ReportModel();
+                    $report->admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                    $report->report_type = 'Quarterly';
+                    $report->control_number = $this->generateControlNumber();
+                    $report->report_file = $filename;
+                    $report->save();
+
+                    // Return the PDF stream for download
+                    return $pdf->stream($filename);
                     }
                 break;
             }
@@ -566,4 +627,21 @@ class ReportManager extends Controller
 
     return 'data:image/' . $mimeType . ';base64,' . base64_encode($image);
     }
+    private function generateControlNumber() {
+        $currentYearAndMonth = Carbon::now()->format('Y-m');
+        $controlNumber = ReportModel::whereYear('created_at', Carbon::now()->year)
+                                ->whereMonth('created_at', Carbon::now()->month)
+                                ->orderBy('control_number', 'desc')
+                                ->pluck('control_number')
+                                ->first();
+    
+        if (!$controlNumber) {
+            return $currentYearAndMonth . '-00001';
+        }
+    
+        $numberPart = intval(substr($controlNumber, -5)) + 1; 
+        $paddedNumber = str_pad($numberPart, 5, '0', STR_PAD_LEFT);
+    
+        return $currentYearAndMonth . '-' . $paddedNumber;
+    }  
 }

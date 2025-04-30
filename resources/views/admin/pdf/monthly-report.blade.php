@@ -96,16 +96,10 @@
     </table>    
 </div>
 <main style="margin-top: 7rem">
-    <table class="table date-generated">
-        <thead>
-            <tr>
-                <td style="text-align: center">
-                    <strong style="font-size: 24px;">{{ $title }}</strong><br>
-                    as of {{ $formatLegalCurrentDate }}
-                </td>
-            </tr>
-        </thead>
-    </table>
+    <div class="title" style="text-align: center">
+        <strong>{{ $title }}</strong> <br>
+        <strong>As of {{ $formatLegalCurrentDate }}</strong>
+    </div>
     <table class="table table-responsive content">
         <thead>
             <tr>

@@ -69,5 +69,15 @@ class PdfReportManager extends Controller
         $paddedNumber = str_pad($numberPart, 5, '0', STR_PAD_LEFT);
     
         return $currentYearAndMonth . '-' . $paddedNumber;
-    }  
+    }
+    public function goToMonthlyReports(){
+        $admins = AdminModel::all();
+        $reports = ReportModel::all();
+        return view('admin.reports.monthly-report', compact('admins', 'reports'));
+    }
+    public function goToQuarterlyReports(){
+        $admins = AdminModel::all();
+        $reports = ReportModel::all();
+        return view('admin.reports.quarterly-report', compact('admins', 'reports'));
+    }
 }

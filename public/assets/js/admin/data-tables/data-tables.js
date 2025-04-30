@@ -1,86 +1,86 @@
-$(document).ready(function () {
+$(function () {
     var table = $('#itemsTable').DataTable({
         "pageLength": -1,
         "lengthChange": false,
-        "responsive": true,
-        "autoWidth": false,
-        "processing": false,
-        "serverSide": true,
-        "ajax": {
-            url: '/admin/refreshItems',
-            type: 'GET',
-            data: function(d) {
-                // Add the filter values to the data sent to the server
-                d.category = $('#category-filter').val();
-                d.unit = $('#unit-filter').val();
-                d.status = $('#status-filter').val();
-                d.minQuantity = $('#min-quantity-filter').val();
-                d.maxQuantity = $('#max-quantity-filter').val();
-            },
-            "dataSrc": function (json) {
-                return json.data; // Return the data from the JSON response
-            }
-            
+        "responsive": {
+            breakpoints: [
+                { name: 'xl', width: Infinity },
+                { name: 'lg', width: 1200 },
+                { name: 'md', width: 992 },
+                { name: 'sm', width: 768 },
+                { name: 'xs', width: 576 }
+            ]
         },
-        "columns": [
-            { "data": "control_number" },
-            { "data": "category_name" },
-            { "data": "item_name" },
-            { "data": "unit_name" },
-            { "data": "quantity" },
-            { "data": "buffer" },
-            { "data": "created_at" },
-            {
-                "data": "status_name",
-                "render": function(data, type, row) {
-                    if (data === 'Available') {
-                        return '<span class="badge badge-success"><i class="fas fa-check-circle"></i> Available</span>';
-                    } else {
-                        return '<span class="badge badge-danger"><i class="fas fa-times-circle"></i> Unavailable</span>';
-                    }
+        "order": [[0, 'asc']],
+    });
+
+    $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+        let min = parseFloat($('#min-quantity-filter').val()) || 0;
+        let max = parseFloat($('#max-quantity-filter').val()) || Infinity;
+        let quantity = parseFloat(data[4]) || 0;
+
+        return quantity >= min && quantity <= max;
+    });
+
+    $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+        let stockFilter = $('#stock-level-filter').val();
+        let quantity = parseFloat(data[4]) || 0;
+        let buffer = parseFloat(data[5]) || 0;
+
+        if (stockFilter === 'critical') {
+            return quantity < buffer;
+        } else if (stockFilter === 'normal') {
+            return quantity >= buffer;
+        }
+        return true;
+    });
+
+    $('#category-filter').on('change', function () {
+        var val = $(this).val();
+        table.column(1).search(val ? '^' + val + '$' : '', true, false).draw();
+    });
+
+    $('#unit-filter').on('change', function () {
+        var val = $(this).val();
+        table.column(3).search(val ? '^' + val + '$' : '', true, false).draw();
+    });
+
+    $('#status-filter').on('change', function () {
+        var statusVal = $(this).val().toLowerCase();
+
+        table.rows().every(function () {
+            var row = this.node();
+            var quantity = parseInt($(row).find('td').eq(4).text().trim(), 10);
+            var statusText = $(row).find('td').eq(7).text().trim().toLowerCase();
+
+            var showRow = false;
+
+            if (statusVal === '') {
+                if (quantity > 0) {
+                    showRow = true;
                 }
-            },
-            {
-                "data": null,
-                "render": function(data, type, row) {
-                    if(row.buffer > row.quantity){
-                        return '<span class="badge badge-noStock"><i class="fas fa-times-circle"></i> Critical</span>';
-                    } else {
-                        return '<span class="badge badge-highStock"><i class="fas fa-check-circle"></i> Normal</span>';
-                    }
+            } else {
+                if (statusVal === 'available' && quantity > 0 && statusText === 'available') {
+                    showRow = true;
+                } else if (statusVal === 'unavailable' && quantity === 0 && statusText === 'unavailable') {
+                    showRow = true;
                 }
-            },
-            {
-                "data": null,
-                "render": function(data, type, row) {
-                    return '<button type="button" class="btn btn-warning edit-btn" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" title="Item edit button" id="editItemBtn"><i class="fa fa-edit"></i></button>' + 
-                        '<button type="button" class="btn btn-danger delete-btn ml-2" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" title="Item delete button" id="deleteItemBtn"><i class="fa fa-trash"></i></button>';
-                },
-                "orderable": false,
-                "class": "text-center"
             }
-        ],
-        "order": [[1, 'desc']],   
+
+            if (showRow) {
+                $(row).show();
+            } else {
+                $(row).hide();
+            }
+        });
     });
-    setInterval(function() {
-        table.ajax.reload();  // This reloads the data from the server
-    }, 6000);
-    $('#category-filter, #unit-filter, #status-filter').on('change', function () {
-        table.ajax.reload();  // Reload the table data based on new filters
+
+    $('#min-quantity-filter, #max-quantity-filter, #stock-level-filter').on('input change', function () {
+        table.draw();
     });
-    
-    $('#min-quantity-filter, #max-quantity-filter').on('change', function() {
-        table.ajax.reload();  // Reload the table data based on new quantity filters
-    });  
-    $('#itemsTable').on('click', '.edit-btn', function() {
-        var data = table.row($(this).closest('tr')).data();
-        editItem(data);
-    });  
-    $('#itemsTable').on('click', '.delete-btn', function() {
-        var data = table.row($(this).closest('tr')).data();
-        deleteItem(data);
-    });  
 });
+
+
 $(function () {
     var table = $('#transactionTable').DataTable({
         "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
@@ -395,7 +395,7 @@ $(function () {
 $(function () {
     var table = $('#notificationTable').DataTable({
         "aLengthMenu": [[5, 10, 25, 50, 75, 100], [5, 10, 25, 50, 75, 100]],
-        "pageLength": 5,
+        "pageLength": 10,
         "lengthChange": false ,
         "responsive": {
             breakpoints: [
@@ -406,14 +406,6 @@ $(function () {
                 { name: 'xs', width: 576 }
             ]
         },
-        "order": [[1, 'desc']],
-        "columnDefs": [
-            {
-                "targets": 1,
-                "visible": false,
-                "searchable": false
-            }
-        ]
     });
 });
 $(function () {

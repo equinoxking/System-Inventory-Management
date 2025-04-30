@@ -5,12 +5,25 @@ $(document).ready(function() {
     $("#add-report-close-btn").click(function() {
         $('#addReportModal').modal('hide');
     });
-    $(document).on('click', '.view-pdf-btn', function () {
-        var filename = $(this).data('filename');
-        var fileUrl = '/pdf-reports/' + filename; // adjust if needed
-        $('#pdfFrame').attr('src', fileUrl);
-        $('#pdfPreviewModal').modal('show');
-    }); 
+    $(document).ready(function() {
+        // Handle view PDF button click
+        $('.view-pdf-btn').on('click', function() {
+            var filename = $(this).data('filename'); // Get the PDF filename from the button's data attribute
+            var pdfUrl = '/pdf-reports/' + filename; // Correct URL construction for the PDF
+            console.log(pdfUrl)
+            // Set the src of the iframe to the PDF file
+            $('#pdfFrame').attr('src', pdfUrl);
+    
+            // Show the modal
+            $('#pdfPreviewModal').modal('show');
+        });
+    
+        // Close the modal and reset the iframe src when the modal is closed
+        $('#pdf-preview-close-btn').on('click', function() {
+            $('#pdfFrame').attr('src', ''); // Clear the iframe src to stop the PDF from loading
+        });
+    });
+    
     $('#pdf-preview-close-btn').click(function() {
         $('#pdfPreviewModal').modal('hide');
     });

@@ -22,21 +22,30 @@
                        <i class="fas fa-receipt mr-1"></i>Transactions
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/admin/reports') }}" 
-                       class="reports-link" 
-                       style="{{ (Request::is('admin/reports')) ? 'background-color: #3d5c99;' : '' }}">
-                       <i class="fas fa-chart-bar mr-1"></i>Reports
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ Request::is('admin/reports*') ? 'active' : '' }}"
+                       href="#" id="reportsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-chart-bar mr-1"></i>Reports
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/admin/lookup-tables') }}?section=items" 
-                       class="lookup-tables-link" 
-                       style="{{ (Request::is('admin/lookup-tables')) ? 'background-color: #3d5c99;' : '' }}">
-                       <i class="fas fa-database mr-1"></i>Lookup Tables
+                    <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
+                        <li><a class="dropdown-item text-dark" id="generateReportBtn">Generate Report</a></li>
+                        <li><a class="dropdown-item text-dark" href="{{ url('/admin/reports/monthly-report') }}">Monthly Report</a></li>
+                        <li><a class="dropdown-item text-dark" href="{{ url('/admin/reports/quarterly-report') }}">Quarterly Report</a></li>
+                    </ul>
+                </li>                
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ Request::is('admin/lookup-tables*') ? 'active' : '' }}"
+                       href="#" id="lookupTablesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-database mr-1"></i>Lookup Tables
                     </a>
+                    <ul class="dropdown-menu" aria-labelledby="lookupTablesDropdown">
+                        <li><a class="dropdown-item text-dark" href="{{ url('/admin/lookup-tables/items') }}">Items</a></li>
+                        <li><a class="dropdown-item text-dark" href="{{ url('/admin/lookup-tables/deliveries') }}">Deliveries</a></li>
+                        <li><a class="dropdown-item text-dark" href="{{ url('/admin/lookup-tables/user-accounts') }}">User Accounts</a></li>
+                        <li><a class="dropdown-item text-dark" href="{{ url('/admin/lookup-tables/categories') }}">Categories</a></li>
+                        <li><a class="dropdown-item text-dark" href="{{ url('/admin/lookup-tables/units') }}">Units</a></li>
+                    </ul>
                 </li>
-                
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url('/admin/trails') }}" 
                        style="{{ (Request::is('admin/trails')) ? 'background-color: #3d5c99;' : '' }}">

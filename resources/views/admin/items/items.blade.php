@@ -69,14 +69,11 @@
 <div class="container-fluid mt-3">
     <div class="row">
         <div class="col-md-9" style="text-align: left">
-            <h4><strong>INVENTORY</strong></h4>
+            <h4><strong>ITEMS</strong></h4>
         </div>
         <div class="col-md-3" style="text-align: right">
             <button type="button" class="btn btn-success" id="addItemBtn" title="Add item button">
                 <i class="fa-solid fa-plus"></i>
-            </button>
-            <button type="button" class="btn btn-info" id="pdfBtn" title="Generate PDF button">
-                <i class="fa-solid fa-file-pdf"></i>
             </button>
         </div>
     </div>
@@ -109,13 +106,31 @@
             <label for="maximum-quantity-filter">Filter by Maximum Quantity: </label>
             <input type="number" class="form-control" id="max-quantity-filter" placeholder="Max Quantity" min="0" value="0">
         </div>
+        <div class="col-md-2 form-group mt-3">
+            <label for="status-filter">Filter by Availability:</label>
+            <select id="status-filter" class="form-control">
+                <option value="">All</option>
+                <option value="available">Available</option>
+                <option value="unavailable">Unavailable</option>
+            </select>
+        </div>
+        
+              
+        <div class="col-md-2 form-group mt-3">
+            <label for="stock-level-filter">Filter by Stock Level:</label>
+            <select id="stock-level-filter" class="form-control">
+                <option value="">All</option>
+                <option value="critical">Critical</option>
+                <option value="normal">Normal</option>
+            </select>
+        </div>        
     </div>
 </div>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
             <div class="col-md-12">
-                <table id="itemsTable" class="table-striped table-hover" style="font-size: 11px">
+                <table id="itemsTable" class="table-hover" style="font-size: 11px">
                     <thead class="bg-info">
                         <th>Item Number</th>
                         <th width="15%">Category</th>
@@ -129,6 +144,37 @@
                         <th>Action</th>
                     </thead>
                     <tbody>
+                        @foreach ($items as $item)
+                            <tr @if ($item->inventory->quantity < $item->inventory->min_quantity) style="background-color: #f8d7da;" @endif>
+                                <td>{{ $item->controlNumber }}</td>
+                                <td>{{ $item->category->name ?? 'N/A' }}</td>
+                                <td>{{ $item->name }}</td>
+                                <td>{{ $item->inventory->unit->name ?? 'N/A' }}</td>
+                                <td>{{ $item->inventory->quantity }}</td>
+                                <td>{{ $item->inventory->min_quantity}}</td>
+                                <td>{{ \Carbon\Carbon::parse($item->created_at)->format('F d, Y H:i A') }}</td>
+                                <td>
+                                    @if ($item->inventory->quantity === 0 && $item->status->name === "Available")
+                                        <span class="badge badge-danger"><i class="fas fa-times-circle"></i> Unavailable</span>
+                                    @elseif ($item->status->name == 'Available')
+                                        <span class="badge badge-success"><i class="fas fa-check-circle"></i> Available</span>
+                                    @endif
+                                </td>
+                                
+                                <td>
+                                    @if ($item->inventory->quantity < $item->inventory->min_quantity)
+                                        <span class="badge badge-noStock"><i class="fas fa-times-circle"></i> Critical</span>
+                                    @else
+                                        <span class="badge badge-highStock"><i class="fas fa-check-circle"></i> Normal</span>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-warning btn-sm"><i class="fa fa-edit" id="itemEditBtn" onclick="editItem('{{ addslashes(json_encode($item)) }}')"></i></button>
+                                    <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                                </td>
+                            </tr>
+                        @endforeach
+
                     </tbody>
                 </table>
             </div>
@@ -211,132 +257,10 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="pdfReportModal" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-                <div class="modal-header bg-info">
-                    <h5 class="modal-title" style="color:white;">PDF CUSTOMIZE FORM</h5>
-                    <button type="button" id="pdf-report-close-btn" data-dismiss="modal" class="btn" aria-label="Close" style="background-color: white">
-                        <i class="fa-solid fa-circle-xmark"></i>
-                    </button>
-                </div>
-            <div class="modal-body">
-                <div class="row">
-                    <form id="pdf-report-form">
-                        <div class="form-group">
-                            <label for="period" class="font-weight-bold">Period</label>
-                            <select name="period" id="period" class="form-control">
-                                <option value="">Select period</option>
-                                <option value="Monthly">Monthly</option>
-                                <option value="Quarterly">Quarterly</option>
-                            </select>
-                        </div>
-                        <div class="form-group" id="month-row" style="display: none">
-                            <label for="month" class="font-weight-bold">Month</label>
-                            <select name="month" id="month" class="form-control">
-                                <option value="">Select month</option>
-                                <option value="1">January</option>
-                                <option value="2">February</option>
-                                <option value="3">March</option>
-                                <option value="4">April</option>
-                                <option value="5">May</option>
-                                <option value="6">June</option>
-                                <option value="7">July</option>
-                                <option value="8">August</option>
-                                <option value="9">September</option>
-                                <option value="10">October</option>
-                                <option value="11">November</option>
-                                <option value="12">December</option>
-                            </select>
-                            <label for="selectedYear" class="font-weight-bold">Select Year</label>
-                            <select id="selectedYear" name="monthlySelectedYear" class="form-control">
-                                <option value="">Select a Year</option>
-                            </select>
-                        </div>
-                        <div class="form-group" id="quarterly-row" style="display: none">
-                            <label for="quarterly" class="font-weight-bold">Quarterly</label>
-                            <select name="quarterly" id="quarterly" class="form-control">
-                                <option value="">Select quarterly</option>
-                                <option value="1-2-3">First Quarter</option>
-                                <option value="4-5-6">Second Quarter</option>
-                                <option value="7-8-9">Third Quarter</option>
-                                <option value="10-11-12">Fourth Quarter</option>
-                            </select>
-                            <label for="selectedYear" class="font-weight-bold">Select Year</label>
-                            <select id="yearSelectQuarterly" name="selectedYear" class="form-control">
-                                <option value="">Select a Year</option>
-                            </select>
-                        </div>
-                        <div class="form-group" id="signatories-row" style="display: none">
-                            <label for="prepared" class="font-weight-bold">Prepared By:</label>
-                            <select name="prepared" id="prepared" class="form-control">
-                                <option value="">Select Prepared By:</option>
-                                @foreach ($admins as $admin)
-                                    <option value="{{ $admin->id }}">{{ $admin->full_name }}</option>
-                                @endforeach
-                            </select>
-                        </div>                        
-                    </div>
-                <div class="row">
-                    <div class="modal-footer">
-                        <div class="col-md-3 form-group">
-                            <button type="submit" class="btn btn-info" id="report-submit-btn">SUBMIT</button>
-                        </div>
-                    </div>
-                </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+
 <script src="{{ asset('assets/js/admin/items/add-item-functions/category-search.js') }}"></script>
 <script src="{{ asset('assets/js/admin/items/add-item-functions/unit-search.js') }}"></script>
 <script src="{{ asset('assets/js/admin/items/delete-item.js') }}"></script>
 <script src="{{ asset('assets/js/admin/items/edit-item.js') }}"></script>
-<script src="{{ asset('assets/js/admin/pdf/report.js') }}"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const periodSelect = document.getElementById('period');
-        const monthSelect = document.getElementById('month');
-        const yearMonthly = document.getElementById('selectedYear');
-        const quarterSelect = document.getElementById('quarterly');
-        const yearQuarterly = document.getElementById('yearSelectQuarterly');
-        const preparedSelect = document.getElementById('prepared');
-        const submitBtn = document.getElementById('report-submit-btn');
-    
-        function validateForm() {
-            const period = periodSelect.value;
-    
-            const prepared = preparedSelect.value;
-    
-            let isValid = false;
-    
-            if (period === 'Monthly') {
-                const month = monthSelect.value;
-                const year = yearMonthly.value;
-    
-                isValid = (month !== '' && year !== '' && prepared !== '');
-    
-            } else if (period === 'Quarterly') {
-                const quarter = quarterSelect.value;
-                const year = yearQuarterly.value;
-    
-                isValid = (quarter !== '' && year !== '' && prepared !== '');
-            }
-    
-            submitBtn.disabled = !isValid;
-        }
-        validateForm();
-        periodSelect.addEventListener('change', function () {
-            const selected = this.value;
-            document.getElementById('month-row').style.display = selected === 'Monthly' ? 'block' : 'none';
-            document.getElementById('quarterly-row').style.display = selected === 'Quarterly' ? 'block' : 'none';
-            document.getElementById('signatories-row').style.display = selected !== '' ? 'block' : 'none';
-    
-            validateForm(); 
-        });
-        [monthSelect, yearMonthly, quarterSelect, yearQuarterly, preparedSelect]
-            .forEach(el => el.addEventListener('change', validateForm));
-    });
-</script>
+
     

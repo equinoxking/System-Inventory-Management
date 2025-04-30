@@ -34,4 +34,174 @@
 <script src="{{ asset('assets/js/admin/logout.js') }}"></script>
 <script src="{{ asset('assets/js/admin/data-tables/data-tables.js') }}"></script>
 <script src="{{ asset('assets/js/admin/items/add-item.js') }}"></script>
+<script>
+    $(document).ready(function() {
+        $('#generateReportBtn').click(function(){
+            $('#pdfReportModal').modal('show');
+        });
+    });
+</script>
+<div class="modal fade" id="pdfReportModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title" style="color:white;">PDF CUSTOMIZE FORM</h5>
+                    <button type="button" id="pdf-report-close-btn" data-dismiss="modal" class="btn" aria-label="Close" style="background-color: white">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </button>
+                </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form id="pdf-report-form">
+                        <div class="form-group">
+                            <label for="period" class="font-weight-bold">Period</label>
+                            <select name="period" id="period" class="form-control">
+                                <option value="">Select period</option>
+                                <option value="Monthly">Monthly</option>
+                                <option value="Quarterly">Quarterly</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="month-row" style="display: none">
+                            <label for="month" class="font-weight-bold">Month</label>
+                            <select name="month" id="month" class="form-control">
+                                <option value="">Select month</option>
+                                <option value="1">January</option>
+                                <option value="2">February</option>
+                                <option value="3">March</option>
+                                <option value="4">April</option>
+                                <option value="5">May</option>
+                                <option value="6">June</option>
+                                <option value="7">July</option>
+                                <option value="8">August</option>
+                                <option value="9">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                            <label for="selectedYear" class="font-weight-bold">Select Year</label>
+                            <select id="selectedYear" name="monthlySelectedYear" class="form-control">
+                                <option value="">Select a Year</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="quarterly-row" style="display: none">
+                            <label for="quarterly" class="font-weight-bold">Quarterly</label>
+                            <select name="quarterly" id="quarterly" class="form-control">
+                                <option value="">Select quarterly</option>
+                                <option value="1-2-3">First Quarter</option>
+                                <option value="4-5-6">Second Quarter</option>
+                                <option value="7-8-9">Third Quarter</option>
+                                <option value="10-11-12">Fourth Quarter</option>
+                            </select>
+                            <label for="selectedYear" class="font-weight-bold">Select Year</label>
+                            <select id="yearSelectQuarterly" name="selectedYear" class="form-control">
+                                <option value="">Select a Year</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="signatories-row" style="display: none">
+                            <label for="prepared" class="font-weight-bold">Prepared By:</label>
+                            <select name="prepared" id="prepared" class="form-control">
+                                <option value="">Select Prepared By:</option>
+                                @foreach ($admins as $admin)
+                                    <option value="{{ $admin->id }}">{{ $admin->full_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>                        
+                    </div>
+                <div class="row">
+                    <div class="modal-footer">
+                        <div class="col-md-3 form-group">
+                            <button type="submit" class="btn btn-info" id="report-submit-btn">SUBMIT</button>
+                        </div>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{{ asset('assets/js/admin/pdf/report.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const periodSelect = document.getElementById('period');
+        const monthSelect = document.getElementById('month');
+        const yearMonthly = document.getElementById('selectedYear');
+        const quarterSelect = document.getElementById('quarterly');
+        const yearQuarterly = document.getElementById('yearSelectQuarterly');
+        const preparedSelect = document.getElementById('prepared');
+        const submitBtn = document.getElementById('report-submit-btn');
+    
+        function validateForm() {
+            const period = periodSelect.value;
+    
+            const prepared = preparedSelect.value;
+    
+            let isValid = false;
+    
+            if (period === 'Monthly') {
+                const month = monthSelect.value;
+                const year = yearMonthly.value;
+    
+                isValid = (month !== '' && year !== '' && prepared !== '');
+    
+            } else if (period === 'Quarterly') {
+                const quarter = quarterSelect.value;
+                const year = yearQuarterly.value;
+    
+                isValid = (quarter !== '' && year !== '' && prepared !== '');
+            }
+    
+            submitBtn.disabled = !isValid;
+        }
+        validateForm();
+        periodSelect.addEventListener('change', function () {
+            const selected = this.value;
+            document.getElementById('month-row').style.display = selected === 'Monthly' ? 'block' : 'none';
+            document.getElementById('quarterly-row').style.display = selected === 'Quarterly' ? 'block' : 'none';
+            document.getElementById('signatories-row').style.display = selected !== '' ? 'block' : 'none';
+    
+            validateForm(); 
+        });
+        [monthSelect, yearMonthly, quarterSelect, yearQuarterly, preparedSelect]
+            .forEach(el => el.addEventListener('change', validateForm));
+    });
+    window.onload = function() {
+    // Monthly Select (current year on top)
+    var currentYearMonthly = new Date().getFullYear();
+    var selectMonthly = document.getElementById('selectedYear'); // Get the monthly select element
+
+    // First, add the current year at the top for monthly selection
+    let currentOptionMonthly = document.createElement('option');
+    currentOptionMonthly.value = currentYearMonthly;
+    currentOptionMonthly.text = currentYearMonthly;
+    currentOptionMonthly.selected = true;  // Set the current year as selected by default
+    selectMonthly.appendChild(currentOptionMonthly);  // Append to selectMonthly
+
+    // Then, add options for the previous 5 years
+    for (var i = currentYearMonthly - 1; i >= currentYearMonthly - 5; i--) {
+        let option = document.createElement('option');
+        option.value = i;
+        option.text = i;
+        selectMonthly.appendChild(option);  // Append to selectMonthly
+    }
+
+    // Quarterly Select (current year on top)
+    var currentYearQuarterly = new Date().getFullYear();
+    var selectQuarterly = document.getElementById('yearSelectQuarterly'); // Get the quarterly select element
+
+    // First, add the current year at the top for quarterly selection
+    let currentOptionQuarterly = document.createElement('option');
+    currentOptionQuarterly.value = currentYearQuarterly;
+    currentOptionQuarterly.text = currentYearQuarterly;
+    currentOptionQuarterly.selected = true;  // Set the current year as selected by default
+    selectQuarterly.appendChild(currentOptionQuarterly);  // Append to selectQuarterly
+
+    // Then, add options for the previous 10 years
+    for (var i = currentYearQuarterly - 1; i >= currentYearQuarterly - 10; i--) {
+        let option = document.createElement('option');
+        option.value = i;
+        option.text = i;
+        selectQuarterly.appendChild(option);  // Append to selectQuarterly
+    }
+};
+</script>
 

@@ -152,5 +152,14 @@ class CategoryManager extends Controller
         $paddedNumber = str_pad($numberPart, 5, '0', STR_PAD_LEFT);
     
         return $currentYearAndMonth . '-' . $paddedNumber;
-    }  
+    } 
+    public function getControlNumber($id){
+    $category = CategoryModel::find($id);
+
+    if ($category) {
+        return response()->json(['control_number' => $category->control_number]);
+    } else {
+        return response()->json(['control_number' => null], 404);
+    }
+} 
 }
