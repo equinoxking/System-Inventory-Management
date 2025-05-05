@@ -81,26 +81,27 @@
 <div class="container-fluid" style="background-color: whitesmoke">
     <div class="row">
         <div class="col-md-12">
-            <table id="transactionsTable" style="font-size: 10px;">
-                <thead>
-                    <th>Time Request</th>
-                    <th>Transaction Number</th>
-                    <th>Stock On Hand</th>
-                    <th>Quantity</th>
-                    <th>UoM</th>
-                    <th>Item Name</th>
-                    <th>Date/Time Acted</th>
-                    <th>Request Aging</th>
-                    <th>Released by</th>
-                    <th>Time Released</th>
-                    <th>Status</th>
-                    <th>Remarks</th>
-                    <th>Action</th>
-                </thead>
-                <tbody>
-                    
-                </tbody>
-            </table>
+            <div style="overflow-x: auto; width: 100%;">
+                <table id="transactionsTable" style="font-size: 10px; white-space: nowrap;">
+                    <thead>
+                        <th>Transaction Number</th>
+                        <th>Stock On Hand</th>
+                        <th>Quantity</th>
+                        <th>UoM</th>
+                        <th>Item Name</th>
+                        <th>Date/Time Requested</th>
+                        <th>Date/Time Acted</th>
+                        <th>Request Aging</th>
+                        <th>Released by</th>
+                        <th >Time Released</th>
+                        <th class="text-center">Status</th>
+                        <th>Action</th>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>
@@ -111,29 +112,33 @@
         </div>
     </div>
 </div>
-<div class="container-fluid" style="background-color: whitesmoke">
+<div class="container-fluid card w-100">
     <div class="row">
         <div class="col-md-12">
-            <table id="historyTransactionTable" style="font-size: 10px;">
-                <thead>
-                    <th>Time Request</th>
-                    <th>Transaction Number</th>
-                    <th>Stock On Hand</th>
-                    <th>Quantity</th>
-                    <th>UoM</th>
-                    <th>Item Name</th>
-                    <th>Date/Time Acted</th>
-                    <th>Request Aging</th>
-                    <th>Released by</th>
-                    <th>Time Released</th>
-                    <th>Availability Aging</th>
-                    <th class="text-center">Status</th>
-                    <th>Remarks</th>
-                </thead>
-                <tbody>
-                    
-                </tbody>
-            </table>
+            <!-- Scrollable wrapper -->
+            <div style="overflow-x: auto; width: 100%;">
+                <table id="historyTransactionTable" style="font-size: 10px; white-space: nowrap;">
+                    <thead>
+                        <th>Transaction Number</th>
+                        <th>Stock On Hand</th>
+                        <th>Quantity</th>
+                        <th>UoM</th>
+                        <th>Item Name</th>
+                        <th>Date/Time Requested</th>
+                        <th>Date/Time Acted</th>
+                        <th>Request Aging</th>
+                        <th>Released by</th>
+                        <th>Time Released</th>
+                        <th class="text-center">Date/Time Received</th>
+                        <th>Receive Aging</th>
+                        <th>Status</th>
+                        <th>Remarks</th>
+                    </thead>
+                    <tbody>
+                        
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

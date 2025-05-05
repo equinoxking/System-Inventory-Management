@@ -7,6 +7,7 @@ use App\Models\AdminModel;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\InventoryModel;
+use App\Models\TransactionDetailModel;
 use App\Models\ItemModel;
 use App\Models\TransactionModel;
 use Illuminate\Support\Facades\Validator;
@@ -44,7 +45,8 @@ class ReportTransactionManager extends Controller
                         'preparedBy' => $preparedBy,
                         'logo' => $logoWebp,
                         'logoPh' => $logoPh,
-                        'generatedBy' => $generatedBy
+                        'generatedBy' => $generatedBy,
+                        'selection' => $selectedOption
                     ];
 
                     $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
@@ -87,6 +89,14 @@ class ReportTransactionManager extends Controller
                     } else {
                         return back()->with('error', 'Unknown selection type.');
                     }
+                    $transactionOfUser = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'])
+                    ->where('remark', 'Completed')
+                    ->where('user_id', $id)
+                    ->first();
+                    $transactionOfAdmin = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'])
+                    ->where('remark', 'Completed')
+                    ->where('admin_id', $id)
+                    ->first();
                     $preparedBy = AdminModel::where('id', $request->get('admin'))->first();
                    
 
@@ -128,12 +138,23 @@ class ReportTransactionManager extends Controller
                         'preparedBy' => $preparedBy,
                         'logo' => $logoWebp,
                         'logoPh' => $logoPh,
-                        'generatedBy' => $generatedBy
+                        'generatedBy' => $generatedBy,
+                        'selection' => $selectedOption,
+                        'transactionOfUser' => $transactionOfUser,
+                        'transactionOfAdmin' => $transactionOfAdmin
                     ];
                     
                     $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
                     $user_id = null;
-                    $activity = "Generated transaction PDF of " . $owner_name . ".";
+                    if ($transactionOfUser && $transactionOfUser->client) {
+                        $owner_name = $transactionOfUser->client->full_name;
+                        $activity = "Generated transaction PDF of " . $owner_name . ".";
+                    } elseif ($transactionOfAdmin && $transactionOfAdmin->admin) {
+                        $owner_name = $transactionOfAdmin->admin->full_name;
+                        $activity = "Generated transaction PDF of " . $owner_name . ".";
+                    } else {
+                        $activity = "Generated transaction PDF."; // fallback in case neither match
+                    }
 
                     (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
 
@@ -157,6 +178,7 @@ class ReportTransactionManager extends Controller
                     return $pdf->stream($filename);
                 break;
                 case "Monthly" :
+                    $selection = $request->get('selection');
                     $year = $request->get('year');
                     $month = $request->get('month');
                     $dateObj = DateTime::createFromFormat('!m', $month);
@@ -180,7 +202,8 @@ class ReportTransactionManager extends Controller
                         'preparedBy' => $preparedBy,
                         'logo' => $logoWebp,
                         'logoPh' => $logoPh,
-                        'generatedBy' => $generatedBy
+                        'generatedBy' => $generatedBy,
+                        'selection' => $selection
                     ];
                     $user = TransactionModel::where('user_id', $request->get('user'))->first();
 
@@ -226,5 +249,37 @@ class ReportTransactionManager extends Controller
             ->encode($mimeType, 75); // 75% quality
     
         return 'data:image/' . $mimeType . ';base64,' . base64_encode($image);
-        }
+    }
+    public function goToFastMoving(){
+        $fastMovingItems = TransactionDetailModel::select('item_id')
+            ->selectRaw('COUNT(*) as request_count')
+            ->selectRaw('SUM(request_quantity) as total_requested')
+            ->with(['item', 'transacts' => function($query) {
+                // Filter by 'remark' within the 'transaction' relationship
+                $query->where('remark', 'Completed');
+            }])
+            ->where('created_at', '>=', Carbon::now()->subDays(30)) // Filter by the last 30 days
+            ->groupBy('item_id')
+            ->orderByDesc('total_requested')
+            ->get();
+        $filteredItems = $fastMovingItems->filter(function($detail) {
+            // Only keep transaction details where the transaction is completed
+            return $detail->transaction; // Transaction will be null if it doesn't match 'remark'
+        });
+        $transactionUsers = TransactionModel::with([
+            'transactionDetail',
+            'client',
+            'item',
+            'item.inventory.unit',
+            'status',
+            'adminBy',
+            'admin'
+        ])
+        ->where(function ($query) {
+            $query->where('remark', 'Completed');
+        })
+        ->get();  
+        $admins = AdminModel::all();
+        return view('admin.reports.fast-moving', compact('fastMovingItems', 'admins', 'transactionUsers'));
+    }
 }

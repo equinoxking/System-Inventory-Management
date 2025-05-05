@@ -1,8 +1,8 @@
 
-$("#pdfBtn").click(function() {
+$(".generateReportBtn").click(function() {
     $("#pdfReportModal").modal('show');
 });
-$('#pdf-report-close-btn').click(function(){
+$('.pdf-report-close-btn').click(function(){
     $("#pdfReportModal").modal('hide');
 });
 $(document).ready(function(){

@@ -14,6 +14,7 @@ use App\Models\ReportModel;
 use App\Models\RoleModel;
 use App\Models\SubCategoryModel;
 use Illuminate\Support\Carbon;
+use App\Models\TransactionModel;
 class InventoryManager extends Controller
 {
     public function showItems(Request $request){
@@ -66,10 +67,6 @@ class InventoryManager extends Controller
                 $item->inventory->min_quantity = $minQuantity;
             }
         }
-
-        
-
-
         $categories = CategoryModel::all();
         $units = UnitModel::all();
         $statuses = ItemStatusModel::all();
@@ -78,6 +75,19 @@ class InventoryManager extends Controller
         $reports = ReportModel::all();
         $roles = RoleModel::all();
         $sub_categories = SubCategoryModel::all();
+        $transactionUsers = TransactionModel::with([
+            'transactionDetail',
+            'client',
+            'item',
+            'item.inventory.unit',
+            'status',
+            'adminBy',
+            'admin'
+        ])
+        ->where(function ($query) {
+            $query->where('remark', 'Completed');
+        })
+        ->get();  
         $activeSection = $request->query('section', 'items');
         return view('admin.items.view-items', [
             'items' => $items,
@@ -89,6 +99,7 @@ class InventoryManager extends Controller
             'reports' => $reports,
             'roles' => $roles,
             'sub_categories' => $sub_categories,
+            'transactionUsers' => $transactionUsers
         ], compact('activeSection'));
     }
     public function showDeliveries(Request $request){
@@ -103,6 +114,19 @@ class InventoryManager extends Controller
         $roles = RoleModel::all();
         $sub_categories = SubCategoryModel::all();
         $activeSection = $request->query('section', 'items');
+        $transactionUsers = TransactionModel::with([
+            'transactionDetail',
+            'client',
+            'item',
+            'item.inventory.unit',
+            'status',
+            'adminBy',
+            'admin'
+        ])
+        ->where(function ($query) {
+            $query->where('remark', 'Completed');
+        })
+        ->get();  
         return view('admin.items.deliveries', [
             'items' => $items,
             'categories' => $categories,
@@ -113,6 +137,7 @@ class InventoryManager extends Controller
             'reports' => $reports,
             'roles' => $roles,
             'sub_categories' => $sub_categories,
+            'transactionUsers' => $transactionUsers
         ], compact('activeSection'));
     }
     public function showCategories(Request $request){
@@ -126,6 +151,19 @@ class InventoryManager extends Controller
         $reports = ReportModel::all();
         $roles = RoleModel::all();
         $sub_categories = SubCategoryModel::all();
+        $transactionUsers = TransactionModel::with([
+            'transactionDetail',
+            'client',
+            'item',
+            'item.inventory.unit',
+            'status',
+            'adminBy',
+            'admin'
+        ])
+        ->where(function ($query) {
+            $query->where('remark', 'Completed');
+        })
+        ->get();  
         $activeSection = $request->query('section', 'items');
         return view('admin.items.categories', [
             'items' => $items,
@@ -137,6 +175,7 @@ class InventoryManager extends Controller
             'reports' => $reports,
             'roles' => $roles,
             'sub_categories' => $sub_categories,
+            'transactionUsers' => $transactionUsers
         ], compact('activeSection'));
     }
     public function showUnits(Request $request){
@@ -151,6 +190,19 @@ class InventoryManager extends Controller
         $roles = RoleModel::all();
         $sub_categories = SubCategoryModel::all();
         $activeSection = $request->query('section', 'items');
+        $transactionUsers = TransactionModel::with([
+            'transactionDetail',
+            'client',
+            'item',
+            'item.inventory.unit',
+            'status',
+            'adminBy',
+            'admin'
+        ])
+        ->where(function ($query) {
+            $query->where('remark', 'Completed');
+        })
+        ->get();  
         return view('admin.items.units', [
             'items' => $items,
             'categories' => $categories,
@@ -161,6 +213,7 @@ class InventoryManager extends Controller
             'reports' => $reports,
             'roles' => $roles,
             'sub_categories' => $sub_categories,
+            'transactionUsers' => $transactionUsers
         ], compact('activeSection'));
     }
     public function showAccounts(Request $request){
@@ -174,6 +227,19 @@ class InventoryManager extends Controller
         $reports = ReportModel::all();
         $roles = RoleModel::all();
         $sub_categories = SubCategoryModel::all();
+        $transactionUsers = TransactionModel::with([
+            'transactionDetail',
+            'client',
+            'item',
+            'item.inventory.unit',
+            'status',
+            'adminBy',
+            'admin'
+        ])
+        ->where(function ($query) {
+            $query->where('remark', 'Completed');
+        })
+        ->get();  
         $activeSection = $request->query('section', 'items');
         return view('admin.items.accounts', [
             'items' => $items,
@@ -185,6 +251,7 @@ class InventoryManager extends Controller
             'reports' => $reports,
             'roles' => $roles,
             'sub_categories' => $sub_categories,
+            'transactionUsers' => $transactionUsers
         ], compact('activeSection'));
     }
 }

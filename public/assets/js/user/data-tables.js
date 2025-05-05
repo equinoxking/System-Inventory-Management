@@ -12,7 +12,7 @@ $(document).ready(function () {
                     { name: 'xs', width: 576 }
                 ]
             },
-            "order": [[1, 'desc']],
+            "order": [[0, 'desc']],
             "autoWidth": false,
             "processing": false,
             "serverSide": false,
@@ -24,12 +24,12 @@ $(document).ready(function () {
                 } // Ensure that 'data' is the key where the array of rows is located
             },
             "columns": [
-                { "data": "time_request" },
                 { "data": "transaction_number" },
                 { "data": "stock_on_hand"},
                 { "data": "quantity" },
                 { "data": "unit" },
                 { "data": "item_name" },
+                { "data": "time_request" },
                 {
                     data: null, // No direct data
                     render: function(data, type, row) {
@@ -39,18 +39,12 @@ $(document).ready(function () {
                 },
                 { "data": "request_aging" },
                 { "data": "released_by" },
-                { "data": "time_released" },
                 {
-                    "data": "status",
-                    "render": function(data, type, row) {
-                        if (data === 'Accepted') {
-                            return '<span class="badge-success"><i class="fas fa-check-circle"></i></span>';
-                        } else if (data === 'Pending') {
-                            return '<span class="badge-pending"><i class="fas fa-clock"></i></span>';
-                        } else {
-                            return '<span class="badge-danger"><i class="fas fa-times-circle"></i></span>';
-                        }
-                    }
+                    data: null, // No direct data
+                    render: function (data, type, row) {
+                        return row.date_approved + ' ' + row.time_released;
+                    },
+                    title: 'Date/Time Released' // Title for the merged column
                 },
                 {
                     "data": "remarks",
@@ -61,11 +55,15 @@ $(document).ready(function () {
                             return '<span class="badge badge-released"><i class="fas fa-box-open"></i> Released</span>';
                         } else if (data === 'Ready for Release') {
                             return '<span class="badge badge-release"><i class="fas fa-cloud-upload-alt"></i> Ready for Release</span>';
+                        }else if (data === 'Denied') {
+                            return '<span class="badge badge-denied"><i class="fas fa-ban"></i> Denied</span>';
+                        }else if (data === 'Canceled') {
+                            return '<span class="badge badge-canceled"><i class="fas fa-times"></i> Canceled</span>';
                         } else {
                             return '<span class="badge badge-completed"><i class="fas fa-check-circle"></i> Completed</span>';
                         }
                     }
-                },
+                },           
                 {
                     "data": null,  // This column will have the action buttons
                     "render": function(data, type, row) {
@@ -79,7 +77,7 @@ $(document).ready(function () {
                     },
                     "orderable": false,
                     "class": "text-center"
-                }
+                },
             ],
         });
         $('#transactionsTable').on('click', '.updateBtn', function() {
@@ -121,57 +119,90 @@ $(function () {
                 }
             },
             "columns": [
-                { "data": "time_request" },
                 { "data": "transaction_number" },
                 { "data": "stock_on_hand" },
                 { "data": "quantity" },
                 { "data": "unit" },
                 { "data": "item_name" },
+                { "data": "time_request" },
                 {
-                    data: null, // No direct data
-                    render: function (data, type, row) {
-                        return row.date_approved + ' ' + row.time_approved;
+                    data: null,
+                    render: function(data, type, row) {
+                        let date = row.date_approved || '--';
+                        let time = row.time_approved;
+                        return date + ' ' + time;
                     },
-                    title: 'Date/Time Acted' // Title for the merged column
+                    title: 'Date/Time Acted'
                 },
-                { "data": "request_aging" },
-                { "data": "released_by" },
-                { "data": "time_released" },
-                { "data": "released_aging" },
                 {
-                    "data": "status",
-                    "render": function (data, type, row) {
-                        if (data === 'Accepted') {
-                            return '<span class="badge-success"><i class="fas fa-check-circle"></i></span>';
-                        } else if (data === 'Pending') {
-                            return '<span class="badge-pending"><i class="fas fa-clock"></i></span>';
-                        } else {
-                            return '<span class="badge-danger"><i class="fas fa-times-circle"></i></span>';
-                        }
+                    data: "request_aging",
+                    render: function(data) {
+                        return data === null || data === "" ? "--" : data;
                     }
                 },
                 {
+                    data: "released_by",
+                    render: function(data) {
+                        return data === null || data === "" ? "--" : data;
+                    }
+                },
+                {
+                    data: null,
+                    render: function (data, type, row) {
+                        const dateApproved = row.date_approved || '';
+                        const timeReleased = row.time_released || '';
+                
+                        const combined = `${dateApproved} ${timeReleased}`.trim();
+                
+                        return combined === '' ? '--' : combined;
+                    },
+                    title: 'Date/Time Released'
+                },                
+                {
+                    data: "acceptance",
+                    render: function(data) {
+                        return data === null || data === "" ? "--" : data;
+                    }
+                },
+                {
+                    data: "released_aging",
+                    render: function(data) {
+                        return data === null || data === "" ? "--" : data;
+                    }
+                },        
+                {
                     "data": "remarks",
-                    "render": function (data, type, row) {
+                    "render": function(data, type, row) {
                         if (data === 'For Review') {
                             return '<span class="badge badge-forReview"><i class="fas fa-search"></i> For Review</span>';
                         } else if (data === 'Released') {
                             return '<span class="badge badge-released"><i class="fas fa-box-open"></i> Released</span>';
                         } else if (data === 'Ready for Release') {
                             return '<span class="badge badge-release"><i class="fas fa-cloud-upload-alt"></i> Ready for Release</span>';
+                        }else if (data === 'Denied') {
+                            return '<span class="badge badge-denied"><i class="fas fa-ban"></i> Denied</span>';
+                        }else if (data === 'Canceled') {
+                            return '<span class="badge badge-canceled"><i class="fas fa-times"></i> Canceled</span>';
                         } else {
                             return '<span class="badge badge-completed"><i class="fas fa-check-circle"></i> Completed</span>';
                         }
                     }
                 },
+                { "data": "reason"},
             ],
+            rowCallback: function(row, data) {
+                $(row).removeClass('dt-row-denied dt-row-canceled');
+                if (data.remarks === 'Denied') {
+                    $(row).addClass('dt-row-denied');
+                } else if (data.remarks === 'Canceled') {
+                    $(row).addClass('dt-row-canceled');
+                }
+            } 
         });
     setInterval(function() {
         table.ajax.reload(null, false);  
     }, 6000)
 });
-
-
 $(function () {
     var table = $('#transactionsVoided').dataTable({
         "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],

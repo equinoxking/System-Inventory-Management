@@ -281,6 +281,7 @@ class TransactionsManager extends Controller
             if($transaction){
                 $transaction->remark = "Completed";
                 $transaction->released_aging = $agingString;
+                $transaction->accepted_date_time = $now;
                 $transaction->save();
                 $detail = TransactionDetailModel::where('transaction_id', $transaction->id)->first();
                 $notification = new NotificationModel;
@@ -423,8 +424,9 @@ class TransactionsManager extends Controller
         ])
         ->where(function ($query) use ($client_id) {
             $query->Where('status_id', 2)
-                ->where('user_id', $client_id)
-                ->where('remark', "Completed");
+                ->orWhere('status_id', 3)
+                ->orWhere('status_id', 4)
+                ->where('user_id', $client_id);
         })
         ->get();   
 
@@ -444,6 +446,7 @@ class TransactionsManager extends Controller
                 'time_approved' => $transaction->approved_time ? \Carbon\Carbon::parse($transaction->approved_time)->format('h:i A') : '',
                 'date_approved' => $transaction->approved_date ? \Carbon\Carbon::parse($transaction->approved_date)->format('F d, Y') : '',
                 'released_aging' => $transaction->released_aging,
+                'acceptance' => $transaction->accepted_date_time ?  \Carbon\Carbon::parse($transaction->accepted_date_time)->format('F d, Y h:i A') : '',
                 'status' => $transaction->status ? $transaction->status->name : '',
                 'remarks' => $transaction->remark,
                 'reason' => $transaction->reason,

@@ -32,15 +32,15 @@ class IA_mainController extends Controller
         $transaction = TransactionModel::where('remark', 'For Review')->count();
         $receive = ReceiveModel::sum('received_quantity');
         $items = ItemModel::with('transacts.TransactionDetail')->get();
-        $itemsWithTransactionSums = $items->map(function ($item) {
-            $totalTransactionSum = $item->transacts->sum(function ($transact) {
-                return $transact->transactionDetail ? $transact->transactionDetail->request_quantity : 0;
-            });
-            return [
-                'item' => $item,
-                'total_transaction_sum' => $totalTransactionSum
-            ];
-        });
+        // $itemsWithTransactionSums = $items->map(function ($item) {
+        //     $totalTransactionSum = $item->transacts->sum(function ($transact) {
+        //         return $transact->transactionDetail ? $transact->transactionDetail->request_quantity : 0;
+        //     });
+        //     return [
+        //         'item' => $item,
+        //         'total_transaction_sum' => $totalTransactionSum
+        //     ];
+        // });
         $itemCount = ItemModel::count();
         $categories = CategoryModel::all();
         $transactions = TransactionModel::all();
@@ -62,39 +62,51 @@ class IA_mainController extends Controller
         
         $top10IssuedItems = $items->map(function ($item) {
             $totalIssuedQty = 0;
+            $requestCount = 0; // Variable to track the request count
         
-            $item->transacts->each(function ($transaction) use (&$totalIssuedQty, $item) {
+            $item->transacts->each(function ($transaction) use (&$totalIssuedQty, &$requestCount, $item) {
+                // Skip the transaction if the status is 3
                 if ($transaction->status_id == 3) return;
         
+                // Only process completed transactions (status_id == 2, remark 'Completed')
                 if ($transaction->status_id == 2 && $transaction->remark === 'Completed') {
-                    // Only get the first transactionDetail that belongs to this item
+                    // Get the first transactionDetail that belongs to this item
                     $detail = $transaction->transactionDetail
                         ->firstWhere('item_id', $item->id);
         
                     if ($detail) {
+                        // Accumulate the total issued quantity
                         $totalIssuedQty += $detail->request_quantity ?? 0;
+        
+                        // Increment the request count
+                        $requestCount++;
                     }
                 }
             });
         
+            // Return the item with the total issued quantity and request count
             return [
                 'item' => $item,
-                'total_issued' => $totalIssuedQty
+                'total_issued' => $totalIssuedQty,
+                'request_count' => $requestCount, // Add the request count here
             ];
         })
-        ->filter(fn($data) => $data['total_issued'] > 0)
-        ->sortByDesc('total_issued')
-        ->take(10)
-        ->values(); // <--- THIS resets the keys to 0,1,2,...
+        ->filter(fn($data) => $data['total_issued'] > 0) // Only keep items that have been issued
+        ->sortByDesc('total_issued') // Sort by total issued in descending order
+        ->take(10) // Get the top 10 items
+        ->values(); // Reset the keys
         
-
+        // Separate out the names and issued quantities
         $topItemsNames = [];
         $topItemsIssuedQty = [];
-
+        $topItemsRequestCount = []; // Add an array to store request counts
+        
         foreach ($top10IssuedItems as $data) {
             $topItemsNames[] = $data['item']->name;
-            $topItemsIssuedQty[] = $data['total_issued']; 
-        }       
+            $topItemsIssuedQty[] = $data['total_issued'];
+            $topItemsRequestCount[] = $data['request_count']; // Collect the request count
+        }
+        
         $now = Carbon::now();
         $currentMonth = $now->month;
         $currentYear = $now->year;
@@ -110,46 +122,64 @@ class IA_mainController extends Controller
             $year = $currentYear - 1;
         }
 
-        $items = ItemModel::with('transacts.transactionDetail')->get();
-
-        foreach ($items as $item) {
-            $transactionDetails = $item->transacts
-                ->filter(function ($transact) {
-                    return $transact->remark == 'Completed';
-                })
-                ->flatMap(function ($transact) {
-                    return $transact->transactionDetail ? collect([$transact->transactionDetail]) : collect();
-                });
-
-            $filteredDetails = $transactionDetails->filter(function ($detail) use ($quarterMonths, $year) {
-                return in_array((int) $detail->request_month, $quarterMonths)
-                    && $detail->request_year == $year;
-            });
-
-            $monthlyTotals = $filteredDetails->groupBy('request_month')->map(function ($group) {
-                return $group->sum('request_quantity');
-            });
-
-            $monthlyQuantities = collect([
-                $quarterMonths[0] => $monthlyTotals->get($quarterMonths[0], 0),
-                $quarterMonths[1] => $monthlyTotals->get($quarterMonths[1], 0),
-                $quarterMonths[2] => $monthlyTotals->get($quarterMonths[2], 0),
-            ]);
-
-            $average = round($monthlyQuantities->sum() / 3);
-
+        $criticalItemsWithFlag = $items->map(function ($item) use ($quarterMonths, $year) {
+            $isCritical = false;
+            $totalTransactionSum = 0;
+        
             if ($item->inventory) {
-                $item->inventory->min_quantity = $average > 0 
-                    ? $average 
-                    : $item->inventory->min_quantity;
+                $completedTransacts = $item->transacts->filter(fn($t) => $t->remark === 'Completed');
+        
+                $transactionDetails = $completedTransacts->flatMap(fn($t) =>
+                    $t->transactionDetail ? collect([$t->transactionDetail]) : collect()
+                );
+        
+                // Calculate total transaction quantity (all time, not just this quarter)
+                $totalTransactionSum = $transactionDetails->sum('request_quantity');
+        
+                // Filter by this quarter
+                $filteredDetails = $transactionDetails->filter(function ($detail) use ($quarterMonths, $year) {
+                    return in_array((int)$detail->request_month, $quarterMonths) && $detail->request_year == $year;
+                });
+        
+                $monthlyTotals = $filteredDetails->groupBy('request_month')->map(fn($g) => $g->sum('request_quantity'));
+        
+                $monthlyQuantities = collect([
+                    $quarterMonths[0] => $monthlyTotals->get($quarterMonths[0], 0),
+                    $quarterMonths[1] => $monthlyTotals->get($quarterMonths[1], 0),
+                    $quarterMonths[2] => $monthlyTotals->get($quarterMonths[2], 0),
+                ]);
+        
+                $average = round($monthlyQuantities->sum() / 3);
+        
+                $item->inventory->min_quantity = $average > 0 ? $average : $item->inventory->min_quantity;
+        
+                $isCritical = $item->inventory->quantity < $item->inventory->min_quantity;
             }
-        }
-
-        // Count items with quantity < buffer (critical items)
-        $criticalCount = $items->filter(function ($item) {
-            return $item->inventory 
-                && $item->inventory->quantity < $item->inventory->min_quantity;
-        })->count(); 
+        
+            return [
+                'item' => $item,
+                'is_critical' => $isCritical,
+                'total_transaction_sum' => $totalTransactionSum
+            ];
+        });
+        
+        // Get only the critical items
+        $criticalItemsRecord = $criticalItemsWithFlag->filter(fn($entry) => $entry['is_critical']);
+        $criticalCount = $criticalItemsRecord->count();
+        
+        $transactionUsers = TransactionModel::with([
+            'transactionDetail',
+            'client',
+            'item',
+            'item.inventory.unit',
+            'status',
+            'adminBy',
+            'admin'
+        ])
+        ->where(function ($query) {
+            $query->where('remark', 'Completed');
+        })
+        ->get();   
         return view('admin.index', [
             'countclients' => $countclients,
             'transactions' => $transaction,
@@ -159,7 +189,7 @@ class IA_mainController extends Controller
             'categories' => $categories,
             'notifications' => $notifications,
             'itemCount' => $itemCount,
-            'itemsWithTransactionSums' => $itemsWithTransactionSums,
+            'criticalItemsWithSums' => $criticalItemsRecord ,
             'topItemsNames' => $topItemsNames,
             'topItemsIssuedQty' => $topItemsIssuedQty,
             'top10IssuedItems' => $top10IssuedItems,
@@ -173,7 +203,8 @@ class IA_mainController extends Controller
             'criticalCount' => $criticalCount,
             'sub_categories' => $sub_categories,
             'units' => $units,
-            'admins' => $admins
+            'admins' => $admins,
+            'transactionUsers' => $transactionUsers
         ]);
     }
     public function goToTransactions(){

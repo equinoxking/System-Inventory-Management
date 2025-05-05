@@ -2,7 +2,7 @@
 @section('content')
 <div class="container-fluid mt-3 mb-3">
     <div class="row align-items-center">
-        <div class="col-md-2">
+        <div class="col-md-12">
             <!-- Breadcrumb Navigation -->
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
@@ -29,7 +29,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
-            <table id="categoryTable" class="table-striped table-hover" style="font-size: 11px">
+            <table id="categoryTable" class="table-hover" style="font-size: 11px">
                 <thead>
                     <th width="7%">Category Number</th>
                     <th width="20%">Category Name</th>

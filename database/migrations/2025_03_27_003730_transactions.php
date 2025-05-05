@@ -27,6 +27,7 @@ return new class extends Migration
             $table->date('approved_date')->nullable();
             $table->time('approved_time')->nullable();
             $table->string('reason', 255)->nullable();
+            $table->string('accepted_date_time', 50)->nullable();
             $table->string('remark');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();

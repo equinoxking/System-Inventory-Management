@@ -24,7 +24,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
-            <table id="accountTable" class="table-striped table-hover" style="font-size: 12px">
+            <table id="accountTable" class="table-hover" style="font-size: 12px">
                 <thead>
                     <th width="8%">Employee Number</th>
                     <th width="30%">Full Name</th>
@@ -46,7 +46,7 @@
                                 <td>{{ $client->role->name }}</td>
                                 <td>{{ $client->office }}</td>
                                 <td>{{ $client->position }}</td>
-                                <td>{{ \Carbon\Carbon::parse($client->created_at)->format('F d, Y H:i A') }}</td>
+                                <td>{{ \Carbon\Carbon::parse($client->created_at)->format('F d, Y h:i A') }}</td>
                                 <td id="user_status" class="text-center">
                                     @if($client->status && $client->status == 'Active')
                                         <span class="badge badge-success" style="width: 4rem; font-size: 10px;" id="status-badge">
@@ -85,7 +85,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
-            <table id="adminTable" class="table-striped table-hover" style="font-size: 12px">
+            <table id="adminTable" class="table-hover" style="font-size: 12px">
                 <thead>
                     <th width="10%">Admin Number</th>
                     <th>Full Name</th>
@@ -130,6 +130,9 @@
 </div>
 @endsection
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="{{ asset('assets/js/admin/dashboard/accounts/permission.js')}}"></script>
+<script src="{{ asset('assets/js/admin/dashboard/accounts/status.js')}}"></script>
+<script src="{{ asset('assets/js/admin/admin/add-admin.js') }}"></script>
 <div class="modal fade" id="setUserModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -148,11 +151,11 @@
                             <input type="text" class="form-control" name="user_id" id="set-user-id">
                         </div>
                         <div class="form-group">
-                            <label for="fullName">Full Name</label>
+                            <label for="fullName" class="font-weight-bold">Full Name</label>
                             <input type="text" class="form-control" name="full_name" id="full-name" readonly>
                         </div>
                         <div class="form-group" >
-                            <label for="roleId">System Roles</label>
+                            <label for="roleId" class="font-weight-bold">System Roles</label>
                             <select name="role_id" id="role-id" class="form-control">
                                 <option value="">Select Role</option>
                                 @foreach ($roles as $role)
@@ -191,11 +194,11 @@
                             <input type="text" class="form-control" name="user_id" id="change-user-status-id">
                         </div>
                         <div class="form-group">
-                            <label for="fullName">Full Name</label>
+                            <label for="fullName" class="font-weight-bold">Full Name</label>
                             <input type="text" class="form-control" name="full_name" id="change-user-full-name" readonly>
                         </div>
                         <div class="form-group" >
-                            <label for="status">System Status</label>
+                            <label for="status" class="font-weight-bold">System Status</label>
                             <select name="status" id="status" class="form-control">
                                 <option value="">Select User Status</option>
                                 <option value="Inactive">Deactivate</option>
@@ -309,7 +312,7 @@
                         <div class="form-group">
                             <label for="editSystemRole" class="font-weight-bold">Status</label>
                             <select name="admin_status" id="edit-admin-status" class="form-control">
-                                <option value="">Select System Role</option>
+                                <option value="">Select Status</option>
                                 <option value="Active">Active</option>
                                 <option value="Inactive">Inactive</option>
                             </select>

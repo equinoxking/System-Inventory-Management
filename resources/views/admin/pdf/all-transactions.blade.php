@@ -88,7 +88,15 @@
                     <p style="margin: 0; font-weight: none">Province of Nueva Vizcaya</p>
                     <p style="margin: 0; font-weight: none">Bayombong</p>
                     <span style="margin: 0; font-size: 13px; font-weight:bold">PROVINCIAL HUMAN RESOURCE AND MANAGEMENT OFFICE</span>
-                    <p style="margin: 0; font-size: 18px; font-weight:bold; margin-top:0.5rem;">Transaction Records</p>
+                    <p style="margin: 0; font-size: 18px; font-weight:bold; margin-top:0.5rem;">Transaction Records 
+                        @if ($selection === 'User')
+                            @if ($transactionOfUser && $transactionOfUser->client && $transactionOfUser->client->full_name)
+                                For <i>{{ $transactionOfUser->client->full_name }}</i>
+                            @elseif ($transactionOfAdmin && $transactionOfAdmin->admin && $transactionOfAdmin->admin->full_name)
+                                For <i>{{ $transactionOfAdmin->admin->full_name }}</i>
+                            @endif
+                        @endif
+                    </p>
                 </td>
                 <th style="border: none;">
                     <img style="width: 80px; height: 80px; margin: 0 auto; margin-right: 39rem" src="{{ $logo }}">
@@ -99,7 +107,7 @@
 </div>
 <main style="margin-top: 9rem">
     <div class="container-fluid">
-        <table class="table" style="font-size: 10px">
+        <table class="table" style="font-size: 9px">
             <thead>
                 <tr>
                     <th>Time Request</th>
@@ -108,13 +116,18 @@
                     <th>Quantity</th>
                     <th>UoM</th>
                     <th>Item Name</th>
-                    <th>Requestor</th>
+                    @if ($selection === 'User')
+
+                    @else
+                        <th>Requestor</th>
+                    @endif
                     <th>Date/Time Acted</th>
                     <th>Request Aging</th>
                     <th>Released by</th>
                     <th>Time Released</th>
-                    <th>Availability Aging</th>
-                    <th>Remarks</th>
+                    <th>Date/Time Receive</th>
+                    <th>Receive Aging</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody>
@@ -126,7 +139,11 @@
                         <td>{{ $transaction->transactionDetail->request_quantity }}</td>
                         <td>{{ $transaction->item->inventory->unit->name }}</td>
                         <td>{{ $transaction->item->name }}</td>
-                        <td>{{ $transaction->client ? $transaction->client->full_name : $transaction->admin->full_name }}</td>
+                        @if ($selection === 'User')
+
+                        @else
+                            <td>{{ $transaction->client ? $transaction->client->full_name : $transaction->admin->full_name }}</td>
+                        @endif
                         <td>
                             {{ $transaction->approved_date ? \Carbon\Carbon::parse($transaction->approved_date)->format('F d, Y') : '--' }}
                             {{ $transaction->approved_time ? \Carbon\Carbon::parse($transaction->approved_time)->format('h:i A') : '--' }}
@@ -135,6 +152,7 @@
                         <td>{{ $transaction->request_aging ? $transaction->request_aging : '--' }}</td>
                         <td>{{ $transaction->adminBy ? $transaction->adminBy->full_name : '--' }}</td>
                         <td>{{ $transaction->released_time ? \Carbon\Carbon::parse($transaction->released_time)->format('h:i A') : '--' }}</td>
+                        <td>{{ $transaction->accepted_date_time ? \Carbon\Carbon::parse($transaction->accepted_date_time)->format('F d, Y h:i A') : '--' }}</td>
                         <td>{{ $transaction->released_aging }}{{ $transaction->released_aging ? $transaction->released_aging : '--' }}</td>
                         <td>{{ $transaction->remark }}</td>
                     </tr>

@@ -2,7 +2,7 @@
 @section('content')
 <div class="container-fluid mt-3 mb-3">
     <div class="row align-items-center">
-        <div class="col-md-2">
+        <div class="col-md-12">
             <!-- Breadcrumb Navigation -->
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">

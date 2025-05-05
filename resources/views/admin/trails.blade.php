@@ -33,7 +33,7 @@
                     @foreach ($trails as $trail)
                         <tr>
                             <td>{{ $trail->id }}</td>
-                            <td>{{ \Carbon\Carbon::parse($trail->created_at)->format('F d, Y h:i A') }}</td>
+                            <td>{{ $trail->created_at->format('F d, Y h:i A') }}</td>
                             <td>{{ $trail->client ? $trail->client->full_name : $trail->admin->full_name }} </td>
                             <td>{{ $trail->activity }}</td>
                             <td>

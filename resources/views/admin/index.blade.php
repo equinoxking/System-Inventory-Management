@@ -89,37 +89,67 @@ body {
 <div class="container-fluid mt-4">  
     <div class="row align-items-stretch">  
         <!-- Notifications Section -->  
-        <div class="col-9 mb-2">  
+        
+        <div class="col-9 mb-2"> 
             <div class="card p-3">  
-                <div class="table-responsive"  style=" position: absolute;
-            top: 0px; height: 100%; width: 90%">  
-                    <h4 class="mt-3">Top 10 Commonly Used Items for this Month</h4>  
-                    <table class="table table-bordered table-hover" style="font-size: 14px; width: 100%;" id="notificationTable">  
-                        <thead class="thead-light">  
-                            <tr>  
-                                <th style="width: 5%; text-align:left">No.</th>
-                                <th style="width: 30%; text-align:left">Category</th>
-                                <th style="width: 45%; text-align:left">Item Name</th>
-                                <th style="width: 15%">Stock on Hand</th>
-                                <th style="width: 5%;">Issued</th>  
-                            </tr>  
-                        </thead>  
-                        <tbody>  
-                            @foreach ($top10IssuedItems as $index => $data)
-                            <tr>
-                                <td>{{ $index + 1 }}.</td>
-                                <td  class="text-left">{{ $data['item']->category->name }}</td>
-                                <td class="text-left">{{ $data['item']->name }}</td>
-                                <td  class="text-right">{{ $data['item']->inventory->quantity }}</td>
-                                <td>{{ $data['total_issued'] }}</td>
-                            </tr>
-                        @endforeach
-                        </tbody>  
-                    </table>  
+                <div class="table-responsive"  style=" position: absolute; top: 0px; height: 100%; width: 90%">  
+                    <div class="text-left mt-2">
+                        <button id="toggleTableBtn" class="btn btn-sm btn-info  mb-3">
+                            Show Critical Items
+                        </button>                        
+                    </div>
+                    <h4 class="mt-3" id="tableTitle">Top 10 Commonly Used Items for this Month</h4>
+                    <div id="top10Container">
+                        <table class="table table-bordered table-hover" style="font-size: 13px; width: 100%;" id="top10Table">  
+                            <thead class="thead-light">  
+                                <tr>  
+                                    <th style="width: 5%; text-align:left">No.</th>
+                                    <th style="width: 30%; text-align:left">Category</th>
+                                    <th style="width: 45%; text-align:left">Item Name</th>
+                                    <th style="width: 10%">Stock on Hand</th>
+                                    <th style="width: 5%;">Issued</th>  
+                                    <th style="width: 5%;">Request Frequency</th>  
+                                </tr>  
+                            </thead>  
+                            <tbody>  
+                                @foreach ($top10IssuedItems as $index => $data)
+                                <tr>
+                                    <td>{{ $index + 1 }}.</td>
+                                    <td  class="text-left">{{ $data['item']->category->name }}</td>
+                                    <td class="text-left">{{ $data['item']->name }}</td>
+                                    <td  class="text-right">{{ $data['item']->inventory->quantity }}</td>
+                                    <td>{{ $data['total_issued'] }}</td>
+                                    <td>{{ $data['request_count'] }}</td>
+                                </tr>
+                            @endforeach
+                            </tbody>  
+                        </table>
+                    </div>
+                    <div id="availableItemContainer" style="display: none;">
+                        <table id="availableItemTable" class="table table-bordered table-hover" style="font-size: 11px;">
+                            <thead class="thead-light">  
+                                <tr>
+                                    <th width="30%">Category</th>
+                                    <th width="30%">Item Name</th>
+                                    <th width="5%">Issued</th>
+                                    <th width="7%">Stock On Hand</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($criticalItemsWithSums as $itemData)
+                                    <tr class="{{ $itemData['item']->inventory->quantity == 0 ? 'table-danger text-dark' : '' }}">
+                                        <td>{{ $itemData['item']->category->name }}</td>
+                                        <td>{{ $itemData['item']->name }}</td>
+                                        <td>{{ number_format($itemData['total_transaction_sum']) }}</td>
+                                        <td class="text-right">{{ $itemData['item']->inventory->quantity }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>  
             </div>  
-        </div>
-        <!-- Bar Chart Section -->  
+        </div> 
         <div class="col-md-3 mt-3">  
             <div class="row">  
                 <div class="col-md-6 mb-4">  
@@ -154,7 +184,7 @@ body {
                         <h4 class="card-title">Pending Transactions</h4> 
                         <div class="dropdown" style="display: inline-block;">
                             <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-receipt icon" style="color: #28a745; font-size: 40px;"></i>
+                                <i class="fas fa-file-invoice icon" style="color: #28a745; font-size: 40px;"></i>
                             </a>
                             <!-- Dropdown Menu -->
                             <ul class="dropdown-menu">
@@ -178,7 +208,7 @@ body {
                         <h4 class="card-title">Critical Items</h4>
                         <div class="dropdown" style="display: inline-block;">
                             <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-box icon" style="font-size: 40px; color: #ffc107; margin-right: 10px;"></i>
+                                <i class="fas fa-box icon" style="font-size: 40px; color: #dc3545; margin-right: 10px;"></i>
                             </a>
                             <!-- Dropdown Menu -->
                             <ul class="dropdown-menu">
@@ -202,7 +232,7 @@ body {
                         <h4 class="card-title">Delivered Items</h4>
                         <div class="dropdown" style="display: inline-block;">
                             <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-shopping-cart icon" style="color: #dc3545; font-size: 40px;"></i>
+                                <i class="fas fa-truck icon" style="color: #ffc107;7 font-size: 40px;"></i>
                             </a>
                             <!-- Dropdown Menu -->
                             <ul class="dropdown-menu">
@@ -212,9 +242,9 @@ body {
                         </div>  
                         <div class="icon-number">
                             @if ($receives >= 0 && $receives <= 9)
-                                0{{ $receives }}
+                                0{{ number_format($receives) }}
                             @else
-                                {{ $receives }}
+                                {{ number_format($receives) }}
                             @endif
                         </div> 
                     </div>  
@@ -223,7 +253,7 @@ body {
             <div class="row">  
                 <div class="col-md-6 mb-4">  
                     <div class="card">  
-                        <h4 class="card-title">Category List</h4>  
+                        <h4 class="card-title">Item Categories</h4>  
                         
                         <div class="dropdown" style="display: inline-block;">
                             <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -249,7 +279,7 @@ body {
                 </div>  
                 <div class="col-md-6 mb-4">  
                     <div class="card">  
-                        <h4 class="card-title">UoM List</h4> 
+                        <h4 class="card-title" style="font-size: 14px;">Item Units of Measurement</h4> 
                         <div class="dropdown" style="display: inline-block;">
                             <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-ruler-combined icon" style="color: #17a2b8; font-size: 40px;"></i>
@@ -274,8 +304,18 @@ body {
                 <div class="col-md-6 mb-4">  
                     <div class="card">  
                         <h4 class="card-title">Generated Reports</h4>
-                        <a href="{{ url('/admin/lookup-tables') }}?section=items"><i class="fas fa-chart-bar icon" style="color: #6610f2; font-size: 40px;"></i></a>  
-                       
+                        <div class="dropdown" style="display: inline-block;">
+                            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-chart-bar icon" style="font-size: 40px; color: #6610f2; margin-right: 10px;"></i>
+                            </a>
+                            <!-- Dropdown Menu -->
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="{{ url('/admin/reports/monthly-report') }}">View Month Reports</a></li>
+                                <li><a class="dropdown-item" href="{{ url('/admin/reports/quarterly-report') }}">View Quarterly Reports</a></li>
+                                <li><a class="dropdown-item generateReportBtn">Generate Utilization Report</a></li>
+                                <li><a class="dropdown-item pdfTransactionGenerationBtn">Generate Transaction Report</a></li>
+                            </ul>
+                        </div>
                         <div class="icon-number">
                             @if ($countReports >= 0 && $countReports <= 9)
                                 0{{ $countReports }}
@@ -287,7 +327,7 @@ body {
                 </div>  
                 <div class="col-md-6 mb-4">  
                     <div class="card">  
-                        <h4 class="card-title">Activity Log List</h4> 
+                        <h4 class="card-title">System Activity Logs</h4> 
                         <div class="dropdown" style="display: inline-block;">
                             <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-history icon" style="color: #fd7e14; font-size: 40px;"></i>
@@ -309,57 +349,8 @@ body {
             </div>  
         </div>
     </div>  
-
-    <!-- Data Table Section -->  
-    {{-- <div class="data-table-section">
-        <h2 class="text-center">Item List</h2>
-        <div class="row mb-3">
-            <div class="row mb-3">
-                <div class="col-md-4 d-flex align-items-center">
-                    <label for="category-filter" class="mb-0 mr-2" style="white-space: nowrap;">Filter By Category:</label>
-                    <select id="category-filter" class="form-control">
-                        <option value="">All</option>
-                        @foreach ($categories as $category)
-                            <option value="{{ $category->name }}">{{ $category->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-            
-        </div>
-        
-        <!-- Scrollable wrapper -->
-        <div>
-            <table id="availableItemTable" class="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th width="30%">Category</th>
-                        <th width="30%">Item Name</th>
-                        <th width="5%">Issued</th>
-                        <th width="7%">Stock On Hand</th>
-                        <th width="10%" class="text-center">Stock Level</th>
-                    </tr>
-                </thead>
-                <tbody style="max-height: 200px; overflow-y: auto;">
-                    @foreach ($itemsWithTransactionSums as $itemData)
-                        <tr>
-                            <td>{{ $itemData['item']->category->name }}</td>
-                            <td>{{ $itemData['item']->name }}</td>
-                            <td>{{ $itemData['total_transaction_sum'] }}</td> <!-- Display the total transaction sum -->
-                            <td class="text-right">{{ $itemData['item']->inventory->quantity }}</td>
-                            <td  class="text-center">
-                                @if ($itemData['item']->inventory->quantity < $itemData['item']->inventory->min_quantity) 
-                                    <span class="badge badge-noStock"><i class="fas fa-times-circle"></i> Critical</span>
-                                @else 
-                                    <span class="badge badge-highStock"><i class="fas fa-check-circle"></i> Normal</span>
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div> --}}
+</div>
+    
 
   
 @endsection  
@@ -440,5 +431,21 @@ document.getElementById('edit_unit_id').addEventListener('change', function () {
         } else {
             document.getElementById('edit-unit-control_number').value = '';
         }
+    });
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggleBtn = document.getElementById('toggleTableBtn');
+        const top10Container = document.getElementById('top10Container');
+        const availableContainer = document.getElementById('availableItemContainer');
+        const tableTitle = document.getElementById('tableTitle');
+
+        toggleBtn.addEventListener('click', function () {
+            const showingTop10 = top10Container.style.display !== 'none';
+
+            top10Container.style.display = showingTop10 ? 'none' : 'block';
+            availableContainer.style.display = showingTop10 ? 'block' : 'none';
+
+            toggleBtn.textContent = showingTop10 ? 'Show Top 10 Items' : 'Show Available Items';
+            tableTitle.textContent = showingTop10 ? 'Critical Items' : 'Top 10 Commonly Used Items for this Month';
+        });
     });
 </script>

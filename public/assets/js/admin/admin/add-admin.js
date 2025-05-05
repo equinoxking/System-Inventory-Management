@@ -1,10 +1,11 @@
-$('#addAdminBtn').click(function(){
-    $('#addAdminModal').modal('show');
-});
-$('#add-admin-close-btn').click(function(){
-    $('#addAdminModal').modal('hide');
-});
+
 $(document).ready(function() {
+    $('#addAdminBtn').click(function(){
+        $('#addAdminModal').modal('show');
+    });
+    $('#add-admin-close-btn').click(function(){
+        $('#addAdminModal').modal('hide');
+    });
     $(document).on('submit', '#add-admin-form', function(event){
         event.preventDefault();
         var formData = $('#add-admin-form').serialize();

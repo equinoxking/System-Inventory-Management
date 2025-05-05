@@ -28,7 +28,8 @@
                         <i class="fas fa-chart-bar mr-1"></i>Reports
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
-                        <li><a class="dropdown-item text-dark" id="generateReportBtn">Generate Report</a></li>
+                        <li><a class="dropdown-item text-dark generateReportBtn">Generate Utilization Report</a></li>
+                        <li><a class="dropdown-item text-dark pdfTransactionGenerationBtn">Generate Transaction Report</a></li>
                         <li><a class="dropdown-item text-dark" href="{{ url('/admin/reports/monthly-report') }}">Monthly Report</a></li>
                         <li><a class="dropdown-item text-dark" href="{{ url('/admin/reports/quarterly-report') }}">Quarterly Report</a></li>
                     </ul>

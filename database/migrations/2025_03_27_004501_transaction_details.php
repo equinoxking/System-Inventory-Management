@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('transaction_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
+            $table->foreignId('item_id')->references('id')->on('items')->onDelete('cascade');
             $table->string('request_item');
             $table->string('request_quantity');
             $table->string('request_day');

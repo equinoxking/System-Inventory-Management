@@ -21,6 +21,7 @@ class TransactionModel extends Model
         'approved_date',
         'reason',
         'remark',
+        'accepted_date_time',
         'created_at',
         'updated_at'
     ];

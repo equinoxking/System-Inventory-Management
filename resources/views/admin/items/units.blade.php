@@ -29,7 +29,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
-            <table id="unitTable" class="table-striped table-hover" style="font-size: 11px">
+            <table id="unitTable" class="table-hover" style="font-size: 11px">
                 <thead>                    
                     <th width="10%">Unit Number</th>
                     <th width="20%">Unit Name</th>

@@ -212,7 +212,7 @@ class AdminTransactionManager extends Controller
                     case 3:
                         // Logic for Rejected status
                         $validatorForDenied = Validator::make($request->all(), [
-                            'reason' => 'required', 
+                            'reason' => 'required|string|min:4',
                         ]);
                         if ($validatorForDenied->fails()) {
                             return response()->json([
@@ -253,7 +253,7 @@ class AdminTransactionManager extends Controller
                             " has been denied due to ". $transaction->reason . ", and this transaction has been marked as Denied.";
                             $user->message = $message;
                             $user->save();
-
+                           
                             if($transaction){
                                 return response()->json([
                                     'message' => "Status change successful!",
@@ -335,8 +335,10 @@ class AdminTransactionManager extends Controller
                 'time_approved' => $transaction->approved_time ? \Carbon\Carbon::parse($transaction->approved_time)->format('h:i A') : '',
                 'date_approved' => $transaction->approved_date ? \Carbon\Carbon::parse($transaction->approved_date)->format('F d, Y') : '',
                 'released_aging' => $transaction->released_aging,
+                'acceptance' => $transaction->accepted_date_time ?  \Carbon\Carbon::parse($transaction->accepted_date_time)->format('F d, Y h:i A') : '',
                 'status' => $transaction->status ? $transaction->status->name : '',
                 'remarks' => $transaction->remark,
+                'reason' => $transaction->reason,
             ];
         });
         return response()->json([
@@ -369,7 +371,7 @@ class AdminTransactionManager extends Controller
             if (!$selectedItemId) {
                 continue;
             }
-    
+            $now = Carbon::now('Asia/Manila');
             $formattedDateNow = Carbon::now('Asia/Manila')->format('Y-m-d');
             $formattedTimeNow = Carbon::now('Asia/Manila')->format('H:i:s');
             $item = ItemModel::find($requestItemId);
@@ -385,6 +387,7 @@ class AdminTransactionManager extends Controller
             $transaction->released_by = $admin->id;
             $transaction->request_aging = "0 days, 0 minutes, 1 seconds";
             $transaction->released_aging = "0 days, 0 minutes, 1 seconds";
+            $transaction->accepted_date_time = $now;
             $transaction->remark = "Completed";
             $transaction->save();
     

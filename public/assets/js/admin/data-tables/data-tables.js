@@ -1,7 +1,7 @@
 $(function () {
     var table = $('#itemsTable').DataTable({
+        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
         "pageLength": -1,
-        "lengthChange": false,
         "responsive": {
             breakpoints: [
                 { name: 'xl', width: Infinity },
@@ -84,7 +84,8 @@ $(function () {
 $(function () {
     var table = $('#transactionTable').DataTable({
         "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
-        "pageLength": 5,
+        "pageLength": -1,
+        // "lengthChange": false,
         "responsive": {
             breakpoints: [
                 { name: 'xl', width: Infinity },
@@ -105,14 +106,15 @@ $(function () {
                 return json.data;
             } // Ensure that 'data' is the key where the array of rows is located
         },
+        "order": [[0, 'desc']], 
         "columns": [
-            { "data": "time_request" },
             { "data": "transaction_number" },
             { "data": "stock_on_hand"},
             { "data": "quantity" },
             { "data": "unit" },
             { "data": "item_name" },
             { "data": "client_name" },
+            { "data": "time_request" },
             {
                 data: null, // No direct data
                 render: function(data, type, row) {
@@ -122,31 +124,13 @@ $(function () {
             },
             { "data": "request_aging" },
             { "data": "released_by" },
-            { "data": "time_released" },
             {
-                "data": "status",
-                "render": function(data, type, row) {
-                    if (data === 'Accepted') {
-                        return '<span class="badge-success"><i class="fas fa-check-circle"></i></span>';
-                    } else if (data === 'Pending') {
-                        return '<span class="badge-pending"><i class="fas fa-clock"></i></span>';
-                    } else {
-                        return '<span class="badge-danger"><i class="fas fa-times-circle"></i></span>';
-                    }
-                }
-            },
-            {
-                "data": "remarks",
-                "render": function(data, type, row) {
-                    if (data === 'For Review') {
-                        return '<span class="badge badge-forReview"><i class="fas fa-search"></i> For Review</span>';
-                    } else if (data === 'For Release') {
-                        return '<span class="badge badge-release"><i class="fas fa-cloud-upload-alt"></i> For Release</span>';
-                    } else {
-                        return '<span class="badge badge-completed"><i class="fas fa-check-circle"></i> Completed</span>';
-                    }
-                }
-            },
+                data: null, // No direct data
+                render: function (data, type, row) {
+                    return row.date_approved + ' ' + row.time_released;
+                },
+                title: 'Date/Time Released' // Title for the merged column
+            },     
             {
                 "data": null,  // This column will have the action buttons
                 "render": function(data, type, row) {
@@ -181,13 +165,14 @@ $(function () {
                 { name: 'sm', width: 768 },
                 { name: 'xs', width: 576 }
             ]
-        }
+        },
+        "order": [[0, 'desc']], 
     });
 });
 $(function () {
     var table = $('#transactionHistoryTable').DataTable({
         "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
-        "pageLength": 5,
+        "pageLength": -1,
         "responsive": {
             breakpoints: [
                 { name: 'xl', width: Infinity },
@@ -208,14 +193,15 @@ $(function () {
                 return json.data;
             } // Ensure that 'data' is the key where the array of rows is located
         },
+        "order": [[0, 'desc']], 
         "columns": [
-            { "data": "time_request" },
             { "data": "transaction_number" },
             { "data": "stock_on_hand"},
             { "data": "quantity" },
             { "data": "unit" },
             { "data": "item_name" },
             { "data": "client_name" },
+            { "data": "time_request" },
             {
                 data: null,
                 render: function(data, type, row) {
@@ -238,7 +224,19 @@ $(function () {
                 }
             },
             {
-                data: "time_released",
+                data: null,
+                render: function (data, type, row) {
+                    const dateApproved = row.date_approved || '';
+                    const timeReleased = row.time_released || '';
+            
+                    const combined = `${dateApproved} ${timeReleased}`.trim();
+            
+                    return combined === '' ? '--' : combined;
+                },
+                title: 'Date/Time Released'
+            },       
+            {
+                data: "acceptance",
                 render: function(data) {
                     return data === null || data === "" ? "--" : data;
                 }
@@ -249,18 +247,6 @@ $(function () {
                     return data === null || data === "" ? "--" : data;
                 }
             },            
-            {
-                "data": "status",
-                "render": function(data, type, row) {
-                    if (data === 'Accepted') {
-                        return '<span class="badge-success"><i class="fas fa-check-circle"></i></span>';
-                    } else if (data === 'Pending') {
-                        return '<span class="badge-pending"><i class="fas fa-clock"></i></span>';
-                    } else {
-                        return '<span class="badge-danger"><i class="fas fa-times-circle"></i></span>';
-                    }
-                }
-            },
             {
                 "data": "remarks",
                 "render": function(data, type, row) {
@@ -279,7 +265,21 @@ $(function () {
                     }
                 }
             },
+            {
+                data: "reason",
+                render: function(data) {
+                    return data === null || data === "" ? "--" : data;
+                }
+            },     
         ],
+        rowCallback: function(row, data) {
+            $(row).removeClass('dt-row-denied dt-row-canceled');
+            if (data.remarks === 'Denied') {
+                $(row).addClass('dt-row-denied');
+            } else if (data.remarks === 'Canceled') {
+                $(row).addClass('dt-row-canceled');
+            }
+        } 
     });
     setInterval(function() {
         table.ajax.reload(null, false);  
@@ -313,7 +313,7 @@ $(function () {
 $(function () {
     var table = $('#categoryTable').dataTable({
         "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
-        "pageLength": 5,
+        "pageLength": -1,
         "responsive": {
             breakpoints: [
                 { name: 'xl', width: Infinity },
@@ -323,14 +323,14 @@ $(function () {
                 { name: 'xs', width: 576 }
             ]
         },
-        "order": [[2, 'desc']]
+        "order": [[0, 'desc']]
         
     });
 });
 $(function () {
     var table = $('#receivesTable').DataTable({
         "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
-        "pageLength": 5,
+        "pageLength": -1,
         "responsive": true,
         "order": [[0, 'desc']],
         "autoWidth": false,
@@ -368,8 +368,8 @@ $(function () {
 });
 $(function () {
     var table = $('#availableItemTable').DataTable({
-        "aLengthMenu": [[5, 10, 25, 50, 75, 100], [5, 10, 25, 50, 75, 100]],
-        "pageLength": 5,
+        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
+        "pageLength": -1,
         "responsive": {
             breakpoints: [
                 { name: 'xl', width: Infinity },
@@ -380,20 +380,9 @@ $(function () {
             ]
         }
     });
-
-    $('#category-filter').on('change', function () {
-        var selected = $(this).val();
-        if (selected) {
-            table.column(0) // 1 = index of 'Category' column
-                 .search('^' + selected + '$', true, false)
-                 .draw();
-        } else {
-            table.column(0).search('').draw(); // Reset filter
-        }
-    });
 });
 $(function () {
-    var table = $('#notificationTable').DataTable({
+    var table = $('#top10Table').DataTable({
         "aLengthMenu": [[5, 10, 25, 50, 75, 100], [5, 10, 25, 50, 75, 100]],
         "pageLength": 10,
         "lengthChange": false ,
@@ -410,24 +399,8 @@ $(function () {
 });
 $(function () {
     var table = $('#reportsTable').DataTable({
-        "aLengthMenu": [[5, 10, 25, 50, 75, 100], [5, 10, 25, 50, 75, 100]],
-        "pageLength": 5,
-        "responsive": {
-            breakpoints: [
-                { name: 'xl', width: Infinity },
-                { name: 'lg', width: 1200 },
-                { name: 'md', width: 992 },
-                { name: 'sm', width: 768 },
-                { name: 'xs', width: 576 }
-            ]
-        },
-        "order": [[3, 'desc']],
-    });
-});
-$(function () {
-    var table = $('#unitTable').dataTable({
         "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
-        "pageLength": 5,
+        "pageLength": -1,
         "responsive": {
             breakpoints: [
                 { name: 'xl', width: Infinity },
@@ -438,6 +411,22 @@ $(function () {
             ]
         },
         "order": [[1, 'desc']],
+    });
+});
+$(function () {
+    var table = $('#unitTable').dataTable({
+        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
+        "pageLength": -1,
+        "responsive": {
+            breakpoints: [
+                { name: 'xl', width: Infinity },
+                { name: 'lg', width: 1200 },
+                { name: 'md', width: 992 },
+                { name: 'sm', width: 768 },
+                { name: 'xs', width: 576 }
+            ]
+        },
+        "order": [[0, 'desc']],
     });
 });
 $(function () {
@@ -453,6 +442,6 @@ $(function () {
                 { name: 'xs', width: 576 }
             ]
         },
-        "order": [[2, 'desc']],
+        "order": [[0, 'desc']],
     });
 });

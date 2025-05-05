@@ -12,7 +12,7 @@
                     <form id="set-user-role-form">
                         @csrf
                         <div class="form-group">
-                            <label for="fullName">Full Name</label>
+                            <label for="fullName" class="font-weight-bold">Full Name</label>
                             <select name="full_name" id="full_name" class="form-control">
                                 @foreach ($clients as $client)
                                     <option value="{{ $client->id }}">{{ $client->full_name }}</option>
@@ -20,7 +20,7 @@
                             </select>
                         </div>
                         <div class="form-group" >
-                            <label for="roleId">System Roles</label>
+                            <label for="roleId" class="font-weight-bold">System Roles</label>
                             <select name="role_id" id="role-id" class="form-control">
                                 <option value="">Select Role</option>
                                 @foreach ($roles as $role)
@@ -55,7 +55,7 @@
                     <form id="change-user-status-form">
                         @csrf
                         <div class="form-group">
-                            <label for="fullName">Full Name</label>
+                            <label for="fullName" class="font-weight-bold">Full Name</label>
                             <select name="full_name" id="full_name" class="form-control">
                                 @foreach ($clients as $client)
                                     @if ($client->id != 1)
@@ -65,7 +65,7 @@
                             </select>
                         </div>
                         <div class="form-group" >
-                            <label for="status">System Status</label>
+                            <label for="status" class="font-weight-bold">System Status</label>
                             <select name="status" id="status" class="form-control">
                                 <option value="">Select User Status</option>
                                 <option value="Inactive">Deactivate</option>
@@ -98,7 +98,7 @@
                 <div class="row">
                     <form id="transaction-status-form">
                         <div class="form-group">
-                            <label for="transactionStatusID">Transaction Number</label>
+                            <label for="transactionStatusID" class="font-weight-bold">Transaction Number</label>
                             <select name="transaction-status-id" id="transaction-status-id" class="form-control">
                                 <option value="">Select Transaction Number</option>
                                 @foreach ($transacts as $transaction)
@@ -109,9 +109,8 @@
                             </select>
                         </div>
                         <div>
-                            <label for="transactionStatusID">Transaction Status</label>
+                            <label for="transactionStatusID" class="font-weight-bold">Transaction Status</label>
                             <select name="status" id="transaction_status" class="form-control">
-                                <option value="">Select Status</option>
                                 <option value="2">Accepted</option>
                                 <option value="3">Denied</option>
                             </select>
@@ -119,12 +118,12 @@
                         
                         
                         <div class="form-group" id="releaseTimeDivision" style="display:none;">
-                            <label for="releaseTime">Release Time</label><br>
+                            <label for="releaseTime" class="font-weight-bold">Release Time</label><br>
                             <input type="time" class="form-control" id="releaseTime" name="time" readonly>
                         </div>
                         
                         <div class="form-group" id="denialReasonDivision" style="display:none;">
-                            <label for="reason">Reason</label><br>
+                            <label for="reason" class="font-weight-bold">Reason</label><br>
                             <textarea name="reason" id="reason" cols="5" rows="5" class="form-control"></textarea>
                         </div>
                 </div>
@@ -164,7 +163,7 @@
                         <div class="row mb-3 mt-2 item-row">
                             <!-- Category -->
                             <div class="col-md-3 form-group">
-                                <label for="category" class="font-weight-bold">Category</label>
+                                <label for="category" class="font-weight-bold" >Category</label>
                                 <input type="text" class="search-category form-control" name="category[]" placeholder="Search categories..." autocomplete="off"/>
                                 <ul class="category-results" style="display: none; max-height: 300px; overflow-y: auto;"></ul>
                                 <input type="text" class="selected-category-id" id="category" name="categoryId[]" hidden>
@@ -215,14 +214,14 @@
 </div>
 <div class="modal fade" id="requestForm" tabindex="-1" aria-labelledby="requestFormLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
-      <div class="modal-content">
-        <div class="modal-header bg-success text-light">
-          <h4 class="modal-title w-100 text-center" id="requestFormLabel"><strong>REQUEST ITEM FORM</strong></h4>
-          <button type="button" id="requestItem-closeBtn" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
+        <div class="modal-content">
+            <div class="modal-header bg-success text-light">
+                <h4 class="modal-title w-100 text-center" id="requestFormLabel"><strong>REQUEST ITEM FORM</strong></h4>
+                <button type="button" id="requestItem-closeBtn" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">&times;</button>
+            </div>
             <form action="" id="requestItem-form" class="mb-5">
                 @csrf
-                <div class="modal-body">
+                <div class="modal-body" style="max-height: calc(100vh - 200px); overflow-y: auto;">
                     <div class="col-12 d-flex justify-content-end mb-3">
                         <button type="button" id="requestItemReceived-btn" class="btn btn-primary rounded px-4 py-2">
                             <i class="fa-solid fa-plus"></i>
@@ -252,11 +251,12 @@
                             </div>
                         </div>
                     </div>
+                    <div class="modal-footer justify-content-end">
+                        <button type="reset" class="btn btn-secondary rounded px-4 py-2 me-3">Clear</button>
+                        <button type="submit" id="requestItemSubmit-btn" class="btn btn-success rounded px-4 py-2">Submit</button>
+                    </div>
                 </div>
-                <div class="modal-footer justify-content-end" style="margin-top: 10rem;">
-                    <button type="reset" class="btn btn-secondary rounded px-4 py-2 me-3">Clear</button>
-                    <button type="submit" id="requestItemSubmit-btn" class="btn btn-success rounded px-4 py-2">Submit</button>
-                </div>
+               
             </form>
         </div>
     </div>
@@ -274,7 +274,7 @@
                 <div class="row edit-item-row">
                     <form id="edit-item-form">
                         <div class="form-group">
-                            <label for="editItemId">Select the item for editing</label>
+                            <label for="editItemId" class="font-weight-bold">Select the item for editing</label>
                             <select name="edit-item-id[]" id="edit-item-id" class="form-control">
                                 @foreach ($items as $item)
                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -325,7 +325,7 @@
                 <div class="row">
                 <form id="delete-item-form">
                         <div class="form-group">
-                            <label for="deleteItemId">Select Item to Delete</label>
+                            <label for="deleteItemId" class="font-weight-bold">Select Item to Delete</label>
                             <select name="delete-item-id" id="delete-item-id" class="form-control">
                                 @foreach ($items as $item)
                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
@@ -462,7 +462,7 @@
                     <form id="edit-category-form">
                         @csrf
                         <div class="form-group">
-                            <label for="category_id">Category ID</label>
+                            <label for="category_id" class="font-weight-bold">Select category to edit...</label>
                             <select name="category_id" id="edit-category-id" class="form-control">
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -470,10 +470,11 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="category_control_number">Category ID</label>
+                            <label for="category_control_number" class="font-weight-bold">Category Number</label>
                             <input type="text" class="form-control" name="category_control_number" id="edit-category-control_number" readonly>
                         </div>
                         <div class="form-group">
+                            <label for="main_category" class="font-weight-bold">Main Category</label>
                             <select name="main_category" id="main_category" class="form-control">
                                 <option value="">Select Main Category</option>
                                 @foreach ($sub_categories as $sub_category)
@@ -482,11 +483,11 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="category_name">Category Name</label>
+                            <label for="category_name" class="font-weight-bold">Category Name</label>
                             <input type="text" class="form-control" name="category_name" id="edit-category-name">
                         </div>
                         <div class="form-group">
-                            <label for="category_description">Description</label>
+                            <label for="category_description" class="font-weight-bold">Description</label>
                             <textarea type="text" class="form-control" name="category_description" id="edit-category-description" cols="5" rows="5" placeholder="This is Optional"></textarea>
                         </div>
                 </div>
@@ -512,7 +513,7 @@
                 <div class="row">
                 <form id="delete-category-form">
                         <div class="form-group">
-                            <label for="deleteCategoryId" class="font-weight-bold">Select category to delete</label>
+                            <label for="deleteCategoryId" class="font-weight-bold">Select category to delete...</label>
                             <select name="category_id" id="delete-category-id" class="form-control">
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -581,7 +582,7 @@
                     <form id="edit-unit-form">
                         @csrf
                         <div class="form-group">
-                            <label for="unit_id" class="font-weight-bold">Unit ID</label>
+                            <label for="unit_id" class="font-weight-bold">Select unit to edit...</label>
                             <select name="unit_id" id="edit_unit_id" class="form-control">
                                 @foreach ($units as $unit)
                                     <option value="{{ $unit->id }}">{{ $unit->name }}</option>
@@ -589,15 +590,15 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="unit_control_number">Unit Control Number</label>
+                            <label for="unit_control_number" class="font-weight-bold">Unit Number</label>
                             <input type="text" class="form-control" name="unit_control_number" id="edit-unit-control_number" readonly>
                         </div>
                         <div class="form-group">
-                            <label for="category_name">Unit Name</label>
+                            <label for="category_name" class="font-weight-bold">Unit Name</label>
                             <input type="text" class="form-control" name="unit_name" id="edit-unit-name">
                         </div>
                         <div class="form-group">
-                            <label for="unit_description">Description</label>
+                            <label for="unit_description" class="font-weight-bold">Description</label>
                             <textarea type="text" class="form-control" name="unit_description" id="edit-unit-description" cols="5" rows="5" placeholder="This is Optional"></textarea>
                         </div>
                 </div>

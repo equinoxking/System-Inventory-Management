@@ -369,3 +369,59 @@ a {
     top: 100% !important;       
     z-index: 1050;         
 }
+.dt-row-denied {
+    background-color: #f8d7da !important; 
+    color: #721c24 !important;       
+}
+
+.dt-row-canceled {
+    background-color: #e2e3e5 !important; 
+    color: #383d41 !important;       
+}
+footer {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    text-align: center;
+}
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+.content {
+    flex: 1; /* Pushes footer down */
+}
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-image: none; /* Remove default white arrow */
+    background-color: transparent;
+    width: 3rem;
+    height: 3rem;
+}
+
+.carousel-control-prev-icon::after,
+.carousel-control-next-icon::after {
+    content: '';
+    display: inline-block;
+    border: solid black;
+    border-width: 0 4px 4px 0;
+    padding: 8px;
+}
+
+.carousel-control-prev-icon::after {
+    transform: rotate(135deg);
+}
+
+.carousel-control-next-icon::after {
+    transform: rotate(-45deg);
+}
+.table tr.zero-quantity {
+    background-color: #ff4d4d; /* Red background */
+    color: white; /* White text */
+}
+.text-center {
+    text-align: center;
+}
+.carousel-item {
+    transition: transform 0.3s ease-in-out !important;
+  }

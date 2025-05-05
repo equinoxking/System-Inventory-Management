@@ -8,6 +8,7 @@ use App\Models\AdminModel;
 use App\Models\ReportModel;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Carbon;
+use App\Models\TransactionModel;
 use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
 
 class PdfReportManager extends Controller
@@ -73,11 +74,33 @@ class PdfReportManager extends Controller
     public function goToMonthlyReports(){
         $admins = AdminModel::all();
         $reports = ReportModel::all();
-        return view('admin.reports.monthly-report', compact('admins', 'reports'));
+        $transactionUsers = TransactionModel::with([
+            'transactionDetail',
+            'client',
+            'item',
+            'item.inventory.unit',
+            'status',
+            'adminBy',
+            'admin'
+        ]);
+        return view('admin.reports.monthly-report', compact('admins', 'reports', 'transactionUsers'));
     }
     public function goToQuarterlyReports(){
         $admins = AdminModel::all();
         $reports = ReportModel::all();
-        return view('admin.reports.quarterly-report', compact('admins', 'reports'));
+        $transactionUsers = TransactionModel::with([
+            'transactionDetail',
+            'client',
+            'item',
+            'item.inventory.unit',
+            'status',
+            'adminBy',
+            'admin'
+        ])
+        ->where(function ($query) {
+            $query->where('remark', 'Completed');
+        })
+        ->get();  
+        return view('admin.reports.quarterly-report', compact('admins', 'reports', 'transactionUsers'));
     }
 }

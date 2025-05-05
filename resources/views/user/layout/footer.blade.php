@@ -13,7 +13,7 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" style="background-color: whitesmoke;">
-                <div id="gapCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+                <div id="gapCarousel" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
 
                         <!-- Slide 1 -->

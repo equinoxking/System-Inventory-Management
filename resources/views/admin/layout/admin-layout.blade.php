@@ -17,13 +17,21 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <header>
-        @include('admin.layout.header')
-    </header>
+    <div class="wrapper">
+        <header>
+            @include('admin.layout.header')
+        </header>
+        <div class="content">
+            <main>
+                @yield('content') 
+            </main>
+        </div>
+       
     
-    <main>
-        @yield('content') 
-    </main>
+        <footer>
+            @include('admin.layout.footer')
+        </footer>
+    </div>
 </body>
 </html>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -46,7 +54,7 @@
         <div class="modal-content">
                 <div class="modal-header bg-info">
                     <h5 class="modal-title" style="color:white;">PDF CUSTOMIZE FORM</h5>
-                    <button type="button" id="pdf-report-close-btn" data-dismiss="modal" class="btn" aria-label="Close" style="background-color: white">
+                    <button type="button" data-dismiss="modal" class="btn pdf-report-close-btn btn-danger" aria-label="Close">
                         <i class="fa-solid fa-circle-xmark"></i>
                     </button>
                 </div>
@@ -119,7 +127,88 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="generateTransactionPdfModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title" style="color:white;">TRANSACTION PDF CUSTOMIZE FORM</h5>
+                    <button type="button" data-dismiss="modal" class="btn btn-danger generate-transaction-pdf-close-btn" aria-label="Close">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </button>
+                </div>
+            <div class="modal-body">
+                <div class="row">
+                    <form id="generate-transaction-form">
+                    <div class="form-group">
+                        <label for="selectOption" class="font-weight-bold">Pdf Option</label>
+                        <select name="selection" id="selection" class="form-control">
+                            <option value="">Select Option</option>
+                            <option value="All">All</option>
+                            <option value="User">User</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="display: none">
+                        <label for="user" class="font-weight-bold">Users</label>
+                        <select name="user_selection" id="user" class="form-control">
+                            <optgroup label="Users" class="font-weight-bold">
+                                @php
+                                    $uniqueUsers = collect();
+                                @endphp
+                                @foreach ($transactionUsers as $transaction)
+                                    @if ($transaction->client && !$uniqueUsers->contains('id', $transaction->client->id))
+                                        @php
+                                            $uniqueUsers->push($transaction->client);
+                                        @endphp
+                                        <option value="user-{{ $transaction->client->id }}">
+                                            {{ $transaction->client->full_name }}
+                                        </option>
+                                    @endif
+                                @endforeach
+                            </optgroup>
+                        
+                            <optgroup label="Admins" class="font-weight-bold">
+                                @php
+                                    $uniqueAdmins = collect();
+                                @endphp
+                                @foreach ($transactionUsers as $transaction)
+                                    @if ($transaction->admin && !$uniqueAdmins->contains('id', $transaction->admin->id))
+                                        @php
+                                            $uniqueAdmins->push($transaction->admin);
+                                        @endphp
+                                        <option value="admin-{{ $transaction->admin->id }}">
+                                            {{ $transaction->admin->full_name }}
+                                        </option>
+                                    @endif
+                                @endforeach
+                            </optgroup>
+                        </select>                        
+                    </div>
+
+                    </div>
+                    <div class="form-group" style="display: none">
+                        <label for="admin" class="font-weight-bold">Prepared By:</label>
+                        <select name="admin" id="admin" class="form-control">
+                            <option value="">Select Admin</option>
+                            @foreach ($admins as $admin)
+                                <option value="{{ $admin->id }}"> {{ $admin->full_name }} </option>
+                            @endforeach
+                        </select>
+                    </div>        
+                </div>
+                <div class="row">
+                    <div class="modal-footer">
+                        <div class="col-md-3 form-group">
+                            <button type="submit" class="btn btn-info" id="transaction-report-submit-btn">SUBMIT</button>
+                        </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="{{ asset('assets/js/admin/pdf/report.js') }}"></script>
+<script src="{{ asset('assets/js/admin/pdf/transaction-report.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const periodSelect = document.getElementById('period');

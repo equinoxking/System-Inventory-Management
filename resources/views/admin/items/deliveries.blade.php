@@ -2,7 +2,7 @@
 @section('content')
 <div class="container-fluid mt-3 mb-3">
     <div class="row align-items-center">
-        <div class="col-md-2">
+        <div class="col-md-12">
             <!-- Breadcrumb Navigation -->
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb mb-0">
@@ -86,7 +86,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
-            <table id="receivesTable" class="table-striped table-hover" style="font-size: 12px">
+            <table id="receivesTable" class="table-hover" style="font-size: 12px">
                 <thead style="background-color: #3d5c99; color:white">
                     <tr>
                         <th width="10%">Purchase Order Number</th>

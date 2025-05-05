@@ -7,6 +7,7 @@ use App\Models\AdminModel;
 use Illuminate\Http\Request;
 use App\Models\TrailModel;
 use Illuminate\Support\Carbon;
+use App\Models\TransactionModel;
 class TrailManager extends Controller
 {
     public function createUserTrail($user_id, $admin_id, $activity){
@@ -23,6 +24,19 @@ class TrailManager extends Controller
     public function goToTrails(){
         $trails = TrailModel::with(['client', 'admin'])->get();
         $admins = AdminModel::all();
-        return view('admin.trails', compact('trails', 'admins'));
+        $transactionUsers = TransactionModel::with([
+            'transactionDetail',
+            'client',
+            'item',
+            'item.inventory.unit',
+            'status',
+            'adminBy',
+            'admin'
+        ])
+        ->where(function ($query) {
+            $query->where('remark', 'Completed');
+        })
+        ->get();  
+        return view('admin.trails', compact('trails', 'admins', 'transactionUsers'));
     }
 }
