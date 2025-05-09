@@ -56,7 +56,7 @@
                         @csrf
                         <div class="form-group">
                             <label for="fullName" class="font-weight-bold">Full Name</label>
-                            <select name="full_name" id="full_name" class="form-control">
+                            <select name="user_id" id="full_name" class="form-control">
                                 @foreach ($clients as $client)
                                     @if ($client->id != 1)
                                         <option value="{{ $client->id }}">{{ $client->full_name }}</option>
@@ -102,17 +102,18 @@
                             <select name="transaction-status-id" id="transaction-status-id" class="form-control">
                                 <option value="">Select Transaction Number</option>
                                 @foreach ($transacts as $transaction)
-                                    @if ($transaction->status_id === 1)
+                                    @if ($transaction->status_id == 1) <!-- Only show transactions where status_id is 1 -->
                                         <option value="{{ $transaction->id }}">{{ $transaction->transaction_number }}</option>
                                     @endif
                                 @endforeach
-                            </select>
+                            </select>                            
                         </div>
                         <div>
                             <label for="transactionStatusID" class="font-weight-bold">Transaction Status</label>
                             <select name="status" id="transaction_status" class="form-control">
-                                <option value="2">Accepted</option>
-                                <option value="3">Denied</option>
+                                <option value="">Select Status</option>
+                                <option value="2">Approve</option>
+                                <option value="3">Reject</option>
                             </select>
                         </div>
                         

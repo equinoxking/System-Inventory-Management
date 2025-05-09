@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('admins', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('role_id')->references('id')->on('roles')->onDelete('cascade');
+            $table->foreignId('client_id')->references('id')->on('clients')->onDelete('no action');
+            $table->foreignId('role_id')->references('id')->on('roles')->onDelete('no action');
+            $table->string('control_number', 30)->unique();
             $table->string('full_name', 60)->unique();
             $table->string('position', 30);
             $table->timestamp('created_at')->useCurrent();

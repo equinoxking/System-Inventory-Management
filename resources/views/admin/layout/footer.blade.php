@@ -10,7 +10,7 @@
         <div class="modal-content">
             <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="gapModalLabel">DEVELOPMENT TEAM</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" aria-label="Close">&times;</button>
             </div>
             <div class="modal-body" style="background-color: whitesmoke;">
                 <div id="gapCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">

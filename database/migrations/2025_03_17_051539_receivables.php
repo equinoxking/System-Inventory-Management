@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('supplier', 50)->nullable();
             $table->string('delivery_type', 50);
             $table->integer('received_quantity');
-            $table->integer('received_day', 5);
-            $table->integer('received_month', 30);
-            $table->integer('received_year', 10);
+            $table->integer('received_day');
+            $table->integer('received_month');
+            $table->integer('received_year');
             $table->string('remark', 30);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();

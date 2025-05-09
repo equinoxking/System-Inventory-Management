@@ -169,8 +169,8 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <button class="btn btn-warning btn-sm"><i class="fa fa-edit" id="itemEditBtn" onclick="editItem('{{ addslashes(json_encode($item)) }}')"></i></button>
-                                    <button class="btn btn-danger btn-sm"><i class="fa fa-trash"></i></button>
+                                    <button class="btn btn-warning btn-sm"  id="itemEditBtn" onclick="editItem('{{ addslashes(json_encode($item)) }}')"><i class="fa fa-edit" ></i></button>
+                                    <button class="btn btn-danger btn-sm" id="itemDeleteBtn" onclick="deleteItem('{{ addslashes(json_encode($item)) }}')"><i class="fa fa-trash"></i></button>
                                 </td>
                             </tr>
                         @endforeach

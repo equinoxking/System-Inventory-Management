@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->foreignId('status_id')->references('id')->on('item_statuses')->onDelete('cascade');
             $table->string('controlNumber')->unique();
-            $table->string('name' , 60);
+            $table->string('name' , 255);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
         });

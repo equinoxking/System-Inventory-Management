@@ -1,10 +1,10 @@
-$('#addUnitBtn').click(function(){
-    $('#addUnitModal').modal('show');
-});
-$('#add-unit-close-btn').click(function(){
-    $('#addUnitModal').modal('hide');
-});
 $(document).ready(function() {
+    $('#addUnitBtn').click(function(){
+        $('#addUnitModal').modal('show');
+    });
+    $('#add-unit-close-btn').click(function(){
+        $('#addUnitModal').modal('hide');
+    });
     $(document).on('submit', '#add-unit-form', function(event){
         event.preventDefault();
         var formData = $('#add-unit-form').serialize();

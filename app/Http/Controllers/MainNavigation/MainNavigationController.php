@@ -8,7 +8,7 @@ use App\Models\ClientModel;
 class MainNavigationController extends Controller
 {
     public function goToIndex(){
-        if(session()->has('loggedInInventoryAdmin') || session()->has('loggedInCheckerAdmin') || session()->has('loggedInHeadAdmin') || session()->has('loggedInUser')){
+        if(session()->has('loggedInInventoryAdmin') || session()->has('loggedInUser')){
             return back();
         }else{
             $users = ClientModel::count();

@@ -1,5 +1,6 @@
-function deleteItem(data){
-    $('#delete-item-id').val(data.item_id);
+function deleteItem(item){
+    var data = JSON.parse(item);
+    $('#delete-item-id').val(data.id);
     $('#deleteItemModal').modal('show');
 }
 $('#delete-item-close-btn').click(function(){
@@ -56,6 +57,7 @@ $(document).ready(function(){
                         $('#delete-submit-btn').attr('disabled', false);
                         swal.close();
                         $('#deleteItemModal').modal('hide');
+                        window.location.reload();
                     });
                 }
             },error: function(error){

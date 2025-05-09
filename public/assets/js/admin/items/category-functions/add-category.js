@@ -1,10 +1,11 @@
-$('#addCategoryBtn').click(function(){
-    $('#addCategoryModal').modal('show');
-});
-$('#add-category-close-btn').click(function(){
-    $('#addCategoryModal').modal('hide');
-});
+
 $(document).ready(function() {
+    $('#addCategoryBtn').click(function(){
+        $('#addCategoryModal').modal('show');
+    });
+    $('#add-category-close-btn').click(function(){
+        $('#addCategoryModal').modal('hide');
+    });
     $(document).on('submit', '#add-category-form', function(event){
         event.preventDefault();
         var formData = $('#add-category-form').serialize();

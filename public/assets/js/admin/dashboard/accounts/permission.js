@@ -15,7 +15,7 @@ $(document).ready(function(){
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            url: '/dashboard-change-user-status',
+            url: '/dashboard-change-user-role',
             type: 'PATCH',
             data: formData,
             beforeSend: function() {

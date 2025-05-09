@@ -155,32 +155,36 @@
                 <form id="registration-form">
                     @csrf
                     <div class="form-group">
-                        <label for="firstName">Full Name</label>
+                        <label for="username" class="font-weight-bold">Employee Number</label>
+                        <input type="text" class="form-control" id="employee_number" name="employee_number" placeholder="Enter employee number">
+                    </div>
+                    <div class="form-group">
+                        <label for="firstName" class="font-weight-bold">Full Name</label>
                         <input type="text" class="form-control" id="fullNameRegister" name="fullName" placeholder="Enter first name">
                     </div>
                     <div class="form-group">
-                        <label for="office">Office</label>
+                        <label for="office" class="font-weight-bold">Office</label>
                         <select name="office" id="officeRegister" class="form-control">
                             <option value="phrmo">PHRMO</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="position">Position</label>
+                        <label for="position" class="font-weight-bold">Position</label>
                         <input type="text" class="form-control" id="positionRegister" name="position" placeholder="Enter here your position">
                     </div>
                     <div class="form-group">
-                        <label for="emailAddress">Email Address</label>
+                        <label for="emailAddress" class="font-weight-bold">Email Address</label>
                         <input type="email" class="form-control" id="emailAddressRegister" name="email" placeholder="Enter email">
                     </div>
                     <div class="form-group">
-                        <label for="username">Username</label>
+                        <label for="username" class="font-weight-bold">Username</label>
                         <input type="text" class="form-control" id="usernameRegister" name="username" placeholder="Enter username">
                     </div>
                     <div class="form-group">
-                        <label for="password">Password</label>
+                        <label for="password" class="font-weight-bold">Password</label>
                         <input type="password" class="form-control" id="passwordRegister" name="password" placeholder="Enter passowrd">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" class="font-weight-bold">
                         <label for="re-password">Re-type Password</label>
                         <input type="password" class="form-control" id="re-passwordRegister" name="re-password" placeholder="Enter re-type passowrd">
                     </div>
@@ -193,6 +197,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="interfaceModal" tabindex="-1" role="dialog"
      data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog" role="document">

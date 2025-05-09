@@ -114,6 +114,8 @@ class ReportManager extends Controller
                         ->where('received_year', '=', $year)
                         ->where('received_month', '=', $month)
                         ->sum('received_quantity');
+                        Log::info('Total received in selected month: ' . $item->total_received_in_selected_month);
+
                     $item->total_transactions_in_selected_month = $item->transacts
                     ->where('status_id', 2)
                     ->where('remark', 'Completed')
@@ -288,7 +290,7 @@ class ReportManager extends Controller
                             'message' => $validatorQuarterly->errors()
                         ]);
                     } else {
-                        $selectedQuarter = $request->input('quarterly'); 
+                    $selectedQuarter = $request->input('quarterly'); 
                     $quarters = [
                         '1-2-3' => ['January', 'February', 'March'],
                         '4-5-6' => ['April', 'May', 'June'],
@@ -336,18 +338,18 @@ class ReportManager extends Controller
 
                         $firstMonthName = $quarters[$selectedQuarter][0];
                         $firstMonthNumeric = (int) $monthToInt[$firstMonthName];
-
+                        
                         $itemsPart1 = ItemModel::with([
-                            'receivesUpToMonth' => function ($query) use ($months, $year) {
-                                $query->where('received_month', '<', $months)
+                            'receivesUpToMonth' => function ($query) use ($firstMonthNumeric, $year) {
+                                $query->where('received_month', '<', $firstMonthNumeric)
                                     ->where('received_year', '<=', $year);
                             },
-                            'receivesInSelectedMonth' => function ($query) use ($months, $year) {
-                                $query->where('received_month', '=', $months)
+                            'receivesInSelectedMonth' => function ($query) use ($firstMonthNumeric, $year) {
+                                $query->where('received_month', '=', $firstMonthNumeric)
                                     ->where('received_year', '=', $year);
                             },
-                            'requestedUpToMonth' => function ($query) use ($months, $year) {
-                                $query->where('request_month', '=', $months)
+                            'requestedUpToMonth' => function ($query) use ($firstMonthNumeric, $year) {
+                                $query->where('request_month', '=', $firstMonthNumeric)
                                     ->where('request_year', '=', $year);
                             },
                             'transacts.TransactionDetail',
@@ -359,16 +361,16 @@ class ReportManager extends Controller
                         ->get();
 
                         $itemsPart2 = ItemModel::with([
-                            'receivesUpToMonth' => function ($query) use ($months, $year) {
-                                $query->where('received_month', '<', $months)
+                            'receivesUpToMonth' => function ($query) use ($firstMonthNumeric, $year) {
+                                $query->where('received_month', '<', $firstMonthNumeric)
                                     ->where('received_year', '<=', $year);
                             },
-                            'receivesInSelectedMonth' => function ($query) use ($months, $year) {
-                                $query->where('received_month', '=', $months)
+                            'receivesInSelectedMonth' => function ($query) use ($firstMonthNumeric, $year) {
+                                $query->where('received_month', '=', $firstMonthNumeric)
                                     ->where('received_year', '=', $year);
                             },
-                            'requestedUpToMonth' => function ($query) use ($months, $year) {
-                                $query->where('request_month', '=', $months)
+                            'requestedUpToMonth' => function ($query) use ($firstMonthNumeric, $year) {
+                                $query->where('request_month', '=', $firstMonthNumeric)
                                     ->where('request_year', '=', $year);
                             },
                             'transacts.TransactionDetail',

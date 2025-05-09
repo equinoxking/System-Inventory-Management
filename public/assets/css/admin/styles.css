@@ -342,7 +342,7 @@ a {
     text-align: center;
     color: #6c757d;
     background-color: #f1f1f1;
-    margin-top: auto; /* Ensures the footer is at the bottom */
+
 }
 .page-wrapper {
     display: flex;

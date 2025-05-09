@@ -166,11 +166,9 @@
                         <div class="form-group" >
                             <label for="status">Status</label>
                             <select name="status" id="status" class="form-control" onchange="toggleSelection()">
-                                @foreach ($statuses as $status)
-                                    @if ($status->name != 'Pending' && $status->name != 'Canceled')
-                                        <option value="{{ $status->id }}">{{ $status->name }}</option>
-                                    @endif
-                                @endforeach
+                                <option value="">Select Status</option>
+                                <option value="2">Approve</option>
+                                <option value="3">Reject</option>
                             </select>
                         </div>
                         <div class="form-group" id="timeDivision1" style="display:none;">

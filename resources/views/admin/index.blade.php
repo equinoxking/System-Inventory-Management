@@ -16,7 +16,7 @@ body {
     align-items: center;  
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);  
     border-radius: 10px;  
-    height: 100%;  
+    height: 80%;  
     position: relative;  
 }  
 .card-title {  
@@ -40,9 +40,7 @@ body {
     width: 100%;  
     height: 200%;  
 }  
-.mb-4 {  
-    margin-bottom: 1.5rem;  
-}  
+
 .data-table-section {  
     margin-top: 35px;  
     padding: 15px;  
@@ -86,11 +84,11 @@ body {
     <!-- Form Body -->
     
 </div> --}}
-<div class="container-fluid mt-4">  
+<div class="container-fluid ">  
     <div class="row align-items-stretch">  
         <!-- Notifications Section -->  
         
-        <div class="col-9 mb-2"> 
+        <div class="col-9"> 
             <div class="card p-3">  
                 <div class="table-responsive"  style=" position: absolute; top: 0px; height: 100%; width: 90%">  
                     <div class="text-left mt-2">
@@ -150,9 +148,9 @@ body {
                 </div>  
             </div>  
         </div> 
-        <div class="col-md-3 mt-3">  
+        <div class="col-md-3 mt-2">  
             <div class="row">  
-                <div class="col-md-6 mb-4">  
+                <div class="col-md-6 ">  
                     <div class="card">
                         <h4 class="card-title">Registered Users</h4>
                     
@@ -179,7 +177,7 @@ body {
                         </div>
                     </div>
                 </div>  
-                <div class="col-md-6 mb-4">  
+                <div class="col-md-6 ">  
                     <div class="card">  
                         <h4 class="card-title">Pending Transactions</h4> 
                         <div class="dropdown" style="display: inline-block;">
@@ -190,7 +188,7 @@ body {
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{{ url('/admin/transaction') }}">View Transactions</a></li>
                                 <li><a class="dropdown-item" id="requestBtnDashboard">Create Transaction</a></li>
-                                <li><a class="dropdown-item" id="updateTransactionStatus">Approved Disapproved Transaction</a></li>
+                                <li><a class="dropdown-item" id="updateTransactionStatus">Approved/Disapproved Transaction</a></li>
                             </ul>
                         </div>
                 
@@ -203,7 +201,7 @@ body {
                         </div>
                     </div>  
                 </div>  
-                <div class="col-md-6 mb-4">  
+                <div class="col-md-6 ">  
                     <div class="card">  
                         <h4 class="card-title">Critical Items</h4>
                         <div class="dropdown" style="display: inline-block;">
@@ -226,10 +224,10 @@ body {
                             @endif
                         </div>
                     </div>  
-                </div>  
-                <div class="col-md-6 mb-4">  
+                </div>      
+                <div class="col-md-6 ">  
                     <div class="card">  
-                        <h4 class="card-title">Delivered Items</h4>
+                        <h4 class="card-title">Purchased Items</h4>
                         <div class="dropdown" style="display: inline-block;">
                             <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-truck icon" style="color: #ffc107;7 font-size: 40px;"></i>
@@ -251,7 +249,7 @@ body {
                 </div>  
             </div>  
             <div class="row">  
-                <div class="col-md-6 mb-4">  
+                <div class="col-md-6">  
                     <div class="card">  
                         <h4 class="card-title">Item Categories</h4>  
                         
@@ -277,7 +275,7 @@ body {
                         </div> 
                     </div>  
                 </div>  
-                <div class="col-md-6 mb-4">  
+                <div class="col-md-6">  
                     <div class="card">  
                         <h4 class="card-title" style="font-size: 14px;">Item Units of Measurement</h4> 
                         <div class="dropdown" style="display: inline-block;">
@@ -301,7 +299,7 @@ body {
                         </div>
                     </div>  
                 </div>  
-                <div class="col-md-6 mb-4">  
+                <div class="col-md-6 ">  
                     <div class="card">  
                         <h4 class="card-title">Generated Reports</h4>
                         <div class="dropdown" style="display: inline-block;">
@@ -325,7 +323,7 @@ body {
                         </div>
                     </div>  
                 </div>  
-                <div class="col-md-6 mb-4">  
+                <div class="col-md-6 ">  
                     <div class="card">  
                         <h4 class="card-title">System Activity Logs</h4> 
                         <div class="dropdown" style="display: inline-block;">
@@ -350,9 +348,6 @@ body {
         </div>
     </div>  
 </div>
-    
-
-  
 @endsection  
 @include('admin.modals.modals')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -444,7 +439,7 @@ document.getElementById('edit_unit_id').addEventListener('change', function () {
             top10Container.style.display = showingTop10 ? 'none' : 'block';
             availableContainer.style.display = showingTop10 ? 'block' : 'none';
 
-            toggleBtn.textContent = showingTop10 ? 'Show Top 10 Items' : 'Show Available Items';
+            toggleBtn.textContent = showingTop10 ? 'Show Top 10 Items' : 'Show Critical Items';
             tableTitle.textContent = showingTop10 ? 'Critical Items' : 'Top 10 Commonly Used Items for this Month';
         });
     });

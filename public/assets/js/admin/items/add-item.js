@@ -27,8 +27,6 @@ $(document).ready(function(){
         }).then((result) => {
             if (result.isConfirmed) {
                 var formData = $('#createItem-form').serialize();
-                console.log(formData);
-
                 $.ajax({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -74,6 +72,7 @@ $(document).ready(function(){
                             }).then(function(){
                                 $('#createItem-form')[0].reset();
                                 $('#addItemSubmit-btn').attr('disabled', false);
+                                window.location.reload();
                             });
                         }
                     },

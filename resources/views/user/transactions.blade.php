@@ -142,6 +142,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal fade" id="acceptanceTransactionModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">

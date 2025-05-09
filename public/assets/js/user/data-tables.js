@@ -106,7 +106,7 @@ $(function () {
                     { name: 'xs', width: 576 }
                 ]
             },
-            "order": [[1, 'desc']],
+            "order": [[0, 'desc']],
             "autoWidth": false,
             "processing": false,
             "serverSide": false,
@@ -114,7 +114,6 @@ $(function () {
                 url: '/user/refreshActedTransactions',  // Replace with your actual endpoint
                 type: 'GET',
                 "dataSrc": function (json) {
-                    console.log("Response Data: ", json); // Log the entire JSON response
                     return json.data; // Ensure that 'data' is the key where the array of rows is located
                 }
             },

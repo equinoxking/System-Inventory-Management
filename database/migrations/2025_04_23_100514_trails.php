@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('trails', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('admin_id')->nullable()->references('id')->on('admins')->onDelete('cascade');
-            $table->foreignId('user_id')->nullable()->references('id')->on('clients')->onDelete('cascade');
+            $table->foreignId('admin_id')->nullable()->references('id')->on('admins')->onDelete('no action');
+            $table->foreignId('user_id')->nullable()->references('id')->on('clients')->onDelete('no action');
             $table->string('activity', 255);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();

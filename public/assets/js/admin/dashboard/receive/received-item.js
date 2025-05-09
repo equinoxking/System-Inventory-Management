@@ -9,7 +9,6 @@ $(document).ready(function() {
 $(document).ready(function(){
     $(document).on('submit', '#receivedItem-form', function(event){
         event.preventDefault();
-
         Swal.fire({
             title: 'Are you sure?',
             text: 'Do you want to proceed with submitting the received item?',

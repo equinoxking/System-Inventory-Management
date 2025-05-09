@@ -32,10 +32,9 @@
                                 <u>{{ session('loginCheckUser')['full_name'] }}</u>
                             </div>
                             <div style="text-align: center">
-                                <span style="font-weight: normal;">User, {{ session('loginCheckUser')['position'] }}</span>
+                                <span style="font-weight: normal;">User, {{ session('loginCheckUser')['position'] }} </span>
                             </div>                            
                         </div>
-                       
                     </strong>
                 </li>
                 <li class="nav-item">

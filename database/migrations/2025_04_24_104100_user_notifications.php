@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('user_notifications', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('admin_id')->references('id')->on('clients')->onDelete('cascade');
-            $table->foreignId('user_id')->references('id')->on('clients')->onDelete('cascade');
+            $table->foreignId('admin_id')->nullable()->references('id')->on('clients')->onDelete('no action');
+            $table->foreignId('user_id')->nullable()->references('id')->on('clients')->onDelete('no action');
             $table->string('control_number')->unique();
             $table->string('message', 255);
             $table->string('status', 30);

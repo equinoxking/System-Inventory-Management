@@ -27,12 +27,12 @@ class TransactionsManager extends Controller
             $items = ItemModel::all();
             if ($client_id) {
                 $currentTransactions = TransactionModel::with('transactionDetail')
-                    ->where('user_id', $client_id)
+                    ->where('user_id', $user)
                     ->where('remark', '!=', 'Completed')
                     ->orderBy('transaction_number', 'desc')
                     ->get();
                 $actedTransactions = TransactionModel::with('transactionDetail')
-                ->where('user_id', $client_id,)
+                ->where('user_id', $user)
                 ->where('remark', 'Completed')
                 ->orderBy('transaction_number', 'desc')
                 ->get();
@@ -42,12 +42,13 @@ class TransactionsManager extends Controller
                     ->orderBy('transaction_number', 'desc')
                     ->get();
             }
-
+            $transactions = TransactionModel::all();
             // Return the view with both items and transactions
             return view('user.transactions', [
                 'items' => $items,
                 'currentTransactions' => $currentTransactions,
                 'actedTransactions' => $actedTransactions,
+                'transactions' => $transactions
             ]);
         } 
     }
@@ -257,9 +258,26 @@ class TransactionsManager extends Controller
             ]);
         }else{
             $transaction = TransactionModel::findOrFail($request->get('transaction-acceptance-id'));
+            
+            $approved_date = $transaction->approved_date; // Example: "2025-05-07"
+            $released_time = $transaction->released_time; // Example: "15:37:20.0000000"
+            
+            // Remove microseconds if present
+            $released_time = preg_replace('/\.\d+$/', '', $released_time);  // Remove microseconds part (if any)
 
-            // Combine approved date + released time into one datetime
-            $releasedDateTime = Carbon::createFromFormat('Y-m-d H:i:s', "{$transaction->approved_date} {$transaction->released_time}", 'Asia/Manila');
+            try {
+                // Try to create the datetime object using the format without microseconds
+                $releasedDateTime = Carbon::createFromFormat(
+                    'Y-m-d H:i:s', // Format without microseconds
+                    "{$approved_date} {$released_time}", // Combine date and time
+                    'Asia/Manila'
+                );
+            } catch (\Exception $e) {
+                return response()->json([
+                    'status' => 500,
+                    'message' => "Error parsing date and time: " . $e->getMessage()
+                ]);
+            }
 
             // Get the current datetime (when status is being updated)
             $now = Carbon::now('Asia/Manila');
@@ -419,17 +437,14 @@ class TransactionsManager extends Controller
     public function getActedTransactions(Request $request)
     {
         $client_id = session()->get('loginCheckUser')['id'];
-        $transactions = TransactionModel::with([
-            'client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'
-        ])
-        ->where(function ($query) use ($client_id) {
-            $query->Where('status_id', 2)
-                ->orWhere('status_id', 3)
-                ->orWhere('status_id', 4)
-                ->where('user_id', $client_id);
-        })
-        ->get();   
 
+        $transactions = TransactionModel::with([
+        'client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'
+        ])
+        ->where('user_id', $client_id)
+        ->whereIn('status_id', [2, 3, 4])
+        ->get();
+ 
         $formattedTransactions = $transactions->map(function ($transaction) {
             return [
                 'id' => $transaction->id,

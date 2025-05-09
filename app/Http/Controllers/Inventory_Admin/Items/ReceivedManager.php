@@ -13,46 +13,71 @@ use App\Models\ReceiveModel;
 use App\Models\TransactionModel;
 use App\Models\TransactionDetailModel;
 use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
+use Illuminate\Validation\Rule;
 
 class ReceivedManager extends Controller
 {
+    // Search for items based on a partial name match
     public function searchItem(Request $request){
+        // Get the search query from the request
         $query = $request->input('query'); 
-        $items = ItemModel::with('inventory')->where('name', 'like', '%' . $query . '%')
-        ->get();
+
+        // Fetch items that match the query (case-insensitive partial match) along with their inventory relationship
+        $items = ItemModel::with('inventory')
+            ->where('name', 'like', '%' . $query . '%')
+            ->get();
+
+        // Return matching items as a JSON response
         return response()->json($items);
     }
+    // Retrieve a specific item by its ID and return it
     public function storeItem(Request $request){
+        // Get the item ID from the request input
         $itemId = $request->input('item_id');
+
+        // Find the item by ID in the database
         $item = ItemModel::find($itemId);
 
-        return response()->json(['
-            message' => 'Item selected', 
+        // Return a JSON response with the item details
+        return response()->json([
+            'message' => 'Item selected', 
             'item' => $item
         ]);
     }
+    // Handles receiving of inventory items, updating their quantity and logging the transaction
     public function receivedItem(Request $request){
+        // Validate the incoming request data
         $validator = Validator::make($request->all(), [
             'receivedItemName' => 'required|array', 
-            'receivedItemName.*' => 'required', 
+            'receivedItemName.*' => 'required',  // Each item name is required
             'receivedQuantity' => 'required|array',
-            'receivedQuantity.*' => 'required|numeric|min:1',
+            'receivedQuantity.*' => 'required|numeric|min:1',  // Each quantity must be at least 1
             'control_number' => 'required|array', 
-            'control_number.*' => 'required',
+            'control_number.*' => [
+                'required', 
+                Rule::unique('receivables', 'control_number') // Ensure control_number is unique in 'receives' table
+            ],
             'supplier' => 'required|array', 
-            'supplier.*' => 'required',  
+            'supplier.*' => 'required',  // Supplier info is required for each item
         ]);
         
+        // If validation fails, return error messages
         if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
                 'message' => $validator->errors()
             ]);
         } else {
+            // Flag to track if all items were processed successfully
             $allItemsProcessed = true;
+
+            // Iterate over each received item
             foreach ($request->receivedItemId as $index => $receivedItemId) {
                 try {
+                    // Find the item by its ID
                     $item = ItemModel::findOrFail($receivedItemId);
+
+                    // Map month names to integers
                     $monthToInt = [
                         'January' => 1,
                         'February' => 2,
@@ -67,11 +92,14 @@ class ReceivedManager extends Controller
                         'November' => 11,
                         'December' => 12,
                     ];
+
+                    // Get current date information
                     $day = Carbon::now('Asia/Manila')->format('d');
                     $month = Carbon::now('Asia/Manila')->format('F');
                     $year = Carbon::now('Asia/Manila')->format('Y');
                     $monthInt = $monthToInt[$month];
 
+                    // Create a new receive entry
                     $receive = new ReceiveModel();
                     $receive->item_id = $item->id;
                     $receive->control_number = $request->get('control_number')[$index];
@@ -83,25 +111,39 @@ class ReceivedManager extends Controller
                     $receive->supplier = $request->get('supplier')[$index];
                     $receive->save();
 
+                    // Update the corresponding inventory quantity
                     $inventory = InventoryModel::where('item_id', $receivedItemId)->first();
                     if ($inventory) {
                         $newQuantity = $inventory->quantity + $receive->received_quantity;
                         $inventory->quantity = $newQuantity;
                         $inventory->save();
+
+                        // Log the admin activity
                         $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
                         $user_id = null;
-                        $activity = "Delivered an item: " .  $item->name . " Quantity:" .  $receive->received_quantity;
+                        $activity = "Delivered an item: " . $item->name . " Quantity:" . $receive->received_quantity;
                         (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
                     }
+
+                    // If no inventory was found, mark as failed and break
                     if (!$inventory) {
                         $allItemsProcessed = false;
                         break;
                     }
                 } catch (\Exception $e) {
+                    // If any error occurs during processing, mark as failed and break
                     $allItemsProcessed = false;
+                    Log::error('Error processing received item', [
+                        'error' => $e->getMessage(),
+                        'receivedItemId' => $receivedItemId,
+                        'request_data' => $request->all(),
+                        'trace' => $e->getTraceAsString()
+                    ]);
                     break;
                 }
             }
+
+            // Return appropriate response based on processing outcome
             if ($allItemsProcessed) {
                 return response()->json([
                     'message' => "All items successfully received!",
@@ -115,11 +157,12 @@ class ReceivedManager extends Controller
             }            
         }
     }
+    // This method fetches and returns receivables data with associated item, inventory, and unit info
     public function refreshReceivables(Request $request){
-        // Fetch all items with their associated 'receives' and 'inventory.unit' relationships.
+        // Fetch all items including their 'receives', 'inventory.unit', and 'inventory' relationships
         $items = ItemModel::with(['receives', 'inventory.unit', 'inventory'])->get();
-    
-        // Map each item and its related receives to the data array.
+
+        // Transform each item and its receives into a structured array
         $data = $items->map(function ($item) {
             return $item->receives->map(function ($receive) use ($item) {
                 return [
@@ -139,41 +182,47 @@ class ReceivedManager extends Controller
                 ];
             });
         });
-    
-        // Flatten the array of arrays into a single array of data.
+
+        // Flatten the nested collections into a single-level collection
         $flattenedData = $data->collapse();
-    
-        // Return the response as JSON.
+
+        // Return the result as a JSON response (commonly used for DataTables integration)
         return response()->json([
-            'draw' => $request->draw,  // Ensure this matches the draw parameter sent by DataTable
+            'draw' => $request->draw,  // Ensures response matches the DataTables draw counter
             'recordsTotal' => $flattenedData->count(),
             'recordsFiltered' => $flattenedData->count(),
             'data' => $flattenedData
         ]);
     }
+    // This method updates a received quantity and the inventory associated with the item
     public function updateReceivedQuantity(Request $request){
+        // Validate required fields from the request
         $validator = Validator::make($request->all(), [
             'edit-received-quantity' => 'required|numeric',
-            'edit-received-id' => 'required|exists:receivables,id', 
-            'item_id' => 'required|exists:items,id', 
+            'edit-received-id' => 'required|exists:receivables,id',  // Check if receive record exists
+            'item_id' => 'required|exists:items,id',  // Check if item exists
         ]);
+
+        // Return validation errors if any
         if ($validator->fails()) {
             return response()->json([
                 'status' => 400,
                 'message' => $validator->errors()
             ]);
         }
+        // Find the ReceiveModel record to update
         $receive = ReceiveModel::findOrFail($request->get('edit-received-id'));
         if ($receive) {
+            // Update delivery type
             $receive->delivery_type = "Receipt for Stock";
             $receive->save();
-            
+
+            // Update inventory quantity by adding the newly received amount
             $inventory = InventoryModel::where('item_id', $request->item_id)->first();
             if ($inventory) {
-                // Update the inventory quantity
                 $inventory->quantity += $request->get('edit-received-quantity');
                 $inventory->save();
-    
+
                 return response()->json([
                     'message' => "Edit receivables and inventory update success!",
                     'status' => 200
@@ -184,12 +233,12 @@ class ReceivedManager extends Controller
                     'status' => 404
                 ]);
             }
-    
+
         } else {
             return response()->json([
                 'message' => "Received record not found.",
                 'status' => 404
             ]);
         }
-    }    
+    }
 }

@@ -1,6 +1,7 @@
 <?php
-
+//Laravel Packages
 use Illuminate\Support\Facades\Route;
+//Controller List
 use App\Http\Controllers\MainNavigation\MainNavigationController;
 use App\Http\Controllers\Inventory_Admin\IA_mainController;
 use App\Http\Controllers\User\User_mainController;
@@ -17,13 +18,10 @@ use App\Http\Controllers\Inventory_Admin\Pdf\ReportManager;
 use App\Http\Controllers\User\Transactions\TransactionsManager;
 use App\Http\Controllers\Inventory_Admin\Report\PdfReportManager;
 use App\Http\Controllers\Inventory_Admin\Accounts\AdminManager;
-use App\Http\Controllers\Inventory_Admin\Charts\ChartManager;
 use App\Http\Controllers\Inventory_Admin\Pdf\ReportTransactionManager;
 use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
 use App\Http\Controllers\Inventory_Admin\Dashboard\DashboardAccountManager;
 use App\Http\Controllers\User\User_functionController;
-use App\Http\Controllers\User\Account\UserProfileManager;
-use Intervention\Image\ImageManagerStatic as Image;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -34,11 +32,11 @@ use Intervention\Image\ImageManagerStatic as Image;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-//Route for Main Navigation
+//Route for Main Navigation Controller
 Route::controller(MainNavigationController::class)->group(function() {
     Route::get('/', 'goToIndex');
 });
-//Route for Access
+//Route for Access Controller
 Route::controller(LoginController::class)->group(function(){
     Route::post('/login-user', 'login');
     Route::post('/set-admin-session', 'setAdminSession');
@@ -52,6 +50,7 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::get('admin/request', 'goToRequest');
         Route::get('admin/report', 'goToReport');
     });
+    //Route for Category Controller 
     Route::controller(CategoryManager::class)->group(function() {
         Route::get('/search-categories', 'searchCategory')->name('search.categories');
         Route::get('/submit-category', 'store')->name('some_route');
@@ -61,6 +60,7 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::post('/add-category', 'addCategory');
         Route::get('/get-category-control-number/{id}', 'getControlNumber');
     });
+    //Route for Unit Controller 
     Route::controller(UnitManager::class)->group(function() {
         Route::get('/search-units', 'searchUnit')->name('search.units');
         Route::get('/submit-unit', 'storeUnit')->name('storeUnit');
@@ -70,12 +70,14 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::post('/add-unit','addUnit');
         Route::get('/get-unit-control-number/{id}', 'getControlNumber');
     });
+    //Route for Item Controller 
     Route::controller(itemManager::class)->group(function() {
         Route::post('/add-item', 'addItem');
         Route::post('/delete-item', 'deleteItem');
         Route::patch('/update-item', 'editItem');
         Route::get('/admin/refreshItems', 'getItem');
     });
+    //Route for Inventory Controller 
     Route::controller(InventoryManager::class)->group(function() {
         Route::get('/admin/lookup-tables/items', 'showItems');
         Route::get('/admin/lookup-tables/deliveries', 'showDeliveries');
@@ -83,6 +85,7 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::get('/admin/lookup-tables/units','showUnits');
         Route::get('/admin/lookup-tables/user-accounts','showAccounts');
     });
+    //Route for Delivery Controller 
     Route::controller(ReceivedManager::class)->group(function(){
         Route::get('/searchItem', 'searchItem')->name('search.itemName');
         Route::get('/submit-item', 'storeItem');
@@ -90,6 +93,7 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::get('/admin/refreshReceivables', 'refreshReceivables');
         Route::patch('/update-received-item', 'updateReceivedQuantity');
     });
+    //Route for Transaction Controller 
     Route::controller(AdminTransactionManager::class)->group(function(){
         Route::get('admin/transaction', 'goToTransactions');
         Route::patch('/change-transaction-status', 'updateTransactionStatus');
@@ -97,37 +101,43 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::post('/request-item-admin', 'requestItemAdmin');
         Route::get('/admin/refreshActedTransactions', 'getActedTransactions');
     });
+    //Route for Account Controller 
     Route::controller(AccountManager::class)->group(function(){
         Route::get('/admin/account', 'goToAccounts');
         Route::patch('/set-user-role', 'setUserRole');
         Route::patch('/change-user-status', 'changeUserStatus');
     });
+    //Route for Admin Controller 
     Route::controller(AdminManager::class)->group(function(){
         Route::post('/add-admin', 'addAdmin');
         Route::patch('/update-admin','updateAdmin');
         Route::delete('/delete-admin', 'deleteAdmin');
     });
+    //Route for Report Controller 
     Route::controller(ReportManager::class)->group(function(){
         Route::post('/generate-report', 'generateReport');
     });
+    //Route for Transaction Report Controller 
     Route::controller(ReportTransactionManager::class)->group(function(){
         Route::post('/generate-transaction-report', 'generateTransactionReport');
     });
+    //Route for Pdf Report Controller 
     Route::controller(PdfReportManager::class)->group(function(){
         Route::post('/add-report', 'addReport');
         Route::get('/admin/reports/monthly-report','goToMonthlyReports');
         Route::get('/admin/reports/quarterly-report','goToQuarterlyReports');
     });
-    Route::controller(ChartManager::class)->group(function(){
-        Route::get('/admin/reports', 'goToCharts');
-    });
+    //Route for Trail Controller 
     Route::controller(TrailManager::class)->group(function(){
         Route::get('/admin/trails', 'goToTrails');
     });
+    //Route for Dashboard Controller 
     Route::controller(DashboardAccountManager::class)->group(function(){
-        Route::patch('/dashboard-change-user-status', 'setUserRole');
+        Route::patch('/dashboard-change-user-role', 'setUserRoleDashboard');
+        Route::patch('/dashboard-change-user-status', 'changeUserStatus');
         Route::patch('/dashboard-change-transaction-status', 'updateTransactionStatus');
     });
+    //Route for Admin Function Controller 
     Route::controller(IA_functionController::class)->group(function(){
         Route::get('/logoutAdmin', 'logoutAdmin');
     });
@@ -138,6 +148,7 @@ Route::group(['middleware' => 'loginCheckUser'], function () {
     Route::controller(User_mainController::class)->group(function() {
         Route::get('user/', 'goToDashboard');
     });
+    //Route for Transaction Controller 
     Route::controller(TransactionsManager::class)->group(function() {
         Route::get('user/transactions', 'goToTransactions');
         Route::get('/searchRequestItem', 'searchItem');
@@ -148,9 +159,7 @@ Route::group(['middleware' => 'loginCheckUser'], function () {
         Route::patch('/user/cancel-transaction','cancelTransaction');
         Route::get('/user/refreshActedTransactions', 'getActedTransactions');
     });
-    Route::controller(UserProfileManager::class)->group(function(){
-        Route::get('user/profile', 'goToProfile');
-    });
+    //Route for User Function Controller 
     Route::controller(User_functionController::class)->group(function(){
         Route::get('/logoutUser', 'logoutUser');
     });

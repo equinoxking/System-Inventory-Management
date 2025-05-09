@@ -161,8 +161,8 @@
                             <td>{{ $item->name }}</td>
                             <td>{{ $item->inventory->unit->name }}</td>
                             <td class="rightText">{{ $item->remaining_quantity }}</td>
-                            <td class="rightText">{{ $item->remaining_quantity + $item->total_received_in_selected_month }}</td>
                             <td class="rightText">{{ $item->total_received_in_selected_month }}</td>
+                            <td class="rightText">{{ $item->remaining_quantity + $item->total_received_in_selected_month }}</td>
                             <td class="rightText">{{ $item->total_transactions_in_selected_month }}</td>
                             <td class="rightText">
                                 {{ $item->remaining_quantity + $item->total_received_in_selected_month - $item->total_transactions_in_selected_month }}

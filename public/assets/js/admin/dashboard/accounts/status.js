@@ -8,9 +8,9 @@ $(document).ready(function() {
     });
 });
 $(document).ready(function(){
-    $(document).on('submit', '#set-user-role-form' ,function(event){
+    $(document).on('submit', '#change-user-status-form' ,function(event){
         event.preventDefault();
-        var formData = $('#set-user-role-form').serialize();
+        var formData = $('#change-user-status-form').serialize();
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

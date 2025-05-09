@@ -55,6 +55,8 @@
                 </li>
             </ul>
             @php
+            // dd(session('loggedInInventoryAdmin'));
+
                 $position = ucwords(session('loggedInInventoryAdmin')['admin_position'] ?? '');
             @endphp
             <ul class="navbar-nav logout ml-3">
@@ -64,6 +66,7 @@
                             <div>
                                 <u>{{ session('loggedInInventoryAdmin')['admin_full_name'] }}</u>
                             </div>
+                            
                             <div style="text-align: center">
                                 <span style="font-weight: normal;">Admin, {{ $position }}</span>
                             </div>                            

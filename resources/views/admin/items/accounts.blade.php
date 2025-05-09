@@ -130,9 +130,6 @@
 </div>
 @endsection
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="{{ asset('assets/js/admin/dashboard/accounts/permission.js')}}"></script>
-<script src="{{ asset('assets/js/admin/dashboard/accounts/status.js')}}"></script>
-<script src="{{ asset('assets/js/admin/admin/add-admin.js') }}"></script>
 <div class="modal fade" id="setUserModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -232,6 +229,15 @@
                 <div class="row">
                 <form id="add-admin-form">
                     @csrf
+                        <div class="form-group">
+                            <label for="addAdminFullName" class="font-weight-bold">Admin Account for?</label>
+                            <select name="client_full_name" id="add-client-full-name" class="form-control">
+                                <option value="">Select User</option>
+                                @foreach ($clients as $client)
+                                    <option value="{{ $client->id }}">{{ $client->full_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <div class="form-group">
                             <label for="addAdminFullName" class="font-weight-bold">Admin Full Name</label>
                             <input type="text" class="form-control" name="admin_full_name" id="add-admin-full-name">

@@ -87,27 +87,29 @@ class AdminTransactionManager extends Controller
             $transact_id = $request->get('transaction-status-id');
             $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
             
-            $currentDateTime = Carbon::now('Asia/Manila');
-            $time = $request->get('time');
             
-            // Keep $formattedTime as a Carbon instance (no format yet)
-            $formattedTime = Carbon::createFromFormat('H:i', $time, 'Asia/Manila');
-            $formattedDateNow = $currentDateTime->format('Y-m-d');
-            $formattedTimeNow = $currentDateTime->format('H:i');
             
             // Retrieve client and transaction objects
             $admin = AdminModel::where('id', $admin_id)->first();
             $transaction = TransactionModel::find($transact_id);
-            $createdAt = $transaction->created_at;
-            $diffInSeconds = $createdAt->diffInSeconds($currentDateTime);
-            $days = floor($diffInSeconds / 86400); // 1 day = 86400 seconds
-            $minutes = floor(($diffInSeconds % 86400) / 60); // Remaining minutes after dividing by days
-            $seconds = $diffInSeconds % 60; // Remaining seconds after dividing by minutes
-            $agingString = "{$days} days, {$minutes} minutes, {$seconds} seconds";
+          
 
             if ($transaction) {
                 switch ($data) {
                     case 2:
+                        $currentDateTime = Carbon::now('Asia/Manila');
+                        $time = $request->get('time');
+                        
+                        // Keep $formattedTime as a Carbon instance (no format yet)
+                        $formattedTime = Carbon::createFromFormat('H:i', $time, 'Asia/Manila');
+                        $formattedDateNow = $currentDateTime->format('Y-m-d');
+                        $formattedTimeNow = $currentDateTime->format('H:i');
+                        $createdAt = $transaction->created_at;
+                        $diffInSeconds = $createdAt->diffInSeconds($currentDateTime);
+                        $days = floor($diffInSeconds / 86400); // 1 day = 86400 seconds
+                        $minutes = floor(($diffInSeconds % 86400) / 60); // Remaining minutes after dividing by days
+                        $seconds = $diffInSeconds % 60; // Remaining seconds after dividing by minutes
+                        $agingString = "{$days} days, {$minutes} minutes, {$seconds} seconds";
                         $allItemsProcessed = true;
                         // Logic for Accepted status
                         $checkInventory = InventoryModel::where('item_id', $transaction->item_id)->first();
@@ -208,7 +210,6 @@ class AdminTransactionManager extends Controller
                             }  
                             break;
                         }
-                       
                     case 3:
                         // Logic for Rejected status
                         $validatorForDenied = Validator::make($request->all(), [
@@ -423,6 +424,7 @@ class AdminTransactionManager extends Controller
     
             $notification = new NotificationModel;
             $notification->admin_id = $admin->id;
+            $notification->user_id = null;
             $notification->control_number = $this->generateNotificationNumber();
             $message = "Requestor: " . $admin->full_name .
                 " | Transaction: " . $transaction->transaction_number .
