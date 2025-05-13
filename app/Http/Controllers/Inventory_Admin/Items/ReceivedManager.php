@@ -20,7 +20,7 @@ class ReceivedManager extends Controller
     // Search for items based on a partial name match
     public function searchItem(Request $request){
         // Get the search query from the request
-        $query = $request->input('query'); 
+        $query = $request->input('query');
 
         // Fetch items that match the query (case-insensitive partial match) along with their inventory relationship
         $items = ItemModel::with('inventory')
@@ -40,7 +40,7 @@ class ReceivedManager extends Controller
 
         // Return a JSON response with the item details
         return response()->json([
-            'message' => 'Item selected', 
+            'message' => 'Item selected',
             'item' => $item
         ]);
     }
@@ -48,19 +48,16 @@ class ReceivedManager extends Controller
     public function receivedItem(Request $request){
         // Validate the incoming request data
         $validator = Validator::make($request->all(), [
-            'receivedItemName' => 'required|array', 
+            'receivedItemName' => 'required|array',
             'receivedItemName.*' => 'required',  // Each item name is required
             'receivedQuantity' => 'required|array',
             'receivedQuantity.*' => 'required|numeric|min:1',  // Each quantity must be at least 1
-            'control_number' => 'required|array', 
-            'control_number.*' => [
-                'required', 
-                Rule::unique('receivables', 'control_number') // Ensure control_number is unique in 'receives' table
-            ],
-            'supplier' => 'required|array', 
+            'control_number' => 'required|array',
+            'control_number.0' =>'required',
+            'supplier' => 'required|array',
             'supplier.*' => 'required',  // Supplier info is required for each item
         ]);
-        
+
         // If validation fails, return error messages
         if ($validator->fails()) {
             return response()->json([
@@ -154,7 +151,7 @@ class ReceivedManager extends Controller
                     'message' => "Error in receiving an item!",
                     'status' => 500
                 ]);
-            }            
+            }
         }
     }
     // This method fetches and returns receivables data with associated item, inventory, and unit info

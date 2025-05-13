@@ -15,7 +15,7 @@ class UnitSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::unprepared('SET IDENTITY_INSERT units ON');
+        // DB::unprepared('SET IDENTITY_INSERT units ON');
 
         $units = [
             ['id' => 35, 'name' => 'can',      'description' => 'Metal container for liquids or food',           'symbol' => 'cn'],
@@ -37,7 +37,7 @@ class UnitSeeder extends Seeder
             ['id' => 52, 'name' => 'booklet',  'description' => 'Small book with few pages',                     'symbol' => 'bkt'],
             ['id' => 55, 'name' => 'pair',     'description' => 'Always two as one',                             'symbol' => 'bkt'],
         ];
-    
+
         foreach ($units as $unit) {
             DB::table('units')->insert([
                 'id' => $unit['id'],
@@ -49,8 +49,8 @@ class UnitSeeder extends Seeder
                 'updated_at' => now(),
             ]);
         }
-    
-        DB::unprepared('SET IDENTITY_INSERT units OFF');
+
+        // DB::unprepared('SET IDENTITY_INSERT units OFF');
     }
     private function generateControlNumber() {
         $currentYearAndMonth = Carbon::now()->format('Y-m');
@@ -59,14 +59,14 @@ class UnitSeeder extends Seeder
                                 ->orderBy('control_number', 'desc')
                                 ->pluck('control_number')
                                 ->first();
-    
+
         if (!$controlNumber) {
             return $currentYearAndMonth . '-00001';
         }
-    
-        $numberPart = intval(substr($controlNumber, -5)) + 1; 
+
+        $numberPart = intval(substr($controlNumber, -5)) + 1;
         $paddedNumber = str_pad($numberPart, 5, '0', STR_PAD_LEFT);
-    
+
         return $currentYearAndMonth . '-' . $paddedNumber;
-    }  
+    }
 }

@@ -14,7 +14,7 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        DB::unprepared('SET IDENTITY_INSERT categories ON');
+        // DB::unprepared('SET IDENTITY_INSERT categories ON');
         $categories = [
             [
                 'id' => 1, 'name' => 'Pesticides or Pest Repellents', 'description' => 'Substances to control or repel pests and insects.',
@@ -92,7 +92,7 @@ class CategorySeeder extends Seeder
                 'id' => 20, 'name' => 'Manufacturing Components and Supplies', 'description' => 'Items used for manufacturing.',
                 'sub_category_id' => 1
             ],
-        ];        
+        ];
         foreach ($categories as $category) {
             DB::table('categories')->insert([
                 'id' => $category['id'],
@@ -104,8 +104,8 @@ class CategorySeeder extends Seeder
                 'updated_at' => now(),
             ]);
         }
-       
-        DB::unprepared('SET IDENTITY_INSERT categories OFF');
+
+        // DB::unprepared('SET IDENTITY_INSERT categories OFF');
     }
     private function generateControlNumber() {
         $currentYearAndMonth = Carbon::now()->format('Y-m');
@@ -114,14 +114,14 @@ class CategorySeeder extends Seeder
                                 ->orderBy('control_number', 'desc')
                                 ->pluck('control_number')
                                 ->first();
-    
+
         if (!$controlNumber) {
             return $currentYearAndMonth . '-00001';
         }
-    
-        $numberPart = intval(substr($controlNumber, -5)) + 1; 
+
+        $numberPart = intval(substr($controlNumber, -5)) + 1;
         $paddedNumber = str_pad($numberPart, 5, '0', STR_PAD_LEFT);
-    
+
         return $currentYearAndMonth . '-' . $paddedNumber;
-    }  
+    }
 }
