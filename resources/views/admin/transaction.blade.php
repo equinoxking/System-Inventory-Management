@@ -79,20 +79,16 @@
     <div class="row">
         <div class="col-md-12">
             <div style="overflow-x: auto; width: 100%;">
-                <table id="transactionTable" class="table-hover" style="font-size: 10px; white-space: nowrap;">
+                <table id="transactionTable" class="table-hover" style="font-size: 11px; white-space: nowrap;">
                     <thead>
-                        <th>Transaction Number</th>
-                        <th>Stock On Hand</th>
-                        <th>Quantity</th>
-                        <th>UoM</th>
+                        <th width="5%">Transaction Number</th>
+                        <th width="7%">Stock On Hand</th>
+                        <th width="7%">Number of Items Requested</th>
+                        <th width="5%">UoM</th>
                         <th>Item Name</th>
-                        <th>Requestor</th>
-                        <th>Date/Time Requested</th>
-                        <th>Date/Time Acted</th>
-                        <th>Request Aging</th>
-                        <th>Released by</th>
-                        <th>Time Released</th>
-                        <th>Action</th>
+                        <th>Requested By</th>
+                        <th width="10%">Date/Time Requested</th>
+                        <th width="5%">Action</th>
                     </thead>
                     <tbody>
                     </tbody>
@@ -116,15 +112,15 @@
         <div class="col-md-12">
             <!-- Scrollable wrapper -->
             <div style="overflow-x: auto; width: 100%;">
-                <table id="transactionHistoryTable" class="table-hover" style="font-size: 10px; white-space: nowrap;">
+                <table id="transactionHistoryTable" class="table-hover" style="font-size: 11px; white-space: nowrap;">
                     <thead>
                         <tr>
                             <th>Transaction Number</th>
                             <th>Stock On Hand</th>
-                            <th>Quantity</th>
+                            <th>Number of Items Requested</th>
                             <th>UoM</th>
                             <th>Item Name</th>
-                            <th>Requestor</th>
+                            <th>Requested By</th>
                             <th>Date/Time Requested</th>
                             <th>Date/Time Acted</th>
                             <th>Request Aging</th>
@@ -166,12 +162,11 @@
                         <div class="form-group" >
                             <label for="status">Status</label>
                             <select name="status" id="status" class="form-control" onchange="toggleSelection()">
-                                <option value="">Select Status</option>
-                                <option value="2">Approve</option>
-                                <option value="3">Reject</option>
+                                <option value="2">Released</option>
+                                <option value="3">Disapprove</option>
                             </select>
                         </div>
-                        <div class="form-group" id="timeDivision1" style="display:none;">
+                        <div class="form-group" id="timeDivision1">
                             <label for="releaseTime">Release Time</label><br>
                             <input type="time" class="form-control" id="timeRelease" value="" name="time" readonly>
                         </div>
@@ -214,5 +209,5 @@
             }
         }
     });
-    </script>
+</script>
     

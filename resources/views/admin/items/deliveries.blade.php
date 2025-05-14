@@ -37,8 +37,9 @@
                     <label for="supplier" class="font-weight-bold">Supplier</label>
                     {{-- <input type="text" class="form-control" name="supplier[]" id="supplier" placeholder="Enter supplier" min="0"> --}}
                     <select name="supplier[]" id="supplier" class="form-control">
-                        <option value="ABC Supplier">ABC Supplier</option>
-                        <option value="XYZ Co.">XYZ Co.</option>
+                        @foreach ($suppliers as $supplier)
+                            <option value="{{ $supplier->name }}">{{ $supplier->name }}</option>
+                        @endforeach
                     </select>
                 </div>
                 <div class="col-md-3 form-group">
@@ -87,23 +88,46 @@
         </div>
     </div>
 </div>
+<div class="container-fluid card mb-1 w-100" style="max-height: 700px; overflow-y: auto;">
+    <div class="row">
+        <div class="col-md-2 form-group mt-3">
+            <label for="category-filter">Filter by Purchase Oder: </label>
+            <input type="text" id="po-filter" class="form-control" placeholder="Search purchase order">
+        </div>
+        <div class="col-md-2 form-group mt-3">
+            <label for="unit-filter">Filter by Supplier: </label>
+            <input type="text" id="supplier-filter" class="form-control" placeholder="Search supplier">
+        </div>
+    </div>
+</div>
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
             <table id="receivesTable" class="table-hover" style="font-size: 12px">
                 <thead style="background-color: #3d5c99; color:white">
                     <tr>
-                        <th width="10%">Purchase Order Number</th>
-                        <th width="20%">Category</th>
-                        <th width="25%">Item Name</th>
-                        <th width="5%">UoM</th>
-                        <th width="10%">Delivered Quantity</th>
-                        <th width="10%">Stock On Hand</th>
-                        <th width="10%">Supplier</th>
                         <th width="10%">Date/Time Delivered</th>
+                        <th width="10%">Purchase Order Number</th>
+                        <th>Supplier</th>
+                        <th>Item Name</th>
+                        <th width="9%">Delivered Quantity</th>
+                        <th width="4%">Uom</th>
+                        <th width="7%">Stock On Hand</th>
                     </tr>
                 </thead>
-                <tbody></tbody>
+                <tbody>
+                    @foreach ($data as $item)
+                        <tr>
+                            <td>{{ $item['created_at'] }}</td>
+                            <td>{{ $item['control_number'] }}</td>
+                            <td>{{ $item['supplier'] }}</td>
+                            <td>{{ $item['item_name'] }}</td>
+                            <td>{{ $item['received_quantity'] }}</td>
+                            <td>{{ $item['unit_name'] }}</td>
+                            <td>{{ $item['remaining_quantity'] }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
             </table>
         </div>
     </div>

@@ -28,10 +28,10 @@
                         <i class="fas fa-chart-bar mr-1"></i>Reports
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
-                        <li><a class="dropdown-item text-dark generateReportBtn">Generate Utilization Report</a></li>
-                        <li><a class="dropdown-item text-dark pdfTransactionGenerationBtn">Generate Transaction Report</a></li>
                         <li><a class="dropdown-item text-dark" href="{{ url('/admin/reports/monthly-report') }}">Monthly Report</a></li>
                         <li><a class="dropdown-item text-dark" href="{{ url('/admin/reports/quarterly-report') }}">Quarterly Report</a></li>
+                        <li><a class="dropdown-item text-dark generateReportBtn">Periodic Utilization Report</a></li>
+                        <li><a class="dropdown-item text-dark pdfTransactionGenerationBtn">User Ledger Report</a></li>
                     </ul>
                 </li>                
                 <li class="nav-item dropdown">
@@ -40,11 +40,11 @@
                         <i class="fas fa-database mr-1"></i>Lookup Tables
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="lookupTablesDropdown">
-                        <li><a class="dropdown-item text-dark" href="{{ url('/admin/lookup-tables/items') }}">Items</a></li>
-                        <li><a class="dropdown-item text-dark" href="{{ url('/admin/lookup-tables/deliveries') }}">Deliveries</a></li>
-                        <li><a class="dropdown-item text-dark" href="{{ url('/admin/lookup-tables/user-accounts') }}">User Accounts</a></li>
                         <li><a class="dropdown-item text-dark" href="{{ url('/admin/lookup-tables/categories') }}">Categories</a></li>
+                        <li><a class="dropdown-item text-dark" href="{{ url('/admin/lookup-tables/deliveries') }}">Deliveries</a></li>
+                        <li><a class="dropdown-item text-dark" href="{{ url('/admin/lookup-tables/items') }}">Items</a></li>
                         <li><a class="dropdown-item text-dark" href="{{ url('/admin/lookup-tables/units') }}">Units</a></li>
+                        <li><a class="dropdown-item text-dark" href="{{ url('/admin/lookup-tables/user-accounts') }}">User Accounts</a></li>
                     </ul>
                 </li>
                 <li class="nav-item">

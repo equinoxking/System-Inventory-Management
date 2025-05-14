@@ -78,25 +78,15 @@
         </div>
     </div>
 </div>
-<div class="container-fluid card mb-5 w-100" style="max-height: 700px; overflow-y: auto;">
+<div class="container-fluid card mb-1 w-100" style="max-height: 700px; overflow-y: auto;">
     <div class="row">
         <div class="col-md-2 form-group mt-3">
             <label for="category-filter">Filter by Category: </label>
-            <select id="category-filter" class="form-control">
-                <option value="">All</option>
-                    @foreach ($categories as $category)
-                        <option value="{{ $category->name }}">{{ $category->name }}</option>
-                    @endforeach
-            </select>
+            <input type="text" id="category-filter" class="form-control" placeholder="Search category">
         </div>
         <div class="col-md-2 form-group mt-3">
             <label for="unit-filter">Filter by Unit: </label>
-            <select id="unit-filter" class="form-control">
-                <option value="">All</option>
-                    @foreach ($units as $unit)
-                        <option value="{{ $unit->name }}">{{ $unit->name }}</option>
-                    @endforeach
-            </select>
+            <input type="text" id="unit-filter" class="form-control" placeholder="Search unit">
         </div>
         <div class="col-md-2 form-group mt-3">
             <label for="minimum-quantity-filter">Filter by Minimum Quantity: </label>
@@ -114,8 +104,6 @@
                 <option value="unavailable">Unavailable</option>
             </select>
         </div>
-        
-              
         <div class="col-md-2 form-group mt-3">
             <label for="stock-level-filter">Filter by Stock Level:</label>
             <select id="stock-level-filter" class="form-control">
@@ -132,29 +120,25 @@
             <div class="col-md-12">
                 <table id="itemsTable" class="table-hover" style="font-size: 11px">
                     <thead class="bg-info">
-                        <th>Item Number</th>
-                        <th width="15%">Category</th>
-                        <th width="25%">Item Name</th>
-                        <th>UoM</th>
-                        <th>Stock on Hand</th>
-                        <th>Buffer Stock</th>
-                        <th>Date/Time Created</th>
-                        <th>Status</th>
+                        <th width="10%">Item Number</th>
+                        <th>Item Name</th>
+                        <th width="7%">UoM</th>
+                        <th width="7%">Stock on Hand</th>
+                        <th width="7%">Buffer Stock</th>
+                        <th width="5%" class="text-center">Status</th>
                         <th width="5%">Stock Level</th>
-                        <th>Action</th>
+                        <th width="5%">Action</th>
                     </thead>
                     <tbody>
                         @foreach ($items as $item)
                             <tr @if ($item->inventory->quantity < $item->inventory->min_quantity) style="background-color: #f8d7da;" @endif>
                                 <td>{{ $item->controlNumber }}</td>
-                                <td>{{ $item->category->name ?? 'N/A' }}</td>
                                 <td>{{ $item->name }}</td>
                                 <td>{{ $item->inventory->unit->name ?? 'N/A' }}</td>
                                 <td>{{ $item->inventory->quantity }}</td>
                                 <td>{{ $item->inventory->min_quantity}}</td>
-                                <td>{{ \Carbon\Carbon::parse($item->created_at)->format('F d, Y H:i A') }}</td>
                                 <td>
-                                    @if ($item->inventory->quantity === 0 && $item->status->name === "Available")
+                                    @if ($item->inventory->quantity == 0 && $item->status->name == "Available")
                                         <span class="badge badge-danger"><i class="fas fa-times-circle"></i> Unavailable</span>
                                     @elseif ($item->status->name == 'Available')
                                         <span class="badge badge-success"><i class="fas fa-check-circle"></i> Available</span>
@@ -162,7 +146,7 @@
                                 </td>
                                 
                                 <td>
-                                    @if ($item->inventory->quantity < $item->inventory->min_quantity)
+                                    @if ($item->inventory->quantity <= $item->inventory->min_quantity)
                                         <span class="badge badge-noStock"><i class="fas fa-times-circle"></i> Critical</span>
                                     @else
                                         <span class="badge badge-highStock"><i class="fas fa-check-circle"></i> Normal</span>

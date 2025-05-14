@@ -130,12 +130,6 @@ class ReceivedManager extends Controller
                 } catch (\Exception $e) {
                     // If any error occurs during processing, mark as failed and break
                     $allItemsProcessed = false;
-                    Log::error('Error processing received item', [
-                        'error' => $e->getMessage(),
-                        'receivedItemId' => $receivedItemId,
-                        'request_data' => $request->all(),
-                        'trace' => $e->getTraceAsString()
-                    ]);
                     break;
                 }
             }

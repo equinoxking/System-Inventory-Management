@@ -1,7 +1,7 @@
 $(function () {
     var table = $('#itemsTable').DataTable({
-        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
-        "pageLength": -1,
+        "aLengthMenu": [[10, 25, 50, 75, 100, -1], [10, 25, 50, 75, 100, "All"]],
+        "pageLength": 10,
         "responsive": {
             breakpoints: [
                 { name: 'xl', width: Infinity },
@@ -35,14 +35,14 @@ $(function () {
         return true;
     });
 
-    $('#category-filter').on('change', function () {
+    $('#category-filter').on('keyup', function () {
         var val = $(this).val();
-        table.column(1).search(val ? '^' + val + '$' : '', true, false).draw();
+        table.column(1).search(val, false, true).draw(); 
     });
 
-    $('#unit-filter').on('change', function () {
+    $('#unit-filter').on('keyup', function () {
         var val = $(this).val();
-        table.column(3).search(val ? '^' + val + '$' : '', true, false).draw();
+        table.column(3).search(val, false, true).draw(); 
     });
 
     $('#status-filter').on('change', function () {
@@ -84,7 +84,7 @@ $(function () {
 $(function () {
     var table = $('#transactionTable').DataTable({
         "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
-        "pageLength": -1,
+        "pageLength": 5,
         // "lengthChange": false,
         "responsive": {
             breakpoints: [
@@ -116,22 +116,6 @@ $(function () {
             { "data": "client_name" },
             { "data": "time_request" },
             {
-                data: null, // No direct data
-                render: function(data, type, row) {
-                    return row.date_approved + ' ' + row.time_approved;
-                },
-                title: 'Date/Time Acted' // Title for the merged column
-            },
-            { "data": "request_aging" },
-            { "data": "released_by" },
-            {
-                data: null, // No direct data
-                render: function (data, type, row) {
-                    return row.date_approved + ' ' + row.time_released;
-                },
-                title: 'Date/Time Released' // Title for the merged column
-            },     
-            {
                 "data": null,  // This column will have the action buttons
                 "render": function(data, type, row) {
                     if (row.status === 'Pending') {
@@ -142,8 +126,15 @@ $(function () {
                 },
                 "orderable": false,
                 "class": "text-center"
-            }
+            },
         ],
+        columnDefs: [
+        {
+            targets: 0, // Index of the column to hide
+            visible: false,
+            searchable: false
+        }
+    ]
     });
     $('#transactionTable').on('click', '.edit-btn', function() {
         var data = table.row($(this).closest('tr')).data();
@@ -172,7 +163,7 @@ $(function () {
 $(function () {
     var table = $('#transactionHistoryTable').DataTable({
         "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
-        "pageLength": -1,
+        "pageLength": 5,
         "responsive": {
             breakpoints: [
                 { name: 'xl', width: Infinity },
@@ -257,7 +248,7 @@ $(function () {
                     } else if (data === 'Ready for Release') {
                         return '<span class="badge badge-release"><i class="fas fa-cloud-upload-alt"></i> Ready for Release</span>';
                     }else if (data === 'Denied') {
-                        return '<span class="badge badge-denied"><i class="fas fa-ban"></i> Denied</span>';
+                        return '<span class="badge badge-denied"><i class="fas fa-ban"></i> Disapproved</span>';
                     }else if (data === 'Canceled') {
                         return '<span class="badge badge-canceled"><i class="fas fa-times"></i> Canceled</span>';
                     } else {
@@ -271,6 +262,13 @@ $(function () {
                     return data === null || data === "" ? "--" : data;
                 }
             },     
+        ],
+        columnDefs: [
+        {
+            targets: 0, // Index of the column to hide
+            visible: false,
+            searchable: false
+        }
         ],
         rowCallback: function(row, data) {
             $(row).removeClass('dt-row-denied dt-row-canceled');
@@ -312,8 +310,8 @@ $(function () {
 
 $(function () {
     var table = $('#categoryTable').dataTable({
-        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
-        "pageLength": -1,
+        "aLengthMenu": [[10, 25, 50, 75, 100, -1], [10, 25, 50, 75, 100, "All"]],
+        "pageLength": 10,
         "responsive": {
             breakpoints: [
                 { name: 'xl', width: Infinity },
@@ -329,47 +327,8 @@ $(function () {
 });
 $(function () {
     var table = $('#receivesTable').DataTable({
-        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
-        "pageLength": -1,
-        "responsive": true,
-        "order": [[0, 'desc']],
-        "autoWidth": false,
-        "processing": false,
-        "serverSide": false,  // Use true if you want server-side processing
-        "ajax": {
-            url: '/admin/refreshReceivables',  
-            type: 'GET',
-            "dataSrc": function (json) {
-                return json.data;  // Ensure the response has a "data" key
-            }
-        },
-        "columns": [
-            { "data": "control_number" },
-            { "data": "category" }, 
-            { "data": "item_name" }, 
-            { "data": "unit_name" },
-            { "data": "received_quantity" },
-            { "data": "remaining_quantity" },
-            { "data": "supplier" },
-            { "data": "created_at" }, 
-        ]
-    });
-
-    // Click event for edit button
-    $('#receivesTable').on('click', '#editReceivedItem', function() {
-        var data = table.row($(this).closest('tr')).data();
-        editReceivedItem(data);
-    });
-
-    // Automatically reload the data every 6 seconds
-    setInterval(function() {
-        table.ajax.reload(null, false);  // Reload the table without resetting pagination
-    }, 6000);
-});
-$(function () {
-    var table = $('#availableItemTable').DataTable({
-        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
-        "pageLength": -1,
+        "aLengthMenu": [[10, 25, 50, 75, 100, -1], [10, 25, 50, 75, 100, "All"]],
+        "pageLength": 10,
         "responsive": {
             breakpoints: [
                 { name: 'xl', width: Infinity },
@@ -378,14 +337,41 @@ $(function () {
                 { name: 'sm', width: 768 },
                 { name: 'xs', width: 576 }
             ]
-        }
+        },
+        "order": [[0, 'desc']],
+    });
+
+    $('#po-filter').on('keyup', function () {
+        var val = $(this).val();
+        table.column(1).search(val, false, true).draw(); 
+    });
+
+    $('#supplier-filter').on('keyup', function () {
+        var val = $(this).val();
+        table.column(2).search(val, false, true).draw(); 
+    });
+
+});
+$(function () {
+    var table = $('#availableItemTable').DataTable({
+        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
+        "pageLength": 5,
+        "responsive": {
+            breakpoints: [
+                { name: 'xl', width: Infinity },
+                { name: 'lg', width: 1200 },
+                { name: 'md', width: 992 },
+                { name: 'sm', width: 768 },
+                { name: 'xs', width: 576 }
+            ]
+        },
+         "order": [[3, 'asc']],
     });
 });
 $(function () {
     var table = $('#top10Table').DataTable({
         "aLengthMenu": [[5, 10, 25, 50, 75, 100], [5, 10, 25, 50, 75, 100]],
-        "pageLength": 10,
-        "lengthChange": false ,
+        "pageLength": 5,
         "responsive": {
             breakpoints: [
                 { name: 'xl', width: Infinity },
@@ -399,8 +385,8 @@ $(function () {
 });
 $(function () {
     var table = $('#reportsTable').DataTable({
-        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
-        "pageLength": -1,
+        "aLengthMenu": [[10, 25, 50, 75, 100, -1], [10, 25, 50, 75, 100, "All"]],
+        "pageLength": 10,
         "responsive": {
             breakpoints: [
                 { name: 'xl', width: Infinity },
@@ -415,8 +401,8 @@ $(function () {
 });
 $(function () {
     var table = $('#unitTable').dataTable({
-        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
-        "pageLength": -1,
+        "aLengthMenu": [[10, 25, 50, 75, 100, -1], [10, 25, 50, 75, 100, "All"]],
+        "pageLength": 10,
         "responsive": {
             breakpoints: [
                 { name: 'xl', width: Infinity },

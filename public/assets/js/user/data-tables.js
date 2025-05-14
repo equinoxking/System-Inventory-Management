@@ -179,7 +179,7 @@ $(function () {
                         } else if (data === 'Ready for Release') {
                             return '<span class="badge badge-release"><i class="fas fa-cloud-upload-alt"></i> Ready for Release</span>';
                         }else if (data === 'Denied') {
-                            return '<span class="badge badge-denied"><i class="fas fa-ban"></i> Denied</span>';
+                            return '<span class="badge badge-denied"><i class="fas fa-ban"></i> Disapproved</span>';
                         }else if (data === 'Canceled') {
                             return '<span class="badge badge-canceled"><i class="fas fa-times"></i> Canceled</span>';
                         } else {

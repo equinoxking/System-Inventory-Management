@@ -111,7 +111,6 @@
                         <div>
                             <label for="transactionStatusID" class="font-weight-bold">Transaction Status</label>
                             <select name="status" id="transaction_status" class="form-control">
-                                <option value="">Select Status</option>
                                 <option value="2">Approve</option>
                                 <option value="3">Reject</option>
                             </select>

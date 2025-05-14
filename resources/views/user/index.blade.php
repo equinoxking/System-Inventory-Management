@@ -53,7 +53,11 @@ function highlightStatusWords($message)
             'style' => 'background-color: #6c757d; color: #fff;',   
             'icon'  => '<i class="fas fa-times-circle"></i>'         
         ],
-        'Denied'  => [
+        'Disapproved'  => [
+            'style' => 'background-color: #dc3545; color: #fff;',  
+            'icon'  => '<i class="fas fa-ban"></i>'                 
+        ],
+        'denied'  => [
             'style' => 'background-color: #dc3545; color: #fff;',  
             'icon'  => '<i class="fas fa-ban"></i>'                 
         ],
@@ -65,7 +69,7 @@ function highlightStatusWords($message)
             'style' => 'background-color: #28A745; color: #fff;',  
             'icon'  => '<i class="fas fa-box-open"></i>'                
         ],
-        'Accepted'  => [
+        'Approved'  => [
             'style' => 'background-color: #28A745; color: #fff;',  
             'icon'  => '<i class="fas fa-check-circle"></i>'                
         ],

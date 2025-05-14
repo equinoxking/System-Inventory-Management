@@ -442,8 +442,12 @@ class TransactionsManager extends Controller
         'client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'
         ])
         ->where('user_id', $client_id)
-        ->whereIn('status_id', [2, 3, 4])
+        ->where(function ($query) {
+            $query->whereIn('status_id', [3, 4])
+                ->orWhere('remark', 'Completed');
+            })
         ->get();
+
  
         $formattedTransactions = $transactions->map(function ($transaction) {
             return [

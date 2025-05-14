@@ -13,6 +13,7 @@ use App\Models\AdminModel;
 use App\Models\ReportModel;
 use App\Models\RoleModel;
 use App\Models\SubCategoryModel;
+use App\Models\SupplierModel;
 use Illuminate\Support\Carbon;
 use App\Models\TransactionModel;
 class InventoryManager extends Controller
@@ -123,7 +124,28 @@ class InventoryManager extends Controller
         // Fetch items with their associated category, inventory, status, and receives relationships
         $items = ItemModel::with(['category', 'inventory', 'status', 'receives'])
             ->get();
+        $itemsReceives = ItemModel::with(['receives', 'inventory.unit', 'inventory'])->get();
 
+        // Transform each item and its receives into a structured array
+        $data = $itemsReceives->map(function ($item) {
+            return $item->receives->map(function ($receive) use ($item) {
+                return [
+                    'item_id' => $item->id,
+                    'category' => $item->category->name,
+                    'supplier' => $receive->supplier,
+                    'remaining_quantity' => $item->inventory->quantity,
+                    'received_id' => $receive->id,
+                    'remark' => $receive->remark,
+                    'max_quantity' => $item->inventory->max_quantity,
+                    'control_number' => $receive->control_number ?? '',
+                    'item_name' => $item->name,
+                    'unit_name' => $item->inventory->unit->name ?? '',
+                    'received_quantity' => $receive->received_quantity ?? 0,
+                    'created_at' => $receive->created_at->format('F d, Y H:i A'),
+                    'updated_at' => $receive->updated_at->format('F d, Y H:i A'),
+                ];
+            });
+        })->flatten(1);
         // Fetch all necessary related data
         $categories = CategoryModel::all();
         $units = UnitModel::all();
@@ -133,7 +155,7 @@ class InventoryManager extends Controller
         $reports = ReportModel::all();
         $roles = RoleModel::all();
         $sub_categories = SubCategoryModel::all();
-
+        $suppliers = SupplierModel::all();
         // Get the active section from the query parameter (default is 'items')
         $activeSection = $request->query('section', 'items');
 
@@ -164,7 +186,9 @@ class InventoryManager extends Controller
             'reports' => $reports,
             'roles' => $roles,
             'sub_categories' => $sub_categories,
-            'transactionUsers' => $transactionUsers
+            'transactionUsers' => $transactionUsers,
+            'data' => $data,
+            'suppliers' => $suppliers
         ], compact('activeSection'));
     }
     // Show categories and related data

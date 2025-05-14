@@ -6,7 +6,11 @@
 body {  
     background-color: #f8f9fa;  
    
-}  
+}
+html, body {
+    overflow: hidden;
+    height: 100%;
+}
 .card {  
     text-align: center;  
     padding: 20px;  
@@ -16,7 +20,7 @@ body {
     align-items: center;  
     box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);  
     border-radius: 10px;  
-    height: 80%;  
+    height: 100%;  
     position: relative;  
 }  
 .card-title {  
@@ -26,7 +30,6 @@ body {
     font-size: 16px;  
     font-weight: bold;  
     color: #6c757d;  
-    
 }  
 .icon {  
     font-size: 45px;  
@@ -91,55 +94,47 @@ body {
         <div class="col-9"> 
             <div class="card p-3">  
                 <div class="table-responsive"  style=" position: absolute; top: 0px; height: 100%; width: 90%">  
-                    <div class="text-left mt-2">
-                        <button id="toggleTableBtn" class="btn btn-sm btn-info  mb-3">
-                            Show Critical Items
-                        </button>                        
-                    </div>
                     <h4 class="mt-3" id="tableTitle">Top 10 Commonly Used Items for this Month</h4>
                     <div id="top10Container">
                         <table class="table table-bordered table-hover" style="font-size: 13px; width: 100%;" id="top10Table">  
                             <thead class="thead-light">  
                                 <tr>  
                                     <th style="width: 5%; text-align:left">No.</th>
-                                    <th style="width: 30%; text-align:left">Category</th>
-                                    <th style="width: 45%; text-align:left">Item Name</th>
-                                    <th style="width: 10%">Stock on Hand</th>
-                                    <th style="width: 5%;">Issued</th>  
-                                    <th style="width: 5%;">Request Frequency</th>  
+                                    <th>Item Name</th>
+                                    <th style="width: 12%">Stock on Hand</th>
+                                    <th style="width: 10%;">Buffer Stock</th>  
+                                    <th style="width: 14%;">Request Frequency</th>  
                                 </tr>  
                             </thead>  
                             <tbody>  
                                 @foreach ($top10IssuedItems as $index => $data)
-                                <tr>
+                                <tr class="{{ $data['item']->inventory->quantity == 0 ? 'table-danger text-dark' : '' }}">
                                     <td>{{ $index + 1 }}.</td>
-                                    <td  class="text-left">{{ $data['item']->category->name }}</td>
                                     <td class="text-left">{{ $data['item']->name }}</td>
-                                    <td  class="text-right">{{ $data['item']->inventory->quantity }}</td>
-                                    <td>{{ $data['total_issued'] }}</td>
+                                    <td  class="text-right">{{ $data['item']->inventory->quantity}}</td>
+                                    <td>{{ $data['item']->inventory->min_quantity }}</td>
                                     <td>{{ $data['request_count'] }}</td>
                                 </tr>
                             @endforeach
                             </tbody>  
                         </table>
                     </div>
-                    <div id="availableItemContainer" style="display: none;">
+                    <div id="availableItemContainer" >
+                        <h4 class="mt-3" id="tableTitle">Critical Items</h4>
                         <table id="availableItemTable" class="table table-bordered table-hover" style="font-size: 11px;">
                             <thead class="thead-light">  
                                 <tr>
-                                    <th width="30%">Category</th>
-                                    <th width="30%">Item Name</th>
-                                    <th width="5%">Issued</th>
-                                    <th width="7%">Stock On Hand</th>
+                                    <th>Item Name</th>
+                                    <th width="12%">Stock On Hand</th>
+                                    <th width="10%">Buffer Stock</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($criticalItemsWithSums as $itemData)
                                     <tr class="{{ $itemData['item']->inventory->quantity == 0 ? 'table-danger text-dark' : '' }}">
-                                        <td>{{ $itemData['item']->category->name }}</td>
                                         <td>{{ $itemData['item']->name }}</td>
-                                        <td>{{ number_format($itemData['total_transaction_sum']) }}</td>
                                         <td class="text-right">{{ $itemData['item']->inventory->quantity }}</td>
+                                        <td>{{ $itemData['item']->inventory->min_quantity  }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -151,7 +146,7 @@ body {
         <div class="col-md-3 mt-2">  
             <div class="row">  
                 <div class="col-md-6 ">  
-                    <div class="card">
+                    <div class="card" style="padding: 5px, 3px, 5px, 3px">
                         <h4 class="card-title">Registered Users</h4>
                     
                         <!-- Users Icon with Dropdown -->
@@ -227,7 +222,7 @@ body {
                 </div>      
                 <div class="col-md-6 ">  
                     <div class="card">  
-                        <h4 class="card-title">Purchased Items</h4>
+                        <h4 class="card-title">Delivered Items</h4>
                         <div class="dropdown" style="display: inline-block;">
                             <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-truck icon" style="color: #ffc107;7 font-size: 40px;"></i>
@@ -310,8 +305,8 @@ body {
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{{ url('/admin/reports/monthly-report') }}">View Month Reports</a></li>
                                 <li><a class="dropdown-item" href="{{ url('/admin/reports/quarterly-report') }}">View Quarterly Reports</a></li>
-                                <li><a class="dropdown-item generateReportBtn">Generate Utilization Report</a></li>
-                                <li><a class="dropdown-item pdfTransactionGenerationBtn">Generate Transaction Report</a></li>
+                                <li><a class="dropdown-item generateReportBtn">Periodic Utilization Report</a></li>
+                                <li><a class="dropdown-item pdfTransactionGenerationBtn">User Ledger Report</a></li>
                             </ul>
                         </div>
                         <div class="icon-number">
@@ -370,29 +365,36 @@ body {
 <script src="{{ asset('assets/js/admin/dashboard/units/edit-unit.js') }}"></script>
 <script src="{{ asset('assets/js/admin/dashboard/units/delete-unit.js') }}"></script>
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const statusSelect = document.getElementById("transaction_status");
-        const timeDivision = document.getElementById("releaseTimeDivision");
-        const reasonDivision = document.getElementById("denialReasonDivision");
-        const timeInput = document.getElementById("releaseTime");
+   document.addEventListener("DOMContentLoaded", function () {
+    const statusSelect = document.getElementById("transaction_status");
+    const timeDivision = document.getElementById("releaseTimeDivision");
+    const reasonDivision = document.getElementById("denialReasonDivision");
+    const timeInput = document.getElementById("releaseTime");
 
-        statusSelect.addEventListener("change", function () {
-            const value = this.value;
+    function updateDisplay(value) {
+        timeDivision.style.display = "none";
+        reasonDivision.style.display = "none";
 
-            timeDivision.style.display = "none";
-            reasonDivision.style.display = "none";
+        if (value === "2") {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            timeInput.value = `${hours}:${minutes}`;
+            timeDivision.style.display = "block";
+        } else if (value === "3") {
+            reasonDivision.style.display = "block";
+        }
+    }
 
-            if (value === "2") {
-                const now = new Date();
-                const hours = String(now.getHours()).padStart(2, '0');
-                const minutes = String(now.getMinutes()).padStart(2, '0');
-                timeInput.value = `${hours}:${minutes}`;
-                timeDivision.style.display = "block";
-            } else if (value === "3") {
-                reasonDivision.style.display = "block";
-            }
-        });
+    // 🔁 Initial run on page load
+    updateDisplay(statusSelect.value);
+
+    // 🔁 Re-run on selection change
+    statusSelect.addEventListener("change", function () {
+        updateDisplay(this.value);
     });
+});
+
 document.getElementById('edit-category-id').addEventListener('change', function () {
     var categoryId = this.value;
 

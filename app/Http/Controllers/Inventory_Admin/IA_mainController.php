@@ -52,7 +52,7 @@ class IA_mainController extends Controller
         $countTrails = TrailModel::count();
         $roles = RoleModel::all();
         $sub_categories = SubCategoryModel::all();
-        $items = ItemModel::with(['inventory', 'transacts.transactionDetail'])->get();
+        $items1 = ItemModel::with(['inventory', 'transacts.transactionDetail'])->get();
         $statuses = TransactionStatusModel::all();
         $units = UnitModel::all();
         $admins = AdminModel::all();
@@ -60,7 +60,7 @@ class IA_mainController extends Controller
             $query->where('request_month', $currentMonth);
         }])->get();
         
-        $top10IssuedItems = $items->map(function ($item) {
+        $top10IssuedItems = $items1->map(function ($item) {
             $totalIssuedQty = 0;
             $requestCount = 0; // Variable to track the request count
         
@@ -179,7 +179,61 @@ class IA_mainController extends Controller
         ->where(function ($query) {
             $query->where('remark', 'Completed');
         })
-        ->get();   
+        ->get();  
+         $now = Carbon::now();
+        $currentMonth = $now->month;
+        $currentYear = $now->year;
+
+        // Determine the current quarter based on the current month
+        $currentQuarter = ceil($currentMonth / 3);
+        if ($currentQuarter > 1) {
+            // For quarters 2, 3, and 4, calculate the start month of the previous quarter
+            $startMonth = ($currentQuarter - 2) * 3 + 1;
+            $quarterMonths = [$startMonth, $startMonth + 1, $startMonth + 2];
+            $year = $currentYear;
+        } else {
+            // For the first quarter, the previous quarter is in the last year (October to December)
+            $quarterMonths = [10, 11, 12];
+            $year = $currentYear - 1;
+        }
+
+        // Load items and their related transactions and inventory
+        $items = ItemModel::with(['transacts.transactionDetail', 'inventory'])->get();
+
+        // Iterate through all items
+        foreach ($items as $item) {
+            // Filter only 'Completed' transactions for this item
+            $filteredTransacts = $item->transacts->filter(function ($transact) {
+                return $transact->remark === 'Completed';
+            })->flatMap(function ($transact) {
+                // Get transaction details if available
+                return $transact->transactionDetail ? collect([$transact->transactionDetail]) : collect();
+            })->filter(function ($detail) use ($quarterMonths, $year) {
+                // Filter details based on the quarter months and year
+                return in_array((int) $detail->request_month, $quarterMonths) && $detail->request_year == $year;
+            });
+
+            // Group filtered transaction details by month and sum the request quantity for each month
+            $monthlyRequests = $filteredTransacts->groupBy('request_month')->map(function ($group) {
+                return $group->sum('request_quantity');
+            });
+
+            // Calculate the total requested quantity over the quarter
+            $total = $monthlyRequests->sum();
+
+            if ($total === 0) {
+                // If no transactions found, fallback to existing min_quantity from inventory
+                $minQuantity = optional($item->inventory)->min_quantity;
+            } else {
+                // If there are requests, calculate a new min_quantity based on the total request
+                $minQuantity = round(($total / 3) * 2);
+            }
+
+            // Only update inventory if the min_quantity has changed
+            if ($item->inventory && $minQuantity !== optional($item->inventory)->min_quantity) {
+                $item->inventory->min_quantity = $minQuantity;
+            }
+        } 
         return view('admin.index', [
             'countclients' => $countclients,
             'transactions' => $transaction,

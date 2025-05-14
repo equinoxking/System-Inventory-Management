@@ -140,52 +140,17 @@
                 <div class="row">
                     <form id="generate-transaction-form">
                     <div class="form-group">
-                        <label for="selectOption" class="font-weight-bold">Pdf Option</label>
+                        <label for="selectOption" class="font-weight-bold">User</label>
                         <select name="selection" id="selection" class="form-control">
                             <option value="">Select Option</option>
                             <option value="All">All</option>
-                            <option value="User">User</option>
+                            @foreach ($clients as $client)
+                                <option value="{{ $client->id }}">{{ $client->full_name }}</option> 
+                            @endforeach
                         </select>
                     </div>
-                    <div class="form-group" style="display: none">
-                        <label for="user" class="font-weight-bold">Users</label>
-                        <select name="user_selection" id="user" class="form-control">
-                            <optgroup label="Users" class="font-weight-bold">
-                                @php
-                                    $uniqueUsers = collect();
-                                @endphp
-                                @foreach ($transactionUsers as $transaction)
-                                    @if ($transaction->client && !$uniqueUsers->contains('id', $transaction->client->id))
-                                        @php
-                                            $uniqueUsers->push($transaction->client);
-                                        @endphp
-                                        <option value="user-{{ $transaction->client->id }}">
-                                            {{ $transaction->client->full_name }}
-                                        </option>
-                                    @endif
-                                @endforeach
-                            </optgroup>
-                        
-                            <optgroup label="Admins" class="font-weight-bold">
-                                @php
-                                    $uniqueAdmins = collect();
-                                @endphp
-                                @foreach ($transactionUsers as $transaction)
-                                    @if ($transaction->admin && !$uniqueAdmins->contains('id', $transaction->admin->id))
-                                        @php
-                                            $uniqueAdmins->push($transaction->admin);
-                                        @endphp
-                                        <option value="admin-{{ $transaction->admin->id }}">
-                                            {{ $transaction->admin->full_name }}
-                                        </option>
-                                    @endif
-                                @endforeach
-                            </optgroup>
-                        </select>                        
                     </div>
-
-                    </div>
-                    <div class="form-group" style="display: none">
+                    <div class="form-group">
                         <label for="admin" class="font-weight-bold">Prepared By:</label>
                         <select name="admin" id="admin" class="form-control">
                             <option value="">Select Admin</option>

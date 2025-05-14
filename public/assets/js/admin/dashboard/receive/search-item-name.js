@@ -1,11 +1,48 @@
 $(document).ready(function() {
     $('#addRequest-btn').click(function() {
-        var firstRow = $('.receive-item-row:first'); 
-        var newRow = firstRow.clone();
-        newRow.find('input').val('');
-        newRow.find('textarea').val(''); 
-        $('#receivedItem-container').prepend(newRow);
-        $('#receivedItem-container').append(firstRow);
+       var lastRow = $('.receive-item-row:last'); // Get the last row (with editable inputs)
+        var newRow = lastRow.clone(); // Clone that row
+
+        // Clear other fields but preserve P.O and Supplier
+        newRow.find('input').not('#control_number_received, #supplier').val('');
+
+        // Get P.O and Supplier values from the last row
+        var poNumber = lastRow.find('#control_number_received').val();
+        var supplier = lastRow.find('#supplier').val();
+
+        // Set P.O and Supplier to readonly in the new row
+        newRow.find('#control_number_received').val(poNumber).attr('readonly', true);
+        newRow.find('#supplier').val(supplier).attr('readonly', true);
+
+        // Add the hidden supplier field for each row
+        newRow.find('#supplier').prop('disabled', false);  // Enable the select input for user interaction
+        var supplierValue = newRow.find('#supplier').val();  // Get the supplier value
+        newRow.find('#supplier').after('<input type="hidden" name="supplier[]" value="' + supplierValue + '">'); // Create hidden input field to ensure it's submitted
+
+        // Add remove button functionality
+        newRow.find('.remove-deliver-item').off('click').on('click', function () {
+            var row = $(this).closest('.receive-item-row');
+
+            // Prevent removing the last row (the original row)
+            if (row.is($('.receive-item-row:last'))) {
+                alert("You cannot delete the original row.");
+            } else {
+                row.remove();
+            }
+        });
+
+        // Insert the new row before the last row
+        newRow.insertBefore('.receive-item-row:last');
+    });
+
+    // Initial Remove Button Setup (only if needed)
+    $(document).on('click', '.remove-deliver-item', function () {
+        var row = $(this).closest('.receive-item-row');
+        if (row.is($('.receive-item-row:last'))) {
+            alert("You cannot delete the original row.");
+        } else {
+            row.remove();
+        }
     });
 });
 let currentItemIndex = -1;

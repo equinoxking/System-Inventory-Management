@@ -134,7 +134,7 @@ class AdminTransactionManager extends Controller
                                 $notification->status = "Denied";
                                 $notification->save();
                                 return response()->json([
-                                    'message' => "This request will be denied automatically due to insufficient inventory!",
+                                    'message' => "This request will be disapproved automatically due to insufficient inventory!",
                                     'status' => 501
                                 ]);
                             }else{
@@ -184,7 +184,7 @@ class AdminTransactionManager extends Controller
                             $user->status = "Issued";
                             $message = "Your request with transaction number " . 
                             $transaction->transaction_number . 
-                            " has been accepted, and this transaction has been marked as " . $transaction->remark . ".";
+                            " has been approved, and this transaction has been marked as " . $transaction->remark . ".";
                             $user->message = $message;
                             $user->save();
 
@@ -251,7 +251,7 @@ class AdminTransactionManager extends Controller
                             $user->status = "Denied";
                             $message = "Your request with transaction number " . 
                             $transaction->transaction_number . 
-                            " has been denied due to ". $transaction->reason . ", and this transaction has been marked as Denied.";
+                            " has been denied due to ". $transaction->reason . ", and this transaction has been marked as Disapproved.";
                             $user->message = $message;
                             $user->save();
                            

@@ -11,7 +11,8 @@ class User_mainController extends Controller
 {
     public function goToDashboard()
     {
-        $notifications = UserNotificationModel::with(['client', 'admin'])->get();
+        $client_id = session()->get('loginCheckUser')['id'];
+        $notifications = UserNotificationModel::with(['client', 'admin'])->where('user_id', $client_id)->get();
         return view('user.index' , compact('notifications'));
     }
 
