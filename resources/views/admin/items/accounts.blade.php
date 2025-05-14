@@ -32,7 +32,6 @@
                     <th width="8%">System Role</th>
                     <th width="5%">Office</th>
                     <th width="8%">Position</th>
-                    <th width="10%">Date/Time Created</th>
                     <th width="5%">Status</th>
                     <th width="5%">Action</th>
                 </thead>
@@ -46,7 +45,6 @@
                                 <td>{{ $client->role->name }}</td>
                                 <td>{{ $client->office }}</td>
                                 <td>{{ $client->position }}</td>
-                                <td>{{ \Carbon\Carbon::parse($client->created_at)->format('F d, Y h:i A') }}</td>
                                 <td id="user_status" class="text-center">
                                     @if($client->status && $client->status == 'Active')
                                         <span class="badge badge-success" style="width: 4rem; font-size: 10px;" id="status-badge">
@@ -91,7 +89,6 @@
                     <th>Full Name</th>
                     <th width="10%">System Role</th>
                     <th width="10%">Office Position</th>
-                    <th width="10%">Date/Time Created</th>
                     <th width="10%">Status</th>
                     <th width="5%">Action</th>
                 </thead>
@@ -105,7 +102,6 @@
                                 {{ preg_replace('/([a-z])([A-Z])/', '$1 $2', $admin->role->name) }}
                             </td>
                             <td>{{ $admin->position }}</td>
-                            <td>{{ \Carbon\Carbon::parse($admin->created_at)->format('F d, Y H:i A') }}</td>
                             <td id="user_status" class="text-center">
                                 @if($admin->status && $admin->status == 'Active')
                                     <span class="badge badge-success" style="width: 4rem; font-size: 10px;" id="status-badge">

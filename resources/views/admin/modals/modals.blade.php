@@ -366,7 +366,11 @@
                         </div>
                         <div class="col-md-2 form-group">
                             <label for="supplier" class="font-weight-bold">Supplier</label>
-                            <input type="text" class="form-control" name="supplier[]" id="supplier" placeholder="Enter supplier" min="0">
+                            <select name="supplier[]" id="supplier" class="form-control">
+                                @foreach ($suppliers as $supplier)
+                                    <option value="{{ $supplier->name }}">{{ $supplier->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="col-md-3 form-group">
                             <label for="itemName" class="font-weight-bold">Item Name</label>

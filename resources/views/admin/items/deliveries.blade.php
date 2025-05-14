@@ -31,12 +31,12 @@
             <div class="row mb-3 mt-2 receive-item-row">
                 <div class="col-md-2 form-group">
                     <label for="control_number_received" class="font-weight-bold">P.O Number</label>
-                    <input type="text" class="form-control" name="control_number[]" id="control_number_received" placeholder="Enter control number">
+                    <input type="text" class="form-control control_number_received" name="control_number[]"  placeholder="Enter control number">
                 </div>
                 <div class="col-md-2 form-group">
                     <label for="supplier" class="font-weight-bold">Supplier</label>
                     {{-- <input type="text" class="form-control" name="supplier[]" id="supplier" placeholder="Enter supplier" min="0"> --}}
-                    <select name="supplier[]" id="supplier" class="form-control">
+                    <select name="supplier[]"class="form-control supplier">
                         @foreach ($suppliers as $supplier)
                             <option value="{{ $supplier->name }}">{{ $supplier->name }}</option>
                         @endforeach

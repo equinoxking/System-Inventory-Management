@@ -143,9 +143,9 @@ html, body {
                 </div>  
             </div>  
         </div> 
-        <div class="col-md-3 mt-2">  
+        <div class="col-md-3">  
             <div class="row">  
-                <div class="col-md-6 ">  
+                <div class="col-md-6 mb-1">  
                     <div class="card" style="padding: 5px, 3px, 5px, 3px">
                         <h4 class="card-title">Registered Users</h4>
                     
@@ -172,7 +172,7 @@ html, body {
                         </div>
                     </div>
                 </div>  
-                <div class="col-md-6 ">  
+                <div class="col-md-6 mb-1">  
                     <div class="card">  
                         <h4 class="card-title">Pending Transactions</h4> 
                         <div class="dropdown" style="display: inline-block;">
@@ -196,7 +196,7 @@ html, body {
                         </div>
                     </div>  
                 </div>  
-                <div class="col-md-6 ">  
+                <div class="col-md-6 mb-1">  
                     <div class="card">  
                         <h4 class="card-title">Critical Items</h4>
                         <div class="dropdown" style="display: inline-block;">
@@ -220,7 +220,7 @@ html, body {
                         </div>
                     </div>  
                 </div>      
-                <div class="col-md-6 ">  
+                <div class="col-md-6 mb-1">  
                     <div class="card">  
                         <h4 class="card-title">Delivered Items</h4>
                         <div class="dropdown" style="display: inline-block;">
@@ -244,7 +244,7 @@ html, body {
                 </div>  
             </div>  
             <div class="row">  
-                <div class="col-md-6">  
+                <div class="col-md-6 mb-1">  
                     <div class="card">  
                         <h4 class="card-title">Item Categories</h4>  
                         
@@ -270,7 +270,7 @@ html, body {
                         </div> 
                     </div>  
                 </div>  
-                <div class="col-md-6">  
+                <div class="col-md-6 mb-1">  
                     <div class="card">  
                         <h4 class="card-title" style="font-size: 14px;">Item Units of Measurement</h4> 
                         <div class="dropdown" style="display: inline-block;">
@@ -294,7 +294,7 @@ html, body {
                         </div>
                     </div>  
                 </div>  
-                <div class="col-md-6 ">  
+                <div class="col-md-6 mb-1">  
                     <div class="card">  
                         <h4 class="card-title">Generated Reports</h4>
                         <div class="dropdown" style="display: inline-block;">

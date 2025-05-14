@@ -34,7 +34,6 @@
                     <th width="10%">Unit Number</th>
                     <th width="20%">Unit Name</th>
                     <th width="55%">Description</th>
-                    <th width="10%">Date/Time Created</th>
                     <th width="5%" class="text-center">Action</th>
                    
                 </thead>
@@ -44,7 +43,6 @@
                             <td>{{ $unit->control_number}}</td>
                             <td>{{ $unit->name }}</td>
                             <td>{{ $unit->description }}</td>
-                            <td>{{ \Carbon\Carbon::parse($unit->created_at)->format('F d, Y H:i A') }}</td>
                             <td class="text-center">
                                 <button type="button" class="btn btn-warning" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="editUnit('{{ addslashes(json_encode($unit)) }}')" title="Edit unit button"><i class="fa fa-edit" style="color: white;"></i></button>
                                 <button type="button" class="btn btn-danger" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="deleteUnit('{{ addslashes(json_encode($unit)) }}')" title="Delete unit button"><i class="fa fa-trash" style="color: white;"></i></button>

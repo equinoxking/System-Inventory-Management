@@ -19,6 +19,7 @@ use App\Http\Controllers\User\Transactions\TransactionsManager;
 use App\Http\Controllers\Inventory_Admin\Report\PdfReportManager;
 use App\Http\Controllers\Inventory_Admin\Accounts\AdminManager;
 use App\Http\Controllers\Inventory_Admin\Pdf\ReportTransactionManager;
+use App\Http\Controllers\Inventory_Admin\Items\SupplierManager;
 use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
 use App\Http\Controllers\Inventory_Admin\Dashboard\DashboardAccountManager;
 use App\Http\Controllers\User\User_functionController;
@@ -84,6 +85,7 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::get('/admin/lookup-tables/categories','showCategories');
         Route::get('/admin/lookup-tables/units','showUnits');
         Route::get('/admin/lookup-tables/user-accounts','showAccounts');
+        Route::get('/admin/lookup-tables/suppliers','showSuppliers');
     });
     //Route for Delivery Controller 
     Route::controller(ReceivedManager::class)->group(function(){
@@ -136,6 +138,12 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::patch('/dashboard-change-user-role', 'setUserRoleDashboard');
         Route::patch('/dashboard-change-user-status', 'changeUserStatus');
         Route::patch('/dashboard-change-transaction-status', 'updateTransactionStatus');
+    });
+    //Route for Supplier Controller 
+    Route::controller(SupplierManager::class)->group(function(){
+        Route::post('/add-supplier', 'addSupplier');
+        Route::patch('/update-supplier','updateSupplier');
+        Route::delete('/delete-supplier','deleteSupplier');
     });
     //Route for Admin Function Controller 
     Route::controller(IA_functionController::class)->group(function(){

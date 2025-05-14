@@ -16,6 +16,7 @@ use App\Models\NotificationModel;
 use App\Models\ReportModel;
 use App\Models\RoleModel;
 use App\Models\SubCategoryModel;
+use App\Models\SupplierModel;
 use App\Models\TransactionDetailModel;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -56,6 +57,7 @@ class IA_mainController extends Controller
         $statuses = TransactionStatusModel::all();
         $units = UnitModel::all();
         $admins = AdminModel::all();
+        $suppliers = SupplierModel::all();
         $itemsForMonth = ItemModel::with(['transacts.transactionDetail' => function ($query) use ($currentMonth) {
             $query->where('request_month', $currentMonth);
         }])->get();
@@ -258,7 +260,8 @@ class IA_mainController extends Controller
             'sub_categories' => $sub_categories,
             'units' => $units,
             'admins' => $admins,
-            'transactionUsers' => $transactionUsers
+            'transactionUsers' => $transactionUsers,
+            'suppliers' => $suppliers
         ]);
     }
     public function goToTransactions(){

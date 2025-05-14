@@ -1,48 +1,43 @@
 $(document).ready(function() {
-    $('#addRequest-btn').click(function() {
-       var lastRow = $('.receive-item-row:last'); // Get the last row (with editable inputs)
-        var newRow = lastRow.clone(); // Clone that row
+    $('#addRequest-btn').click(function () {
+        var lastRow = $('.receive-item-row:last');
+        var poNumber = lastRow.find('.control_number_received').val();
+        var supplier = lastRow.find('.supplier').val();
 
-        // Clear other fields but preserve P.O and Supplier
-        newRow.find('input').not('#control_number_received, #supplier').val('');
+        // Check if P.O. Number or Supplier is empty
+        if (!poNumber || !supplier) {
+            alert("Please enter both P.O. Number and Supplier before adding another row.");
+            return;
+        }
 
-        // Get P.O and Supplier values from the last row
-        var poNumber = lastRow.find('#control_number_received').val();
-        var supplier = lastRow.find('#supplier').val();
+        var newRow = lastRow.clone();
 
-        // Set P.O and Supplier to readonly in the new row
-        newRow.find('#control_number_received').val(poNumber).attr('readonly', true);
-        newRow.find('#supplier').val(supplier).attr('readonly', true);
+        // Clear other fields except P.O and Supplier
+        newRow.find('input').not('.control_number_received').val('');
 
-        // Add the hidden supplier field for each row
-        newRow.find('#supplier').prop('disabled', false);  // Enable the select input for user interaction
-        var supplierValue = newRow.find('#supplier').val();  // Get the supplier value
-        newRow.find('#supplier').after('<input type="hidden" name="supplier[]" value="' + supplierValue + '">'); // Create hidden input field to ensure it's submitted
+        // Set values and disable in the new row
+        newRow.find('.control_number_received').val(poNumber).prop('readonly', true);
+        newRow.find('.supplier').val(supplier).prop('disabled', true);
 
-        // Add remove button functionality
+        // Add hidden input to keep supplier value
+        newRow.find('.supplier').after('<input type="hidden" name="supplier[]" value="' + supplier + '">');
+
+        // Insert before the last row
+        newRow.insertBefore('.receive-item-row:last');
+
+        // Disable the original row fields
+        $('.receive-item-row:first').find('.control_number_received').prop('readonly', true);
+        $('.receive-item-row:first').find('.supplier').prop('disabled', true);
+
+        // Remove button functionality
         newRow.find('.remove-deliver-item').off('click').on('click', function () {
-            var row = $(this).closest('.receive-item-row');
-
-            // Prevent removing the last row (the original row)
+        var row = $(this).closest('.receive-item-row');
             if (row.is($('.receive-item-row:last'))) {
                 alert("You cannot delete the original row.");
             } else {
                 row.remove();
             }
         });
-
-        // Insert the new row before the last row
-        newRow.insertBefore('.receive-item-row:last');
-    });
-
-    // Initial Remove Button Setup (only if needed)
-    $(document).on('click', '.remove-deliver-item', function () {
-        var row = $(this).closest('.receive-item-row');
-        if (row.is($('.receive-item-row:last'))) {
-            alert("You cannot delete the original row.");
-        } else {
-            row.remove();
-        }
     });
 });
 let currentItemIndex = -1;
