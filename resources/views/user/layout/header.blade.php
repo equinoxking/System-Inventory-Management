@@ -20,6 +20,12 @@
                        <i class="fas fa-credit-card"></i> Transactions
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" id="generatePdfReportBtn"
+                        style="{{ Request::is('user/report*') ? 'background-color: #3d5c99;' : '' }}">
+                        <i class="fas fa-chart-bar ml-1"></i> Report
+                    </a>
+                </li>
             </ul>
             <ul class="navbar-nav logout">
                 <button class="btn btn-danger" id="signOutButton" title="Logout button"><i class="fa fa-power-off"></i></button>

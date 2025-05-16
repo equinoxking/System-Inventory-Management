@@ -69,12 +69,12 @@ class InventoryManager extends Controller
                 // If there are requests, calculate a new min_quantity based on the total request
                 $minQuantity = round(($total / 3) * 2);
             }
-
             // Only update inventory if the min_quantity has changed
             if ($item->inventory && $minQuantity !== optional($item->inventory)->min_quantity) {
                 $item->inventory->min_quantity = $minQuantity;
             }
         }
+       
 
         // Load other necessary data for view (categories, units, statuses, etc.)
         $categories = CategoryModel::all();

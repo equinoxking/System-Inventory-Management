@@ -28,10 +28,10 @@
                         <i class="fas fa-chart-bar mr-1"></i>Reports
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
-                        <li><a class="dropdown-item text-dark generateReportBtn">Generate Periodic Utilization Report</a></li>
-                        <li><a class="dropdown-item text-dark pdfTransactionGenerationBtn">Generate User Ledger Report</a></li>
-                        <li><a class="dropdown-item text-dark" href="{{ url('/admin/reports/monthly-report') }}">Periodic Utilization Report (Monthly)</a></li>
-                        <li><a class="dropdown-item text-dark" href="{{ url('/admin/reports/quarterly-report') }}">Periodic Utilization Report (Quarterly)</a></li>
+                        <li><a class="dropdown-item text-dark" href="{{ url('/admin/reports/monthly-report') }}">Monthly Report (Summary)</a></li>
+                        <li><a class="dropdown-item text-dark generateReportBtn">Inventory Report</a></li>
+                        <li><a class="dropdown-item text-dark" href="{{ url('/admin/reports/quarterly-report') }}">Quarterly Report (Summary)</a></li>
+                        <li><a class="dropdown-item text-dark pdfTransactionGenerationBtn">User Ledger Report</a></li>
                     </ul>
                 </li>                
                 <li class="nav-item dropdown">
@@ -48,11 +48,25 @@
                         <li><a class="dropdown-item text-dark" href="{{ url('/admin/lookup-tables/suppliers') }}">Suppliers</a></li>
                     </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url('/admin/trails') }}" 
-                       style="{{ (Request::is('admin/trails')) ? 'background-color: #3d5c99;' : '' }}">
-                       <i class="fas fa-history mr-1"></i>Activity Logs   
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle {{ Request::is('admin/trails*') ? 'active' : '' }}"
+                    href="#" id="activityLogsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-history mr-1"></i>Activity Logs
                     </a>
+                    <ul class="dropdown-menu" aria-labelledby="activityLogsDropdown">
+                        <li>
+                            <a class="dropdown-item text-dark {{ Request::is('admin/trails/admin') ? 'active' : '' }}" 
+                            href="{{ url('/admin/trails/admin') }}">
+                            Admin Activity Logs
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item text-dark {{ Request::is('admin/trails/user') ? 'active' : '' }}" 
+                            href="{{ url('/admin/trails/user') }}">
+                            User Activity Logs
+                            </a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
             @php

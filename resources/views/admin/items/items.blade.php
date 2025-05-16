@@ -81,10 +81,6 @@
 <div class="container-fluid card mb-1 w-100" style="max-height: 700px; overflow-y: auto;">
     <div class="row">
         <div class="col-md-2 form-group mt-3">
-            <label for="category-filter">Filter by Category: </label>
-            <input type="text" id="category-filter" class="form-control" placeholder="Search category">
-        </div>
-        <div class="col-md-2 form-group mt-3">
             <label for="unit-filter">Filter by Unit: </label>
             <input type="text" id="unit-filter" class="form-control" placeholder="Search unit">
         </div>
@@ -131,29 +127,40 @@
                     </thead>
                     <tbody>
                         @foreach ($items as $item)
-                            <tr @if ($item->inventory->quantity < $item->inventory->min_quantity) style="background-color: #f8d7da;" @endif>
+                            @php
+                                $quantity = $item->inventory->quantity;
+                                $minQuantity = $item->inventory->min_quantity;
+                                $rowStyle = '';
+
+                                if ($quantity == 0) {
+                                    $rowStyle = 'background-color: #f8d7da;'; // Red - danger
+                                } elseif ($quantity <= $minQuantity) {
+                                    $rowStyle = 'background-color: #fff3cd;'; // Yellow - warning
+                                }
+                            @endphp
+
+                            <tr style="{{ $rowStyle }}">
                                 <td>{{ $item->controlNumber }}</td>
                                 <td>{{ $item->name }}</td>
                                 <td>{{ $item->inventory->unit->name ?? 'N/A' }}</td>
-                                <td>{{ $item->inventory->quantity }}</td>
-                                <td>{{ $item->inventory->min_quantity}}</td>
+                                <td>{{ $quantity }}</td>
+                                <td>{{ $minQuantity }}</td>
                                 <td>
-                                    @if ($item->inventory->quantity == 0 && $item->status->name == "Available")
+                                    @if ($quantity == 0 && $item->status->name == "Available")
                                         <span class="badge badge-danger"><i class="fas fa-times-circle"></i> Unavailable</span>
                                     @elseif ($item->status->name == 'Available')
                                         <span class="badge badge-success"><i class="fas fa-check-circle"></i> Available</span>
                                     @endif
                                 </td>
-                                
                                 <td>
-                                    @if ($item->inventory->quantity <= $item->inventory->min_quantity)
+                                    @if ($quantity <= $minQuantity)
                                         <span class="badge badge-noStock"><i class="fas fa-times-circle"></i> Critical</span>
                                     @else
                                         <span class="badge badge-highStock"><i class="fas fa-check-circle"></i> Normal</span>
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <button class="btn btn-warning btn-sm"  id="itemEditBtn" onclick="editItem('{{ addslashes(json_encode($item)) }}')"><i class="fa fa-edit" ></i></button>
+                                    <button class="btn btn-warning btn-sm" id="itemEditBtn" onclick="editItem('{{ addslashes(json_encode($item)) }}')"><i class="fa fa-edit"></i></button>
                                     <button class="btn btn-danger btn-sm" id="itemDeleteBtn" onclick="deleteItem('{{ addslashes(json_encode($item)) }}')"><i class="fa fa-trash"></i></button>
                                 </td>
                             </tr>
@@ -246,5 +253,26 @@
 <script src="{{ asset('assets/js/admin/items/add-item-functions/unit-search.js') }}"></script>
 <script src="{{ asset('assets/js/admin/items/delete-item.js') }}"></script>
 <script src="{{ asset('assets/js/admin/items/edit-item.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('set_critical') === 'true') {
+            const stockFilter = document.getElementById('stock-level-filter');
+            if (stockFilter) {
+                stockFilter.value = 'critical';
+                // Trigger change event
+                stockFilter.dispatchEvent(new Event('change'));
+
+                // Wait a moment then redraw DataTable
+                setTimeout(() => {
+                    if ($.fn.dataTable.isDataTable('#itemsTable')) {
+                        $('#itemsTable').DataTable().draw();
+                    }
+                }, 100); // Delay ensures filter value is applied before redraw
+            }
+        }
+    });
+</script>
+
 
     

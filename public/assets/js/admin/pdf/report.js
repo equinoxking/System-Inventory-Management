@@ -30,29 +30,34 @@ $(document).ready(function(){
                     }
                 });
             },
-            success: function(response){
+            success: function(response) {
                 let blob = new Blob([response], { type: 'application/pdf' });
-                let link = document.createElement('a');
                 let url = window.URL.createObjectURL(blob);
-                const filename = 'inventory-report-' + new Date().toLocaleString('default', { month: 'long' }) + '-' + new Date().getFullYear() + '.pdf';
-            
-                link.href = url;
-                link.download = filename;  
+                const filename = 'inventory-report-' + 
+                    new Date().toLocaleString('default', { month: 'long' }) + '-' + 
+                    new Date().getFullYear() + '.pdf';
 
-                let newWindow = window.open(url, '_blank');
-                newWindow.focus();
+                let newWindow = window.open(); // Open immediately to avoid popup blocker
 
-                link.click();
-            
+                if (newWindow) {
+                    newWindow.location.href = url;
+                    newWindow.focus();
+                } else {
+                    // Fallback to download if popup blocked
+                    let link = document.createElement('a');
+                    link.href = url;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    alert('Popup blocked! File has been downloaded instead and you can view the pdf on the very top on your archive.');
+                }
+
                 window.URL.revokeObjectURL(url);
 
                 Swal.close();
                 $('#report-submit-btn').attr('disabled', false);
-            }, 
-            error: function(error){
-                console.log(error);
-            }
-            
+            },
         });
     });
   });

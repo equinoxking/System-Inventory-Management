@@ -190,7 +190,7 @@ class AdminTransactionManager extends Controller
 
                             $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
                             $user_id = null;
-                            $activity = "Updated the remarks of Transaction No." . $transaction->transaction_number . " into item received.";
+                            $activity = "Updated the remarks of Transaction No." . $transaction->transaction_number . " into item released.";
                             (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
 
                             if (!$inventory || !$notification) {

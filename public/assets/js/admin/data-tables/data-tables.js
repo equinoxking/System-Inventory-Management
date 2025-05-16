@@ -17,20 +17,20 @@ $(function () {
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
         let min = parseFloat($('#min-quantity-filter').val()) || 0;
         let max = parseFloat($('#max-quantity-filter').val()) || Infinity;
-        let quantity = parseFloat(data[4]) || 0;
+        let quantity = parseFloat(data[3]) || 0;
 
         return quantity >= min && quantity <= max;
     });
 
     $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
         let stockFilter = $('#stock-level-filter').val();
-        let quantity = parseFloat(data[4]) || 0;
-        let buffer = parseFloat(data[5]) || 0;
+        let quantity = parseFloat(data[3]) || 0;
+        let buffer = parseFloat(data[4]) || 0;
 
         if (stockFilter === 'critical') {
-            return quantity < buffer;
+            return quantity <= buffer;
         } else if (stockFilter === 'normal') {
-            return quantity >= buffer;
+            return quantity > buffer;
         }
         return true;
     });
@@ -42,7 +42,7 @@ $(function () {
 
     $('#unit-filter').on('keyup', function () {
         var val = $(this).val();
-        table.column(3).search(val, false, true).draw(); 
+        table.column(2).search(val, false, true).draw(); 
     });
 
     $('#status-filter').on('change', function () {
@@ -50,8 +50,8 @@ $(function () {
 
         table.rows().every(function () {
             var row = this.node();
-            var quantity = parseInt($(row).find('td').eq(4).text().trim(), 10);
-            var statusText = $(row).find('td').eq(7).text().trim().toLowerCase();
+            var quantity = parseInt($(row).find('td').eq(3).text().trim(), 10);
+            var statusText = $(row).find('td').eq(5).text().trim().toLowerCase();
 
             var showRow = false;
 

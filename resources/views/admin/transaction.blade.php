@@ -140,8 +140,6 @@
         </div>
     </div>
 </div>
-
-
 @endsection
 <div class="modal fade" id="transactionStatusModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -162,7 +160,7 @@
                         <div class="form-group" >
                             <label for="status">Status</label>
                             <select name="status" id="status" class="form-control" onchange="toggleSelection()">
-                                <option value="2">Released</option>
+                                <option value="2">Release</option>
                                 <option value="3">Disapprove</option>
                             </select>
                         </div>

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('role_id')->references('id')->on('roles')->onDelete('cascade');
             $table->string('full_name' , 60);
             $table->string('employee_number', 30)->unique();
+            $table->string('division', 255)->nullable();
             $table->string('office', 10);
             $table->string('position', 60);
             $table->string('email' , 100)->unique();

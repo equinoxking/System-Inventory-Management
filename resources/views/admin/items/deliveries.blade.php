@@ -37,6 +37,7 @@
                     <label for="supplier" class="font-weight-bold">Supplier</label>
                     {{-- <input type="text" class="form-control" name="supplier[]" id="supplier" placeholder="Enter supplier" min="0"> --}}
                     <select name="supplier[]"class="form-control supplier">
+                        <option value="">Select Supplier</option>
                         @foreach ($suppliers as $supplier)
                             <option value="{{ $supplier->name }}">{{ $supplier->name }}</option>
                         @endforeach
@@ -70,7 +71,7 @@
                 </div>
                 <div class="col-md-1 form-group">
                     <label for="" class="font-weight-bold">&nbsp</label>
-                    <button type="submit" id="receivedItemSubmit-btn" class="btn btn-warning rounded px-4 py-2 form-control">Submit</button>
+                    <button type="submit" id="receivedItemSubmit-btn" class="btn btn-warning rounded px-4 py-2 form-control">Save</button>
                 </div>
             </div>
         </div>

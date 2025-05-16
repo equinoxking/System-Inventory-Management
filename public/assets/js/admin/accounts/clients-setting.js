@@ -44,6 +44,17 @@ $(document).ready(function(){
                         }).then(function() {
                             $('#set-role-submit-btn').attr('disabled', false);
                         });
+                }else if(response.status === 403){
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: response.message,
+                            showConfirmButton: true,
+                        }).then(function() {
+                            $('#set-role-submit-btn').attr('disabled', false);
+                            $('#addAdminModal').modal('show');
+                            $('#setUserModal').modal('hide');
+                        });
                 }else if(response.status === 200){
                     Swal.fire({
                     icon: "success",

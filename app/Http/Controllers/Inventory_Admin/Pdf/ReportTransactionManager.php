@@ -13,6 +13,7 @@ use App\Models\TransactionModel;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
+use App\Models\ClientModel;
 use Intervention\Image\Facades\Image;
 use DateTime;
 class ReportTransactionManager extends Controller
@@ -236,7 +237,7 @@ class ReportTransactionManager extends Controller
     // }
     public function generateTransactionReport(Request $request){
         $validator = Validator::make($request->all(), [
-            'selection' => 'required',
+            'selectOption' => 'required',
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -244,32 +245,76 @@ class ReportTransactionManager extends Controller
                 'message' => $validator->errors()
             ]);
         } else {
-            $selectionOption = $request->get('selection');
-            if($selectionOption == "All"){
+            $selectedOption = $request->get('selectOption');
+            switch($selectedOption){
+                case 'User' :
+                $selectionOption = $request->get('selection');
+                if($selectionOption == "All"){
+                    $division = null; 
+                    $selectionOption = $request->get('selection');
+                    $transactions = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'])
+                        ->where('remark', 'Completed')
+                        ->orWhere('remark', 'Denied')
+                        ->orWhere('remark', 'Canceled')
+                        ->get();
+                        $now = Carbon::now('Asia/Manila')->format('F j, Y h:i A');
+                        $preparedBy = AdminModel::where('id', $request->get('admin'))->first();
+                        $logoPh = $this->getCompressedBase64Image('assets/images/LOGO-PH.png', 'png');
+                        $logoWebp = $this->getCompressedBase64Image('assets/images/LOGO.webp', 'webp');
+                        $generatedBy = AdminModel::where('id', session()->get('loggedInInventoryAdmin')['id'])->first();
+                        $data = [
+                            'transactions' => $transactions,
+                            'preparedBy' => $preparedBy,
+                            'logo' => $logoWebp,
+                            'logoPh' => $logoPh,
+                            'generatedBy' => $generatedBy,
+                            'selection' => $selectionOption,
+                            'division' => $division
+                        ];
+
+                        $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                        $user_id = null;
+                        $activity = "Generated transaction PDF - All Records.";
+                        (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
+
+                        $pdf = PDF::loadView('admin.pdf.all-transactions', $data, compact('now'))
+                            ->setPaper('legal', 'landscape')
+                            ->setOptions([
+                                'isHtml5ParserEnabled' => true,
+                                'isRemoteEnabled' => true,
+                                'defaultFont' => 'sans-serif',
+                                'margin-top' => 10,      
+                                'margin-right' => 20,  
+                                'margin-bottom' => 10,    
+                                'margin-left' => 20,  
+                                'isPhpEnabled' => true    
+                            ]);
+                            $canvas = $pdf->getCanvas();
+                            $canvas->page_text(270, 770, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0,0,0));
+                            $filename = 'transaction-report-' . date('F-Y') . '.pdf';    
+                        return $pdf->stream($filename);
+                }else{
                 $transactions = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'])
                     ->where('remark', 'Completed')
-                    ->orWhere('remark', 'Denied')
-                    ->orWhere('remark', 'Canceled')
+                    ->where('user_id', $selectionOption)
                     ->get();
+                      $division = null; 
                     $now = Carbon::now('Asia/Manila')->format('F j, Y h:i A');
-                    $preparedBy = AdminModel::where('id', $request->get('admin'))->first();
                     $logoPh = $this->getCompressedBase64Image('assets/images/LOGO-PH.png', 'png');
                     $logoWebp = $this->getCompressedBase64Image('assets/images/LOGO.webp', 'webp');
                     $generatedBy = AdminModel::where('id', session()->get('loggedInInventoryAdmin')['id'])->first();
+                    $preparedBy = AdminModel::where('id', $request->get('admin'))->first();
+                    $client = ClientModel::where('id', $selectionOption)->first();
                     $data = [
                         'transactions' => $transactions,
                         'preparedBy' => $preparedBy,
                         'logo' => $logoWebp,
                         'logoPh' => $logoPh,
                         'generatedBy' => $generatedBy,
-                        'selection' => $selectionOption
+                        'selection' => $selectionOption,
+                        'client' => $client,
+                        'division' => $division
                     ];
-
-                    $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
-                    $user_id = null;
-                    $activity = "Generated transaction PDF - All Records.";
-                    (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
-
                     $pdf = PDF::loadView('admin.pdf.all-transactions', $data, compact('now'))
                         ->setPaper('legal', 'landscape')
                         ->setOptions([
@@ -286,40 +331,54 @@ class ReportTransactionManager extends Controller
                         $canvas->page_text(270, 770, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0,0,0));
                         $filename = 'transaction-report-' . date('F-Y') . '.pdf';    
                     return $pdf->stream($filename);
-            }else{
-               $transactions = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'])
-                ->where('remark', 'Completed')
-                ->where('user_id', $selectionOption)
-                ->get();
-                $now = Carbon::now('Asia/Manila')->format('F j, Y h:i A');
-                $logoPh = $this->getCompressedBase64Image('assets/images/LOGO-PH.png', 'png');
-                $logoWebp = $this->getCompressedBase64Image('assets/images/LOGO.webp', 'webp');
-                $generatedBy = AdminModel::where('id', session()->get('loggedInInventoryAdmin')['id'])->first();
-                $preparedBy = AdminModel::where('id', $request->get('admin'))->first();
-                $data = [
-                    'transactions' => $transactions,
-                    'preparedBy' => $preparedBy,
-                    'logo' => $logoWebp,
-                    'logoPh' => $logoPh,
-                    'generatedBy' => $generatedBy,
-                    'selection' => $selectionOption,
-                ];
-                $pdf = PDF::loadView('admin.pdf.all-transactions', $data, compact('now'))
-                    ->setPaper('legal', 'landscape')
-                    ->setOptions([
-                        'isHtml5ParserEnabled' => true,
-                        'isRemoteEnabled' => true,
-                        'defaultFont' => 'sans-serif',
-                        'margin-top' => 10,      
-                        'margin-right' => 20,  
-                        'margin-bottom' => 10,    
-                        'margin-left' => 20,  
-                        'isPhpEnabled' => true    
-                    ]);
+                }
+               case "Division":
+                    $division = $request->get('division');  // Get selected division from request
+                    $selectionOption = null;
+                    // Eager load relationships, filter by remark 'Completed' AND client's division
+                    $transactions = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'])
+                        ->where('remark', 'Completed')
+                        ->whereHas('client', function ($query) use ($division) {
+                            $query->where('division', $division);
+                        })
+                        ->get();
+                    $now = Carbon::now('Asia/Manila')->format('F j, Y h:i A');
+                    $logoPh = $this->getCompressedBase64Image('assets/images/LOGO-PH.png', 'png');
+                    $logoWebp = $this->getCompressedBase64Image('assets/images/LOGO.webp', 'webp');
+                    $generatedBy = AdminModel::where('id', session()->get('loggedInInventoryAdmin')['id'])->first();
+                    $preparedBy = AdminModel::where('id', $request->get('admin'))->first();
+
+                    // You might not have a single client here, but if you want you can pass the division name or leave null
+                    $client = ClientModel::where('id', $selectionOption)->first();
+
+                    $data = [
+                        'transactions' => $transactions,
+                        'preparedBy' => $preparedBy,
+                        'logo' => $logoWebp,
+                        'logoPh' => $logoPh,
+                        'generatedBy' => $generatedBy,
+                        'selection' => $selectionOption,
+                        'division' => $division,
+                        'client' => $client,
+                    ];
+
+                    $pdf = PDF::loadView('admin.pdf.all-transactions', $data, compact('now'))
+                        ->setPaper('legal', 'landscape')
+                        ->setOptions([
+                            'isHtml5ParserEnabled' => true,
+                            'isRemoteEnabled' => true,
+                            'defaultFont' => 'sans-serif',
+                            'margin-top' => 10,      
+                            'margin-right' => 20,  
+                            'margin-bottom' => 10,    
+                            'margin-left' => 20,  
+                            'isPhpEnabled' => true    
+                        ]);
                     $canvas = $pdf->getCanvas();
                     $canvas->page_text(270, 770, "Page {PAGE_NUM} of {PAGE_COUNT}", null, 8, array(0,0,0));
                     $filename = 'transaction-report-' . date('F-Y') . '.pdf';    
-                return $pdf->stream($filename);
+                    return $pdf->stream($filename);
+                break;
             }
         }
     }

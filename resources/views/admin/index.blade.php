@@ -87,7 +87,7 @@ html, body {
     <!-- Form Body -->
     
 </div> --}}
-<div class="container-fluid ">  
+<div class="container-fluid" style="margin-top: 8rem;">  
     <div class="row align-items-stretch">  
         <!-- Notifications Section -->  
         
@@ -181,9 +181,9 @@ html, body {
                             </a>
                             <!-- Dropdown Menu -->
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ url('/admin/transaction') }}">View Transactions</a></li>
+                                <li><a class="dropdown-item" href="{{ url('/admin/transaction') }}">Action Transactions</a></li>
                                 <li><a class="dropdown-item" id="requestBtnDashboard">Create Transaction</a></li>
-                                <li><a class="dropdown-item" id="updateTransactionStatus">Approved/Disapproved Transaction</a></li>
+                                {{-- <li><a class="dropdown-item" id="updateTransactionStatus">Approved/Disapproved Transaction</a></li> --}}
                             </ul>
                         </div>
                 
@@ -196,16 +196,16 @@ html, body {
                         </div>
                     </div>  
                 </div>  
-                <div class="col-md-6 mb-1">  
-                    <div class="card">  
-                        <h4 class="card-title">Critical Items</h4>
+                <div class="col-md-6 mb-1">
+                    <div class="card">
+                        <h4 class="card-title">Items</h4>
                         <div class="dropdown" style="display: inline-block;">
-                            <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a href="{{ url('/admin/lookup-tables/items') }}?set_critical=true" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-box icon" style="font-size: 40px; color: #dc3545; margin-right: 10px;"></i>
                             </a>
                             <!-- Dropdown Menu -->
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ url('/admin/lookup-tables/items') }}">View Items</a></li>
+                                <li><a class="dropdown-item" href="{{ url('/admin/lookup-tables/items') }}?set_critical=true" id="viewItems">View Critical Items</a></li>
                                 <li><a class="dropdown-item" id="addItem">Add Item</a></li>
                                 <li><a class="dropdown-item" id="editItem">Edit Item</a></li>
                                 <li><a class="dropdown-item" id="deleteItem">Delete Item</a></li>
@@ -218,8 +218,8 @@ html, body {
                                 {{ $criticalCount }}
                             @endif
                         </div>
-                    </div>  
-                </div>      
+                    </div>
+                </div>
                 <div class="col-md-6 mb-1">  
                     <div class="card">  
                         <h4 class="card-title">Delivered Items</h4>
@@ -244,7 +244,7 @@ html, body {
                 </div>  
             </div>  
             <div class="row">  
-                <div class="col-md-6 mb-1">  
+                {{-- <div class="col-md-6 mb-1">  
                     <div class="card">  
                         <h4 class="card-title">Item Categories</h4>  
                         
@@ -293,19 +293,19 @@ html, body {
                             @endif
                         </div>
                     </div>  
-                </div>  
+                </div>   --}}
                 <div class="col-md-6 mb-1">  
                     <div class="card">  
-                        <h4 class="card-title">Generated Reports</h4>
+                        <h4 class="card-title">Reports</h4>
                         <div class="dropdown" style="display: inline-block;">
                             <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-chart-bar icon" style="font-size: 40px; color: #6610f2; margin-right: 10px;"></i>
                             </a>
                             <!-- Dropdown Menu -->
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ url('/admin/reports/monthly-report') }}">View Month Reports</a></li>
-                                <li><a class="dropdown-item" href="{{ url('/admin/reports/quarterly-report') }}">View Quarterly Reports</a></li>
-                                <li><a class="dropdown-item generateReportBtn">Periodic Utilization Report</a></li>
+                                <li><a class="dropdown-item" href="{{ url('/admin/reports/monthly-report') }}">View Monthly Report (Summary)</a></li>
+                                <li><a class="dropdown-item" href="{{ url('/admin/reports/quarterly-report') }}">View Quarterly Report (Summary)</a></li>
+                                <li><a class="dropdown-item generateReportBtn">Inventory Report</a></li>
                                 <li><a class="dropdown-item pdfTransactionGenerationBtn">User Ledger Report</a></li>
                             </ul>
                         </div>
@@ -327,7 +327,8 @@ html, body {
                             </a>
                             <!-- Dropdown Menu -->
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ url('/admin/trails') }}">View Activity Logs</a></li>
+                                <li><a class="dropdown-item" href="{{ url('/admin/trails/admin') }}">View Admin Logs</a></li>
+                                <li><a class="dropdown-item" href="{{ url('/admin/trails/user') }}">View User Logs</a></li>
                             </ul>
                         </div>
                         <div class="icon-number">

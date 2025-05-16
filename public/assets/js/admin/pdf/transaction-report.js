@@ -98,24 +98,4 @@ const reasonDivision = document.getElementById('reasonDivision');
 
     } 
 }
-document.addEventListener('DOMContentLoaded', function () {
-    const selection = document.getElementById('selection');
-    const admin = document.getElementById('admin');
-    const submitBtn = document.getElementById('transaction-report-submit-btn');
 
-    // Function to toggle the submit button
-    function toggleSubmitButton() {
-        if (selection.value === '' || admin.value === '') {
-            submitBtn.disabled = true;
-        } else {
-            submitBtn.disabled = false;
-        }
-    }
-
-    // Initial check
-    toggleSubmitButton();
-
-    // Add event listeners
-    selection.addEventListener('change', toggleSubmitButton);
-    admin.addEventListener('change', toggleSubmitButton);
-});

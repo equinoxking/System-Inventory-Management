@@ -152,7 +152,15 @@
                             <select name="role_id" id="role-id" class="form-control">
                                 <option value="">Select Role</option>
                                 @foreach ($roles as $role)
-                                    <option value="{{ $role->id }}" @if($role->name == $client->role->name) selected @endif>{{ $role->name }}</option>
+                                    @if (!in_array($role->name, ['CheckerAdmin', 'HeadAdmin']))
+                                        <option value="{{ $role->id }}" @if($role->name == $client->role->name) selected @endif>
+                                            @if($role->name == 'InventoryAdmin') 
+                                                Admin 
+                                            @else
+                                                {{ $role->name }}
+                                            @endif
+                                        </option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
@@ -243,10 +251,8 @@
                             <select name="system_role" id="add-system-role" class="form-control">
                                 <option value="">Select System Role</option>
                                 @foreach ($roles as $role)
-                                    @if ($role->name != 'User')
-                                        <option value="{{ $role->id }}">
-                                            {{ preg_replace('/([a-z])([A-Z])/', '$1 $2', $role->name) }}
-                                        </option>
+                                    @if ($role->name == "InventoryAdmin")
+                                        <option value="{{ $role->id }}">Admin</option>
                                     @endif
                                 @endforeach
                             </select>

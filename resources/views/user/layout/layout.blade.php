@@ -37,3 +37,4 @@
 <script src="https://cdn.datatables.net/2.2.2/js/dataTables.min.js"></script>
 <script src="{{ asset('assets/js/user/data-tables.js') }}"></script>
 <script src="{{ asset('assets/js/user/logout.js') }}"></script>
+<script src="{{ asset('assets/js/user/report/generate-report.js') }}"></script>

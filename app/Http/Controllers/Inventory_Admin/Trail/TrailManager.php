@@ -39,6 +39,25 @@ class TrailManager extends Controller
         })
         ->get();  
         $clients = ClientModel::all();
-        return view('admin.trails', compact('trails', 'admins', 'transactionUsers', 'clients'));
+        return view('admin.trails/user', compact('trails', 'admins', 'transactionUsers', 'clients'));
+    }
+     public function goToTrailsAdmin(){
+        $trails = TrailModel::with(['client', 'admin'])->get();
+        $admins = AdminModel::all();
+        $transactionUsers = TransactionModel::with([
+            'transactionDetail',
+            'client',
+            'item',
+            'item.inventory.unit',
+            'status',
+            'adminBy',
+            'admin'
+        ])
+        ->where(function ($query) {
+            $query->where('remark', 'Completed');
+        })
+        ->get();  
+        $clients = ClientModel::all();
+        return view('admin.trails/admin', compact('trails', 'admins', 'transactionUsers', 'clients'));
     }
 }

@@ -22,6 +22,7 @@ use App\Http\Controllers\Inventory_Admin\Pdf\ReportTransactionManager;
 use App\Http\Controllers\Inventory_Admin\Items\SupplierManager;
 use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
 use App\Http\Controllers\Inventory_Admin\Dashboard\DashboardAccountManager;
+use App\Http\Controllers\User\Reports\UserReportManager;
 use App\Http\Controllers\User\User_functionController;
 /*
 |--------------------------------------------------------------------------
@@ -131,7 +132,8 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     });
     //Route for Trail Controller 
     Route::controller(TrailManager::class)->group(function(){
-        Route::get('/admin/trails', 'goToTrails');
+        Route::get('/admin/trails/user', 'goToTrails');
+        Route::get('/admin/trails/admin', 'goToTrailsAdmin');
     });
     //Route for Dashboard Controller 
     Route::controller(DashboardAccountManager::class)->group(function(){
@@ -166,6 +168,9 @@ Route::group(['middleware' => 'loginCheckUser'], function () {
         Route::get('/user/refreshTransactions', 'getTransactions');
         Route::patch('/user/cancel-transaction','cancelTransaction');
         Route::get('/user/refreshActedTransactions', 'getActedTransactions');
+    });
+    Route::controller(UserReportManager::class)->group(function() {
+        Route::post('/generate-user-ledger-report', 'generateUserReportPdf');
     });
     //Route for User Function Controller 
     Route::controller(User_functionController::class)->group(function(){

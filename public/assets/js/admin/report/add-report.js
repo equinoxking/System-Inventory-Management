@@ -10,7 +10,6 @@ $(document).ready(function() {
         $('.view-pdf-btn').on('click', function() {
             var filename = $(this).data('filename'); // Get the PDF filename from the button's data attribute
             var pdfUrl = '/pdf-reports/' + filename; // Correct URL construction for the PDF
-            console.log(pdfUrl)
             // Set the src of the iframe to the PDF file
             $('#pdfFrame').attr('src', pdfUrl);
     

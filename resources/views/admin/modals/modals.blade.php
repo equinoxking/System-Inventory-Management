@@ -361,12 +361,13 @@
                 <div id="receivedItem-container">
                     <div class="row mb-3 mt-2 receive-item-row">
                         <div class="col-md-2 form-group">
-                            <label for="control_number_received" class="font-weight-bold">P.O Number</label>
-                            <input type="text" class="form-control" name="control_number[]" id="control_number_received" placeholder="Enter control number">
+                            <label for="control_number_received" class="font-weight-bold ">P.O Number</label>
+                            <input type="text" class="form-control control_number_received" name="control_number[]"  placeholder="Enter control number">
                         </div>
                         <div class="col-md-2 form-group">
                             <label for="supplier" class="font-weight-bold">Supplier</label>
-                            <select name="supplier[]" id="supplier" class="form-control">
+                            <select name="supplier[]" class="form-control supplier">
+                                <option value="">Select Supplier</option>
                                 @foreach ($suppliers as $supplier)
                                     <option value="{{ $supplier->name }}">{{ $supplier->name }}</option>
                                 @endforeach
@@ -400,7 +401,7 @@
                         </div>
                         <div class="col-md-2 form-group">
                             <label for="" class="font-weight-bold">&nbsp</label>
-                            <button type="submit" id="receivedItemSubmit-btn" class="btn btn-warning rounded px-4 py-2 form-control">Submit</button>
+                            <button type="submit" id="receivedItemSubmit-btn" class="btn btn-warning rounded px-4 py-2 form-control">Save</button>
                         </div>
                     </div>
                 </div>
@@ -466,7 +467,7 @@
                     <form id="edit-category-form">
                         @csrf
                         <div class="form-group">
-                            <label for="category_id" class="font-weight-bold">Select category to edit...</label>
+                            <label for="category_id" class="font-weight-bold">Select the category for editing...</label>
                             <select name="category_id" id="edit-category-id" class="form-control">
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -586,7 +587,7 @@
                     <form id="edit-unit-form">
                         @csrf
                         <div class="form-group">
-                            <label for="unit_id" class="font-weight-bold">Select unit to edit...</label>
+                            <label for="unit_id" class="font-weight-bold">Select the unit for editing...</label>
                             <select name="unit_id" id="edit_unit_id" class="form-control">
                                 @foreach ($units as $unit)
                                     <option value="{{ $unit->id }}">{{ $unit->name }}</option>

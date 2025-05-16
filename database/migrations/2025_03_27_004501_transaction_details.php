@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('transaction_id')->references('id')->on('transactions')->onDelete('cascade');
             $table->foreignId('item_id')->references('id')->on('items')->onDelete('no action');
-            $table->string('request_item');
-            $table->string('request_quantity');
-            $table->string('request_day');
-            $table->string('request_month');
-            $table->string('request_year');
+            $table->integer('request_item');
+            $table->integer('request_quantity');
+            $table->integer('request_day');
+            $table->integer('request_month');
+            $table->integer('request_year');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
         });

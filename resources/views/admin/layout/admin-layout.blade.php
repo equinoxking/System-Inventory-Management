@@ -49,11 +49,12 @@
         });
     });
 </script>
+<div id="pdf-container" style="margin-top: 20px;"></div>
 <div class="modal fade" id="pdfReportModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
                 <div class="modal-header bg-info">
-                    <h5 class="modal-title" style="color:white;">PDF CUSTOMIZE FORM</h5>
+                    <h5 class="modal-title" style="color:white;">INVENTORY REPORT CUSTOMIZE FORM</h5>
                     <button type="button" data-dismiss="modal" class="btn pdf-report-close-btn btn-danger" aria-label="Close">
                         <i class="fa-solid fa-circle-xmark"></i>
                     </button>
@@ -131,7 +132,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
                 <div class="modal-header bg-info">
-                    <h5 class="modal-title" style="color:white;">TRANSACTION PDF CUSTOMIZE FORM</h5>
+                    <h5 class="modal-title" style="color:white;">USER LEDGER PDF CUSTOMIZE FORM</h5>
                     <button type="button" data-dismiss="modal" class="btn btn-danger generate-transaction-pdf-close-btn" aria-label="Close">
                         <i class="fa-solid fa-circle-xmark"></i>
                     </button>
@@ -139,33 +140,54 @@
             <div class="modal-body">
                 <div class="row">
                     <form id="generate-transaction-form">
-                    <div class="form-group">
-                        <label for="selectOption" class="font-weight-bold">User</label>
-                        <select name="selection" id="selection" class="form-control">
-                            <option value="">Select Option</option>
-                            <option value="All">All</option>
-                            @foreach ($clients as $client)
-                                <option value="{{ $client->id }}">{{ $client->full_name }}</option> 
-                            @endforeach
-                        </select>
-                    </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="admin" class="font-weight-bold">Prepared By:</label>
-                        <select name="admin" id="admin" class="form-control">
-                            <option value="">Select Admin</option>
-                            @foreach ($admins as $admin)
-                                <option value="{{ $admin->id }}"> {{ $admin->full_name }} </option>
-                            @endforeach
-                        </select>
-                    </div>        
-                </div>
-                <div class="row">
-                    <div class="modal-footer">
-                        <div class="col-md-3 form-group">
-                            <button type="submit" class="btn btn-info" id="transaction-report-submit-btn">SUBMIT</button>
+                        <div class="form-group">
+                            <label for="selectOption" class="font-weight-bold">Option</label>
+                            <select name="selectOption" id="selectOption" class="form-control">
+                                <option value="">Select Option</option>
+                                <option value="User">User</option>
+                                <option value="Division">Division</option>
+                            </select>
                         </div>
-                    </div>
+
+                        <div class="form-group" id="user-select-group">
+                            <label for="selection" class="font-weight-bold">User</label>
+                            <select name="selection" id="selection" class="form-control">
+                                <option value="">Select User</option>
+                                <option value="All">All</option>
+                                @foreach ($clients as $client)
+                                    <option value="{{ $client->id }}">{{ $client->full_name }}</option> 
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="form-group" id="division-select-group" style="display:none;">
+                            <label for="division" class="font-weight-bold">Division</label>
+                            <select name="division" id="division" class="form-control">
+                                <option value="">Select Division</option>
+                                <option value="first division">First Division</option>
+                                <option value="second division">Second Division</option>
+                                <option value="third division">Third Division</option>
+                                <option value="fourth division">Fourth Division</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="admin" class="font-weight-bold">Prepared By:</label>
+                            <select name="admin" id="admin" class="form-control">
+                                <option value="">Select Admin</option>
+                                @foreach ($admins as $admin)
+                                    <option value="{{ $admin->id }}"> {{ $admin->full_name }} </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="modal-footer">
+                                <div class="col-md-3 form-group">
+                                    <button type="submit" class="btn btn-info" id="transaction-report-submit-btn">SUBMIT</button>
+                                </div>
+                            </div>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -176,48 +198,84 @@
 <script src="{{ asset('assets/js/admin/pdf/transaction-report.js') }}"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        const periodSelect = document.getElementById('period');
-        const monthSelect = document.getElementById('month');
-        const yearMonthly = document.getElementById('selectedYear');
-        const quarterSelect = document.getElementById('quarterly');
-        const yearQuarterly = document.getElementById('yearSelectQuarterly');
-        const preparedSelect = document.getElementById('prepared');
-        const submitBtn = document.getElementById('report-submit-btn');
-    
-        function validateForm() {
-            const period = periodSelect.value;
-    
-            const prepared = preparedSelect.value;
-    
-            let isValid = false;
-    
-            if (period === 'Monthly') {
-                const month = monthSelect.value;
-                const year = yearMonthly.value;
-    
-                isValid = (month !== '' && year !== '' && prepared !== '');
-    
-            } else if (period === 'Quarterly') {
-                const quarter = quarterSelect.value;
-                const year = yearQuarterly.value;
-    
-                isValid = (quarter !== '' && year !== '' && prepared !== '');
+    const periodSelect = document.getElementById('period');
+    const monthSelect = document.getElementById('month');
+    const yearMonthly = document.getElementById('selectedYear');
+    const quarterSelect = document.getElementById('quarterly');
+    const yearQuarterly = document.getElementById('yearSelectQuarterly');
+    const preparedSelect = document.getElementById('prepared');
+    const submitBtn = document.getElementById('report-submit-btn');
+
+    function isFutureDate(period) {
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth(); // 0-based
+        const currentYear = currentDate.getFullYear();
+
+        if (period === 'Monthly') {
+            const selectedMonth = parseInt(monthSelect.value); // 1-based
+            const selectedYear = parseInt(yearMonthly.value);
+
+            if (selectedYear > currentYear || (selectedYear === currentYear && selectedMonth - 1 > currentMonth)) {
+                alert("You cannot generate a report for a future month.");
+                return true;
             }
-    
-            submitBtn.disabled = !isValid;
+        } else if (period === 'Quarterly') {
+            const selectedQuarter = parseInt(quarterSelect.value);
+            const selectedYear = parseInt(yearQuarterly.value);
+            const currentQuarter = Math.floor(currentMonth / 3) + 1;
+
+            if (selectedYear > currentYear || (selectedYear === currentYear && selectedQuarter > currentQuarter)) {
+                alert("You cannot generate a report for a future quarter.");
+                return true;
+            }
         }
+
+        return false;
+    }
+
+    function validateForm() {
+        const period = periodSelect.value;
+        const prepared = preparedSelect.value;
+
+        let isValid = false;
+
+        if (period === 'Monthly') {
+            const month = monthSelect.value;
+            const year = yearMonthly.value;
+            isValid = (month !== '' && year !== '' && prepared !== '');
+
+        } else if (period === 'Quarterly') {
+            const quarter = quarterSelect.value;
+            const year = yearQuarterly.value;
+            isValid = (quarter !== '' && year !== '' && prepared !== '');
+        }
+
+        submitBtn.disabled = !isValid;
+    }
+
+    periodSelect.addEventListener('change', function () {
+        const selected = this.value;
+        document.getElementById('month-row').style.display = selected === 'Monthly' ? 'block' : 'none';
+        document.getElementById('quarterly-row').style.display = selected === 'Quarterly' ? 'block' : 'none';
+        document.getElementById('signatories-row').style.display = selected !== '' ? 'block' : 'none';
+
         validateForm();
-        periodSelect.addEventListener('change', function () {
-            const selected = this.value;
-            document.getElementById('month-row').style.display = selected === 'Monthly' ? 'block' : 'none';
-            document.getElementById('quarterly-row').style.display = selected === 'Quarterly' ? 'block' : 'none';
-            document.getElementById('signatories-row').style.display = selected !== '' ? 'block' : 'none';
-    
-            validateForm(); 
-        });
-        [monthSelect, yearMonthly, quarterSelect, yearQuarterly, preparedSelect]
-            .forEach(el => el.addEventListener('change', validateForm));
     });
+
+    [monthSelect, yearMonthly, quarterSelect, yearQuarterly, preparedSelect]
+        .forEach(el => el.addEventListener('change', validateForm));
+
+    // ⛔ Prevent submission if future date
+    submitBtn.addEventListener('click', function (e) {
+        const period = periodSelect.value;
+
+        if (isFutureDate(period)) {
+            e.preventDefault(); // Stop form submission or PDF generation
+        }
+    });
+
+    validateForm(); // Initial call
+});
     window.onload = function() {
     // Monthly Select (current year on top)
     var currentYearMonthly = new Date().getFullYear();
@@ -257,5 +315,79 @@
         selectQuarterly.appendChild(option);  // Append to selectQuarterly
     }
 };
+  document.getElementById('selectOption').addEventListener('change', function() {
+        const val = this.value;
+        const userGroup = document.getElementById('user-select-group');
+        const divisionGroup = document.getElementById('division-select-group');
+
+        if (val === 'User') {
+            userGroup.style.display = 'block';
+            divisionGroup.style.display = 'none';
+        } else if (val === 'Division') {
+            userGroup.style.display = 'none';
+            divisionGroup.style.display = 'block';
+        } else {
+            userGroup.style.display = 'none';
+            divisionGroup.style.display = 'none';
+        }
+    });
+
+  const selectOption = document.getElementById('selectOption');
+    const selection = document.getElementById('selection');
+    const division = document.getElementById('division');
+    const admin = document.getElementById('admin');
+    const submitBtn = document.getElementById('transaction-report-submit-btn');
+
+    // Show/hide user or division selects based on option selected
+    function toggleSelects() {
+        if (selectOption.value === 'User') {
+            document.getElementById('user-select-group').style.display = 'block';
+            document.getElementById('division-select-group').style.display = 'none';
+        } else if (selectOption.value === 'Division') {
+            document.getElementById('user-select-group').style.display = 'none';
+            document.getElementById('division-select-group').style.display = 'block';
+        } else {
+            document.getElementById('user-select-group').style.display = 'none';
+            document.getElementById('division-select-group').style.display = 'none';
+        }
+    }
+
+    function validationForm() {
+        const optionVal = selectOption.value.trim();
+        const userVal = selection.value.trim();
+        const divisionVal = division.value.trim();
+        const adminVal = admin.value.trim();
+
+        // Conditions:
+        // option must be selected AND
+        // admin must be selected AND
+        // if option is User -> userVal must be selected
+        // if option is Division -> divisionVal must be selected
+
+        if (
+            optionVal === '' ||
+            adminVal === '' ||
+            (optionVal === 'User' && userVal === '') ||
+            (optionVal === 'Division' && divisionVal === '')
+        ) {
+            submitBtn.disabled = true;
+        } else {
+            submitBtn.disabled = false;
+        }
+    }
+
+    // Event listeners
+    selectOption.addEventListener('change', () => {
+        toggleSelects();
+        validationForm();
+    });
+    selection.addEventListener('change', validationForm);
+    division.addEventListener('change', validationForm);
+    admin.addEventListener('change', validationForm);
+
+    // Initialize on page load
+    toggleSelects();
+    validationForm();
+
 </script>
 

@@ -8,7 +8,7 @@ use App\Models\ClientModel;
 use App\Models\RoleModel;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
-
+use App\Models\AdminModel;
 
 class AccountManager extends Controller
 {
@@ -41,40 +41,48 @@ class AccountManager extends Controller
             ]);
         } else {
             // Find the client by user_id
-            $client = ClientModel::where('id' , $request->get('user_id'))->first();
-            
-            // If client not found, return a 404 error
-            if(!$client){
+            $client = ClientModel::where('id', $request->get('user_id'))->first();
+
+            if (!$client) {
                 return response()->json([
-                    'message' => "Check your id", // Inform the user that the id was not found
-                    'status' => 404
+                    'status' => 404,
+                    'message' => "Check your id"
                 ]);
-            } else {
-                // Update the client's role_id
-                $client->role_id = $request->get('role_id');
-                $client->save(); // Save the updated client details
-                
-                // If the client role was successfully updated
-                if($client){
-                    // Get the logged-in admin id from the session
-                    $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
-                    $user_id = null; // User ID is null because the action is performed by an admin
-                    $activity = "Set a role of " .  $client->full_name . " into " . $client->role->name . "."; // Activity log text
-                    (new TrailManager)->createUserTrail($user_id, $admin_id, $activity); // Log the action
-                    
-                    // Return a success response
+            }
+
+            // Check if role_id == 1 (or whatever role you want to conditionally check for admin record)
+            if ($request->get('role_id') == 1) {
+                $adminRecord = AdminModel::where('client_id', $client->id)->first();
+
+                if (!$adminRecord) {
                     return response()->json([
-                        'status' => 200,
-                        'message' => "Set role successful!" // Success message
-                    ]);
-                } else {
-                    // If role update failed, return a 500 error
-                    return response()->json([
-                        'status' => 500,
-                        'message' => "Check your internet connection!" // Inform the user to check the connection
+                        'status' => 403,
+                        'message' => "User must have an admin record before setting role."
                     ]);
                 }
             }
+
+            // Update the client's role_id
+            $client->role_id = $request->get('role_id');
+            $client->save();
+
+            if ($client) {
+                $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                $user_id = null;
+                $activity = "Set a role of " . $client->full_name . " into " . $client->role->name . ".";
+                (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
+
+                return response()->json([
+                    'status' => 200,
+                    'message' => "Set role successful!"
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 500,
+                    'message' => "Check your internet connection!"
+                ]);
+            }
+
         }
     }    
     public function changeUserStatus(Request $request){
