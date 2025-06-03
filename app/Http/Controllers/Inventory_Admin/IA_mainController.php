@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\TrailModel;
 use App\Models\TransactionStatusModel;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Cookie;
 
 class IA_mainController extends Controller
 {
@@ -33,15 +34,6 @@ class IA_mainController extends Controller
         $transaction = TransactionModel::where('remark', 'For Review')->count();
         $receive = ReceiveModel::sum('received_quantity');
         $items = ItemModel::with('transacts.TransactionDetail')->get();
-        // $itemsWithTransactionSums = $items->map(function ($item) {
-        //     $totalTransactionSum = $item->transacts->sum(function ($transact) {
-        //         return $transact->transactionDetail ? $transact->transactionDetail->request_quantity : 0;
-        //     });
-        //     return [
-        //         'item' => $item,
-        //         'total_transaction_sum' => $totalTransactionSum
-        //     ];
-        // });
         $itemCount = ItemModel::count();
         $categories = CategoryModel::all();
         $transactions = TransactionModel::all();
@@ -58,6 +50,7 @@ class IA_mainController extends Controller
         $units = UnitModel::all();
         $admins = AdminModel::all();
         $suppliers = SupplierModel::all();
+
         $itemsForMonth = ItemModel::with(['transacts.transactionDetail' => function ($query) use ($currentMonth) {
             $query->where('request_month', $currentMonth);
         }])->get();
@@ -93,6 +86,7 @@ class IA_mainController extends Controller
                 'request_count' => $requestCount, // Add the request count here
             ];
         })
+        
         ->filter(fn($data) => $data['total_issued'] > 0) // Only keep items that have been issued
         ->sortByDesc('total_issued') // Sort by total issued in descending order
         ->take(10) // Get the top 10 items
@@ -236,6 +230,9 @@ class IA_mainController extends Controller
                 $item->inventory->min_quantity = $minQuantity;
             }
         } 
+        // Cookie::queue('items', $items, 60);
+        // Cookie::queue('critical_count', $criticalCount, 60);
+        // Cookie::queue('criticalItemsWithFlag', $criticalItemsWithFlag, 60);
         return view('admin.index', [
             'countclients' => $countclients,
             'transactions' => $transaction,

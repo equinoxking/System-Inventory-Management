@@ -42,7 +42,8 @@ class AccountManager extends Controller
         } else {
             // Find the client by user_id
             $client = ClientModel::where('id', $request->get('user_id'))->first();
-
+            $clientOldRole = $client->role->name;
+            $oldRoleLabel = $clientOldRole === 'InventoryAdmin' ? 'Admin' : $clientOldRole;
             if (!$client) {
                 return response()->json([
                     'status' => 404,
@@ -50,26 +51,41 @@ class AccountManager extends Controller
                 ]);
             }
 
-            // Check if role_id == 1 (or whatever role you want to conditionally check for admin record)
-            if ($request->get('role_id') == 1) {
-                $adminRecord = AdminModel::where('client_id', $client->id)->first();
-
-                if (!$adminRecord) {
-                    return response()->json([
-                        'status' => 403,
-                        'message' => "User must have an admin record before setting role."
-                    ]);
-                }
-            }
-
             // Update the client's role_id
             $client->role_id = $request->get('role_id');
+            $roleId = $request->get('role_id');
             $client->save();
 
-            if ($client) {
+            $client->load('role');
+            $clientNewRole = $client->role ? $client->role->name : 'None';
+            $newRoleLabel = $clientNewRole === 'InventoryAdmin' ? 'Admin' : $clientNewRole;
+            // Check if the admin already exists for this client
+            $admin = AdminModel::where('client_id', $client->id)->first();
+
+            if (!$admin) {
+                // Create new admin if none exists
+                $admin = new AdminModel();
+                $admin->client_id = $client->id;
+                $admin->role_id = $client->role_id;
+                $admin->full_name = $client->full_name;
+                $admin->status = "Active";
+                $admin->control_number = $client->employee_number;
+                $admin->position = $client->position;
+                $admin->save();
+            }else{
+                if($roleId == 4){
+                    $admin->status = "Inactive";
+                }else{
+                    $admin->status = "Active";
+                }
+                $admin->save();
+            }
+
+
+            if ($client && $admin) {
                 $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
                 $user_id = null;
-                $activity = "Set a role of " . $client->full_name . " into " . $client->role->name . ".";
+                $activity = "Set a role of " . $client->full_name . " from " . $oldRoleLabel . " to " . $newRoleLabel . ".";
                 (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
 
                 return response()->json([

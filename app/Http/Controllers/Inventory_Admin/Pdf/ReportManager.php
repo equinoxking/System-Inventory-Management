@@ -215,7 +215,7 @@ class ReportManager extends Controller
                     $preparedBy = AdminModel::where('id', $request->get('prepared'))->first();
                     $logoPh = $this->getCompressedBase64Image('assets/images/LOGO-PH.png', 'png');
                     $logoWebp = $this->getCompressedBase64Image('assets/images/LOGO.webp', 'webp');
-                    $generatedBy = AdminModel::where('id', session()->get('loggedInInventoryAdmin')['id'])->first();
+                    $generatedBy = AdminModel::where('client_id', session()->get('loggedInInventoryAdmin')['id'])->first();
                     $data = [
                         'title' => "MONTHLY INVENTORY REPORT",
                         'itemsPart1' => $itemsPart1,
@@ -321,11 +321,11 @@ class ReportManager extends Controller
                 $now = now('Asia/Manila')->format('F j, Y h:i A');
 
                 $preparedBy = AdminModel::find($request->prepared);
-                $generatedBy = AdminModel::find(session()->get('loggedInInventoryAdmin')['id']);
+                $generatedBy = AdminModel::where('client_id', session()->get('loggedInInventoryAdmin')['id'])->first();
 
                 $data = [
                     'title' => "PROVINCIAL HUMAN RESOURCE MANAGEMENT OFFICE",
-                    'sub_title' => "SUPPLIES UTILIZATION QUARTERLY REPORT",
+                    'sub_title' => "INVENTORY QUARTERLY REPORT",
                     'itemsPart1' => $itemsPart1,
                     'itemsPart2' => $itemsPart2,
                     'explodeQuarters' => [$selectedQuarter],

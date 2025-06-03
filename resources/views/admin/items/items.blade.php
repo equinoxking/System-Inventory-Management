@@ -1,7 +1,7 @@
 <div class="container-fluid card w-100 shadow rounded p-4" id="itemForm" style="max-height: 500px; overflow-y: auto; background-color: #f8f9fa; display:none; border: 2px solid #ddd;">
     <!-- Form Header -->
     <div class="d-flex justify-content-between align-items-center bg-success text-white p-3 rounded-top">
-        <h4 class="m-0 text-center flex-grow-1"><strong>CREATE ITEM FORM</strong></h4>
+        <h4 class="m-0 text-center flex-grow-1"><strong>ADD NEW ITEM FORM</strong></h4>
         <button type="button" id="createItem-closeBtn" class="btn btn-danger p-2">
             &times;
         </button>
@@ -49,18 +49,17 @@
                 </div>
             </div>
         </div>
-            <div class="row">
-                <div class="col-md-12 d-flex justify-content-end">
-                    <div class="col-md-1 form-group">
-                        <label for="" class="font-weight-bold">&nbsp</label>
-                        <button type="reset" class="btn btn-secondary rounded px-4 py-2 me-3 form-control">Clear</button>
-                    </div>
-                    <div class="col-md-1 form-group">
-                        <label for="" class="font-weight-bold">&nbsp</label>
-                        <button type="submit" id="addItemSubmit-btn" class="btn btn-success rounded px-4 py-2 form-control">Submit</button>
-                    </div>
+            <div class="row mt-3 justify-content-end">
+                <div class="col-auto form-group text-end">
+                    <label for="" class="font-weight-bold">&nbsp;</label>
+                    <button type="reset" class="btn btn-secondary rounded px-4 py-2 form-control">CLEAR</button>
+                </div>
+                <div class="col-auto form-group text-end">
+                    <label for="" class="font-weight-bold">&nbsp;</label>
+                    <button type="submit" id="addItemSubmit-btn" class="btn btn-success rounded px-4 py-2 form-control">SAVE</button>
                 </div>
             </div>
+
     </form>    
 </div>
 @php
@@ -81,8 +80,8 @@
 <div class="container-fluid card mb-1 w-100" style="max-height: 700px; overflow-y: auto;">
     <div class="row">
         <div class="col-md-2 form-group mt-3">
-            <label for="unit-filter">Filter by Unit: </label>
-            <input type="text" id="unit-filter" class="form-control" placeholder="Search unit">
+            <label for="unit-filter">Filter by UoM: </label>
+            <input type="text" id="unit-filter" class="form-control" placeholder="Search UoM">
         </div>
         <div class="col-md-2 form-group mt-3">
             <label for="minimum-quantity-filter">Filter by Minimum Quantity: </label>
@@ -92,14 +91,14 @@
             <label for="maximum-quantity-filter">Filter by Maximum Quantity: </label>
             <input type="number" class="form-control" id="max-quantity-filter" placeholder="Max Quantity" min="0" value="0">
         </div>
-        <div class="col-md-2 form-group mt-3">
+        {{-- <div class="col-md-2 form-group mt-3">
             <label for="status-filter">Filter by Availability:</label>
             <select id="status-filter" class="form-control">
                 <option value="">All</option>
                 <option value="available">Available</option>
                 <option value="unavailable">Unavailable</option>
             </select>
-        </div>
+        </div> --}}
         <div class="col-md-2 form-group mt-3">
             <label for="stock-level-filter">Filter by Stock Level:</label>
             <select id="stock-level-filter" class="form-control">
@@ -160,8 +159,8 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <button class="btn btn-warning btn-sm" id="itemEditBtn" onclick="editItem('{{ addslashes(json_encode($item)) }}')"><i class="fa fa-edit"></i></button>
-                                    <button class="btn btn-danger btn-sm" id="itemDeleteBtn" onclick="deleteItem('{{ addslashes(json_encode($item)) }}')"><i class="fa fa-trash"></i></button>
+                                    <button class="btn btn-warning" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" id="itemEditBtn" onclick="editItem('{{ addslashes(json_encode($item)) }}')"><i class="fa fa-edit" style="color: white"></i></button>
+                                    <button class="btn btn-danger" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" id="itemDeleteBtn" onclick="deleteItem('{{ addslashes(json_encode($item)) }}')" ><i class="fa fa-trash" ></i></button>
                                 </td>
                             </tr>
                         @endforeach
@@ -215,21 +214,31 @@
                             <input type="text" class="form-control" name="edit-item-id[]" id="edit-item-id">
                         </div>
                         <div class="form-group">
-                            <label for="category" class="font-weight-bold">Category</label>
-                            <input type="text" class="edit-search-category form-control" name="category[]" placeholder="Search categories..." autocomplete="off"/>
-                            <ul class="edit-category-results" style="display: none; max-height: 200px; overflow-y: auto;"></ul>
-                            <input type="text" class="edit-selected-category-id" id="edit-category" name="category_id[]" hidden>
+                            <label for="edit-itemName" class="font-weight-bold">Item Name (From)</label>
+                            <textarea name="item_name-readonly" id="edit-item-name-readonly" class="form-control" cols="5" rows="1" readonly></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="edit-itemName" class="font-weight-bold">Item Name</label>
+                            <label for="edit-itemName" class="font-weight-bold">Item Name (To)</label>
                             <textarea name="item_name[]" id="edit-item-name" class="form-control" cols="5" rows="1"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="category" class="font-weight-bold">Category</label>
+                            <select name="edit-category" id="edit-category" class="form-select">
+                                <option value="">--Select Category--</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <!-- Item Unit -->
                         <div class="form-group">
-                            <label for="itemUnit" class="font-weight-bold">Unit</label>
-                            <input type="text" class="edit-search-unit form-control" name="unit[]"  placeholder="Search unit..." autocomplete="off"/>
-                            <ul class="edit-unit-results" style="display: none; max-height: 200px; overflow-y: auto;"></ul>
-                            <input type="text" class="edit-selected-unit-id" name="unitId[]" hidden>
+                            <label for="itemUnit" class="font-weight-bold">UoM</label>
+                            <select name="edit-unit" id="edit-unit" class="form-select">
+                                <option value="">--Select UoM--</option>
+                                @foreach ($units as $unit)
+                                    <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="buffer" class="font-weight-bold">Buffer Stock</label>
@@ -238,8 +247,8 @@
                 </div>
                 <div class="row">
                     <div class="modal-footer">
-                        <div class="col-md-3 form-group">
-                            <button type="submit" class="btn btn-danger" id="delete-submit-btn">SUBMIT</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-warning" id="delete-submit-btn">SAVE</button>
                         </div>
                     </div>
                 </form>
@@ -271,6 +280,25 @@
                 }, 100); // Delay ensures filter value is applied before redraw
             }
         }
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const editButtons = document.querySelectorAll('.edit-button');
+
+        editButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const itemId = this.getAttribute('data-item-id');
+                const categoryId = this.getAttribute('data-category-id');
+
+                // Set item ID
+                document.getElementById('edit-item-id').value = itemId;
+
+                // Set selected category
+                const categorySelect = document.getElementById('edit-category');
+                categorySelect.value = categoryId;
+            });
+        });
     });
 </script>
 

@@ -99,7 +99,7 @@
                         <p style="margin: 0; font-weight: none">Bayombong</p>
                         <span style="margin: 0; font-size: 13px; font-weight:bold">PROVINCIAL HUMAN RESOURCE AND MANAGEMENT OFFICE</span>
                         <p style="margin: 0; font-size: 18px; font-weight:bold; margin-top:0.5rem;">Transaction Records 
-                            for {{ $clientName }}
+                            of {{ $clientName }}
                         </p>
                     </td>
                     <th style="border: none;">
@@ -150,7 +150,7 @@
                 </tbody>
             </table>
         </div>
-        <div class="container">
+        <div class="container" style="margin-top: 2rem">
             <div class="row">
                 <div class="col-md-12">
                     <table class="signatories-table table" style="border: none;">
@@ -166,7 +166,7 @@
                                 <td colspan="2">
                                     <p>
                                         <strong>{{ strToUpper($clientName) }}</strong><br>
-                                        <span style="font-style: italic">{{ $client->position }}</span>
+                                        <span style="font-style: italic">{{ strToUpper($client->position) }}</span>
                                     </p>
                                 </td>
                                 <td colspan="2">

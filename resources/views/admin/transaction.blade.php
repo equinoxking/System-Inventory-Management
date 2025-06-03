@@ -61,16 +61,14 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12 d-flex justify-content-end">
-                <div class="col-md-1 form-group">
-                    <label for="" class="font-weight-bold">&nbsp</label>
-                    <button type="reset" class="btn btn-secondary rounded px-4 py-2 me-3 w-100">Clear</button>
-                </div>
-                <div class="col-md-1 form-group">
-                    <label for="" class="font-weight-bold">&nbsp</label>
-                    <button type="submit" id="requestItemSubmit-btn" class="btn btn-success rounded px-4 py-2 w-100">Submit</button>
-                </div>
+        <div class="row mt-3 justify-content-end">
+            <div class="col-auto form-group text-end">
+                <label for="" class="font-weight-bold">&nbsp;</label>
+                <button type="reset" class="btn btn-secondary rounded px-4 py-2 w-100">CLEAR</button>
+            </div>
+            <div class="col-auto form-group text-end">
+                <label for="" class="font-weight-bold">&nbsp;</label>
+                <button type="submit" id="requestItemSubmit-btn" class="btn btn-success rounded px-4 py-2 w-100">SAVE</button>
             </div>
         </div>
     </form>
@@ -140,12 +138,44 @@
         </div>
     </div>
 </div>
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-md-12" style="text-align: left">
+            <h4><strong>NOT ACTED TRANSACTIONS</strong></h4>
+        </div>
+    </div>
+</div>
+<div class="container-fluid card w-100">
+    <div class="row">
+        <div class="col-md-12">
+            <div style="overflow-x: auto; width: 100%;">
+                <table id="pastTransactionTable" class="table-hover" style="font-size: 11px; white-space: nowrap;">
+                    <thead>
+                        <th width="5%">Transaction Number</th>
+                        <th width="7%">Stock On Hand</th>
+                        <th width="7%">Number of Items Requested</th>
+                        <th width="5%">UoM</th>
+                        <th>Item Name</th>
+                        <th>Requested By</th>
+                        <th width="10%">Date/Time Requested</th>
+                        <th width="5%">Action</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 <div class="modal fade" id="transactionStatusModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
                 <div class="modal-header bg-warning">
-                    <h5 class="modal-title" style="color:white;">TRANSACTION STATUS FORM</h5>
+                    <h5 class="modal-title" style="color:white;">TRANSACTION ACTION FORM</h5>
                     <button type="button" id="transaction-status-close-btn" data-dismiss="modal" class="btn btn-danger" aria-label="Close">
                         <i class="fa-solid fa-circle-xmark"></i>
                     </button>
@@ -158,25 +188,25 @@
                             <input type="text" class="form-control" name="transaction-status-id" id="transaction-status-id">
                         </div>
                         <div class="form-group" >
-                            <label for="status">Status</label>
+                            <label for="status" class="font-weight-bold">Action</label>
                             <select name="status" id="status" class="form-control" onchange="toggleSelection()">
                                 <option value="2">Release</option>
                                 <option value="3">Disapprove</option>
                             </select>
                         </div>
                         <div class="form-group" id="timeDivision1">
-                            <label for="releaseTime">Release Time</label><br>
+                            <label for="releaseTime" class="font-weight-bold">Release Time</label><br>
                             <input type="time" class="form-control" id="timeRelease" value="" name="time" readonly>
                         </div>
                         <div class="form-group" style="display:none;" id="reasonDivision">
-                            <label for="reason">Reason</label><br>
+                            <label for="reason" class="font-weight-bold">Reason</label><br>
                             <textarea name="reason" id="reason" cols="5" rows="5" class="form-control"></textarea>
                         </div>                        
                 </div>
                 <div class="row">
                     <div class="modal-footer">
                         <div class="col-md-3 form-group">
-                            <button type="submit" class="btn btn-warning" id="transaction-status-submit-btn">SUBMIT</button>
+                            <button type="submit" class="btn btn-warning" id="transaction-status-submit-btn">SAVE</button>
                         </div>
                     </div>
                     </form>
@@ -191,7 +221,7 @@
 <script src="{{ asset('assets/js/admin/transactions/status.js') }}"></script>
 <script src="{{ asset('assets/js/admin/transactions/request-item.js') }}"></script>
 <script src="{{ asset('assets/js/admin/transactions/search-items.js') }}"></script>
-
+{{-- <script src="{{ asset('assets/js/admin/transactions/past-status.js') }}"></script> --}}
 <script>
     document.addEventListener('input', function (event) {
         if (event.target.classList.contains('requestQuantity')) {

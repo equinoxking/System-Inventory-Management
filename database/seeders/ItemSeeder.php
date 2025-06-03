@@ -26,7 +26,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 21,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -34,11 +34,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 2,
                 'status_id' => 1,
                 'unit_id' => 36,
-                'quantity' => 22,
+                'quantity' => 20,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 13,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -46,11 +46,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 3,
                 'status_id' => 1,
                 'unit_id' => 36,
-                'quantity' => 26,
+                'quantity' => 31,
                 'min_quantity' => 26,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 16,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -58,11 +58,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 3,
                 'status_id' => 1,
                 'unit_id' => 36,
-                'quantity' => 29,
+                'quantity' => 27,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 01,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -70,11 +70,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 4,
                 'status_id' => 1,
                 'unit_id' => 37,
-                'quantity' => 2,
+                'quantity' => 4,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 02,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -82,11 +82,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 4,
                 'status_id' => 1,
                 'unit_id' => 37,
-                'quantity' => 2,
+                'quantity' => 1,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 03,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -94,11 +94,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 5,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 100,
+                'quantity' => 205,
                 'min_quantity' => 30,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 04,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -106,11 +106,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 5,
                 'status_id' => 1,
                 'unit_id' => 39,
-                'quantity' => 14,
+                'quantity' => 29,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 05,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -118,11 +118,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 5,
                 'status_id' => 1,
                 'unit_id' => 39,
-                'quantity' => 5,
+                'quantity' => 21,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 03,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -130,11 +130,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 5,
                 'status_id' => 1,
                 'unit_id' => 39,
-                'quantity' => 44,
+                'quantity' => 56,
                 'min_quantity' => 15,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 03,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -142,11 +142,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 5,
                 'status_id' => 1,
                 'unit_id' => 39,
-                'quantity' => 20,
+                'quantity' => 17,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 07,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -154,11 +154,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 5,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 340,
+                'quantity' => 360,
                 'min_quantity' => 100,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 06,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -166,11 +166,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 5,
                 'status_id' => 1,
                 'unit_id' => 40,
-                'quantity' => 73,
+                'quantity' => 105,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 06,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -178,11 +178,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 5,
                 'status_id' => 1,
                 'unit_id' => 40,
-                'quantity' => 105,
+                'quantity' => 93,
                 'min_quantity' => 30,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 07,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -194,7 +194,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 10,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -202,11 +202,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 5,
                 'status_id' => 1,
                 'unit_id' => 41,
-                'quantity' => 69,
+                'quantity' => 60,
                 'min_quantity' => 20,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 11,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -218,7 +218,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 12,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -226,11 +226,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 5,
                 'status_id' => 1,
                 'unit_id' => 42,
-                'quantity' => 22,
+                'quantity' => 21,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 13,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -238,11 +238,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 5,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 26,
+                'quantity' => 21,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 14,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -250,11 +250,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 6,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 18,
+                'quantity' => 0,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 15,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -266,7 +266,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 16,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -274,11 +274,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 20,
                 'status_id' => 1,
                 'unit_id' => 43,
-                'quantity' => 13,
+                'quantity' => 15,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 17,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
 
@@ -287,11 +287,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 20,
                 'status_id' => 1,
                 'unit_id' => 37,
-                'quantity' => 40,
+                'quantity' => 111,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 18,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -299,11 +299,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 20,
                 'status_id' => 1,
                 'unit_id' => 37,
-                'quantity' => 32,
+                'quantity' => 40,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 19,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025 
             ],
             [
@@ -315,7 +315,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 20,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -327,7 +327,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 21,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -335,11 +335,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 20,
                 'status_id' => 1,
                 'unit_id' => 44,
-                'quantity' => 46,
+                'quantity' => 42,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 22,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -347,11 +347,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 20,
                 'status_id' => 1,
                 'unit_id' => 44,
-                'quantity' => 43,
+                'quantity' => 31,
                 'min_quantity' =>10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 23,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -359,11 +359,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 20,
                 'status_id' => 1,
                 'unit_id' => 44,
-                'quantity' => 19,
+                'quantity' => 250,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 24,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -371,11 +371,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 20,
                 'status_id' => 1,
                 'unit_id' => 44,
-                'quantity' => 58,
+                'quantity' => 54,
                 'min_quantity' => 15,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 25,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -383,11 +383,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 20,
                 'status_id' => 1,
                 'unit_id' => 44,
-                'quantity' => 45,
+                'quantity' => 52,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 26,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -395,11 +395,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 20,
                 'status_id' => 1,
                 'unit_id' => 44,
-                'quantity' => 2,
+                'quantity' => 4,
                 'min_quantity' => 2,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 27,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -407,11 +407,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 7,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 13,
+                'quantity' => 24,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 28,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -419,11 +419,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 8,
                 'status_id' => 1,
                 'unit_id' => 35,
-                'quantity' => 0,
+                'quantity' => 7,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 29,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -431,11 +431,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 8,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 3,
+                'quantity' => 2,
                 'min_quantity' => 2,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 30,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -447,7 +447,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 2,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 01,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -459,7 +459,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 02,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -467,11 +467,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 8,
                 'status_id' => 1,
                 'unit_id' => 35,
-                'quantity' => 24,
+                'quantity' => 23,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 03,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -479,11 +479,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 8,
                 'status_id' => 1,
                 'unit_id' => 45,
-                'quantity' => 27,
+                'quantity' => 26,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 04,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -491,11 +491,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 8,
                 'status_id' => 1,
                 'unit_id' => 41,
-                'quantity' => 5,
+                'quantity' => 2,
                 'min_quantity' => 3,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 05,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -507,7 +507,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 2,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 06,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -515,11 +515,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 8,
                 'status_id' => 1,
                 'unit_id' => 46,
-                'quantity' => 15,
+                'quantity' => 14,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 07,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -527,11 +527,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 8,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 6,
+                'quantity' => 7,
                 'min_quantity' => 3,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 8,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -539,11 +539,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 8,
                 'status_id' => 1,
                 'unit_id' => 35,
-                'quantity' => 1,
+                'quantity' => 7,
                 'min_quantity' => 2,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 9,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -551,11 +551,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 8,
                 'status_id' => 1,
                 'unit_id' => 35,
-                'quantity' => 8,
+                'quantity' => 7,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 10,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -567,7 +567,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 2,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 11,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -579,7 +579,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 2,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 12,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -591,7 +591,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 2,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 13,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -599,11 +599,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 8,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 12,
+                'quantity' => 15,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 14,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -611,11 +611,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 8,
                 'status_id' => 1,
                 'unit_id' => 48,
-                'quantity' => 15,
+                'quantity' => 19,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 15,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -623,11 +623,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 8,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 2,
+                'quantity' => 1,
                 'min_quantity' => 2,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 16,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -635,11 +635,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 8,
                 'status_id' => 1,
                 'unit_id' => 41,
-                'quantity' => 54,
+                'quantity' => 53,
                 'min_quantity' => 15,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 17,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -651,7 +651,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 18,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -659,11 +659,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 37,
-                'quantity' => 83,
+                'quantity' => 81,
                 'min_quantity' => 25,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 19,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -675,7 +675,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 20,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -683,11 +683,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 37,
-                'quantity' => 31,
+                'quantity' => 29,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 21,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -699,7 +699,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 22,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -707,11 +707,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 31,
+                'quantity' => 16,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 23,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -723,7 +723,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 24,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -731,11 +731,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 26,
+                'quantity' => 32,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 25,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -747,7 +747,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 26,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -759,19 +759,19 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 27,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
                 'name' => 'ENVELOPE, DOCUMENTARY, for A4 size document (brown envelope)',
                 'category_id' => 9,
                 'status_id' => 1,
-                'unit_id' => 41,
+                'unit_id' => 40,
                 'quantity' => 13,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 28,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -779,11 +779,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 1594,
+                'quantity' => 1800,
                 'min_quantity' => 500,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 29,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -791,11 +791,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 6,
+                'quantity' => 500,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 30,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -803,11 +803,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 41,
+                'quantity' => 45,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 1,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -815,11 +815,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 41,
-                'quantity' => 51,
+                'quantity' => 50,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 2,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -831,7 +831,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 3,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -839,11 +839,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 37,
-                'quantity' => 17,
+                'quantity' => 15,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 4,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -851,11 +851,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 9,
+                'quantity' => 18,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 5,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -863,11 +863,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 49,
-                'quantity' => 20,
+                'quantity' => 23,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 6,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -875,11 +875,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 37,
-                'quantity' => 0,
+                'quantity' => 7,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 7,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -891,7 +891,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 8,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -899,11 +899,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 41,
-                'quantity' => 300,
+                'quantity' => 0,
                 'min_quantity' => 75,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 9,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -911,11 +911,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 37,
-                'quantity' => 26,
+                'quantity' => 23,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 10,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -923,11 +923,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 86,
+                'quantity' => 107,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 13,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -935,11 +935,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 59,
+                'quantity' => 48,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 1,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -947,11 +947,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 15,
+                'quantity' => 25,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 2,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -959,11 +959,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 7,
+                'quantity' => 6,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 3,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -971,11 +971,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 40,
+                'quantity' => 42,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 4,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -983,11 +983,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 93,
+                'quantity' => 110,
                 'min_quantity' => 20,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 5,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -995,11 +995,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 0,
+                'quantity' => 22,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 6,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1011,7 +1011,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 20,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 7,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1019,11 +1019,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 37,
-                'quantity' => 88,
+                'quantity' => 81,
                 'min_quantity' => 20,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 8,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1031,11 +1031,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 467,
+                'quantity' => 474,
                 'min_quantity' => 75,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 9,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1043,11 +1043,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 27,
+                'quantity' => 26,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 10,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1059,7 +1059,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 1,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1071,7 +1071,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 2,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1083,7 +1083,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 3,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1095,7 +1095,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 4,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1107,7 +1107,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 5,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1115,11 +1115,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 6,
+                'quantity' => 4,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 6,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1131,7 +1131,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 7,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1139,11 +1139,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 9,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 10,
+                'quantity' => 4,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 8,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1155,7 +1155,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 2,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 9,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1167,7 +1167,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 10,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1175,11 +1175,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 10,
                 'status_id' => 1,
                 'unit_id' => 50,
-                'quantity' => 23,
+                'quantity' => 21,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 11,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1191,7 +1191,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 12,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1199,11 +1199,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 10,
                 'status_id' => 1,
                 'unit_id' => 50,
-                'quantity' => 23,
+                'quantity' => 24,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 13,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1215,7 +1215,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 2,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 14,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1227,7 +1227,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 15,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1235,11 +1235,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 12,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 13,
+                'quantity' => 11,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 16,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1251,7 +1251,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 17,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1263,7 +1263,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 18,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1275,7 +1275,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 19,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1287,7 +1287,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 3,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 20,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1299,7 +1299,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 21,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1311,7 +1311,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 2,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 22,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1323,7 +1323,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 23,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1335,7 +1335,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 24,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1347,7 +1347,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 25,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1355,11 +1355,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 13,
                 'status_id' => 1,
                 'unit_id' => 37,
-                'quantity' => 24,
+                'quantity' => 15,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 26,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1371,7 +1371,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 27,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1383,7 +1383,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 3,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 28,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1395,7 +1395,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 29,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1403,11 +1403,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 13,
                 'status_id' => 1,
                 'unit_id' => 41,
-                'quantity' => 82,
+                'quantity' => 84,
                 'min_quantity' => 25,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 30,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1415,11 +1415,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 13,
                 'status_id' => 1,
                 'unit_id' => 41,
-                'quantity' => 4,
+                'quantity' => 5,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 1,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1427,11 +1427,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 13,
                 'status_id' => 1,
                 'unit_id' => 41,
-                'quantity' => 3,
+                'quantity' => 1,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 2,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1443,7 +1443,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 3,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1451,11 +1451,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 13,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 2,
+                'quantity' => 0,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 4,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1467,7 +1467,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 5,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1479,7 +1479,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 6,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1487,11 +1487,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 13,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 7,
+                'quantity' => 2,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 7,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1499,11 +1499,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 13,
                 'status_id' => 1,
                 'unit_id' => 37,
-                'quantity' => 17,
+                'quantity' => 22,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 8,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1511,11 +1511,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 13,
                 'status_id' => 1,
                 'unit_id' => 37,
-                'quantity' => 25,
+                'quantity' => 23,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 9,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1527,7 +1527,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 10,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1535,11 +1535,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 13,
                 'status_id' => 1,
                 'unit_id' => 40,
-                'quantity' => 27,
+                'quantity' => 26,
                 'min_quantity' => 15,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 11,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1551,7 +1551,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 12,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1559,11 +1559,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 13,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 10,
+                'quantity' => 3,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 13,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1571,11 +1571,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 13,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 153,
+                'quantity' => 149,
                 'min_quantity' => 20,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 14,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1583,11 +1583,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 13,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 11,
+                'quantity' => 0,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 15,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1599,7 +1599,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 16,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1611,7 +1611,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 17,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1623,7 +1623,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 18,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1631,11 +1631,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 13,
                 'status_id' => 1,
                 'unit_id' => 37,
-                'quantity' => 65,
+                'quantity' => 60,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 19,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1643,11 +1643,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 13,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 25,
+                'quantity' => 8,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 20,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1655,11 +1655,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 13,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 5,
+                'quantity' => 4,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 21,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1667,11 +1667,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 13,
                 'status_id' => 1,
                 'unit_id' => 41,
-                'quantity' => 37,
+                'quantity' => 25,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 22,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1683,7 +1683,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 30,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 23,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1691,11 +1691,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 13,
                 'status_id' => 1,
                 'unit_id' => 41,
-                'quantity' => 7,
+                'quantity' => 5,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 24,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1703,11 +1703,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 13,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 13,
+                'quantity' => 3,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 25,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1715,11 +1715,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 14,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 8,
+                'quantity' => 18,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 26,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1727,11 +1727,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 14,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 14,
+                'quantity' => 20,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 27,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1739,11 +1739,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 14,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 1,
+                'quantity' => 8,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 28,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1755,7 +1755,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 29,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1763,11 +1763,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 14,
                 'status_id' => 1,
                 'unit_id' => 41,
-                'quantity' => 2,
+                'quantity' => 3,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 30,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1775,11 +1775,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 14,
                 'status_id' => 1,
                 'unit_id' => 36,
-                'quantity' => 15,
+                'quantity' => 20,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 1,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1787,11 +1787,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 14,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 0,
+                'quantity' => 3,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 2,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1803,7 +1803,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 3,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1811,11 +1811,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 14,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 9,
+                'quantity' => 18,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 4,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1823,11 +1823,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 14,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 7,
+                'quantity' => 6,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 5,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1835,11 +1835,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 14,
                 'status_id' => 1,
                 'unit_id' => 44,
-                'quantity' => 13,
+                'quantity' => 20,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 6,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1851,7 +1851,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 7,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1863,7 +1863,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 100,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 8,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1875,7 +1875,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 9,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1887,7 +1887,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 10,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1899,7 +1899,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 11,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1911,7 +1911,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 12,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1923,7 +1923,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 13,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1935,7 +1935,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 14,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1947,7 +1947,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 15,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1959,7 +1959,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 16,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1967,11 +1967,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 16,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 198,
+                'quantity' => 197,
                 'min_quantity' => 100,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 17,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1979,11 +1979,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 16,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 205,
+                'quantity' => 239,
                 'min_quantity' => 100,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 18,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -1995,7 +1995,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 19,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2003,11 +2003,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 16,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 4,
+                'quantity' => 5,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 20,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2019,7 +2019,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 21,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2027,11 +2027,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 17,
                 'status_id' => 1,
                 'unit_id' => 36,
-                'quantity' => 56,
+                'quantity' => 55,
                 'min_quantity' => 15,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 22,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2039,11 +2039,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 17,
                 'status_id' => 1,
                 'unit_id' => 36,
-                'quantity' => 34,
+                'quantity' => 33,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 23,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2051,11 +2051,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 17,
                 'status_id' => 1,
                 'unit_id' => 36,
-                'quantity' => 34,
+                'quantity' => 33,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 24,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2063,11 +2063,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 17,
                 'status_id' => 1,
                 'unit_id' => 36,
-                'quantity' => 34,
+                'quantity' => 33,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 25,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2079,7 +2079,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 26,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2087,11 +2087,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 17,
                 'status_id' => 1,
                 'unit_id' => 36,
-                'quantity' => 8,
+                'quantity' => 1,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 27,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2103,7 +2103,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 25,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 28,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2115,7 +2115,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 25,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 29,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2127,7 +2127,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 25,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 30,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2135,11 +2135,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 17,
                 'status_id' => 1,
                 'unit_id' => 36,
-                'quantity' => 32,
+                'quantity' => 31,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 1,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2151,7 +2151,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 2,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2159,11 +2159,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 17,
                 'status_id' => 1,
                 'unit_id' => 50,
-                'quantity' => 17,
+                'quantity' => 16,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 3,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2175,7 +2175,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 4,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2187,7 +2187,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 5,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2195,11 +2195,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 17,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 6,
+                'quantity' => 5,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 6,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2207,11 +2207,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 17,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 3,
+                'quantity' => 2,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 7,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2223,7 +2223,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 8,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2231,11 +2231,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 18,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 16,
+                'quantity' => 5,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 9,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2243,11 +2243,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 18,
                 'status_id' => 1,
                 'unit_id' => 36,
-                'quantity' => 2,
+                'quantity' => 0,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 10,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2259,7 +2259,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 11,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2271,7 +2271,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 12,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2279,11 +2279,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 18,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 2,
+                'quantity' => 0,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 13,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2295,7 +2295,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 14,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2303,11 +2303,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 18,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 14,
+                'quantity' => 0,
                 'min_quantity' => 10,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 15,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2315,11 +2315,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 18,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 1,
+                'quantity' => 2,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 16,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2327,11 +2327,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 18,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 2,
+                'quantity' => 3,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 17,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2339,15 +2339,15 @@ class ItemSeeder extends Seeder
                 'category_id' => 18,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 4,
+                'quantity' => 2,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 18,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
-                'name' => 'Multi page flip table card rack/display stand holder',
+                'name' => 'Multi page flip table card rack/display stand holder a4',
                 'category_id' => 18,
                 'status_id' => 1,
                 'unit_id' => 38,
@@ -2355,7 +2355,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 19,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2367,7 +2367,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 20,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2379,7 +2379,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 21,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2391,7 +2391,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 3,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 22,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2399,11 +2399,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 18,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 3,
+                'quantity' => 0,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 23,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2411,11 +2411,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 18,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 5,
+                'quantity' => 4,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 24,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2423,11 +2423,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 18,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 1,
+                'quantity' => 0,
                 'min_quantity' => 1,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 24,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2439,7 +2439,7 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 25,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2447,11 +2447,11 @@ class ItemSeeder extends Seeder
                 'category_id' => 18,
                 'status_id' => 1,
                 'unit_id' => 38,
-                'quantity' => 7,
+                'quantity' => 6,
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 26,
-                'received_month' => 03,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             [
@@ -2463,19 +2463,237 @@ class ItemSeeder extends Seeder
                 'min_quantity' => 5,
                 'delivery_type' => "Receipt for Stock",
                 'received_day' => 7,
-                'received_month' => 03,
+                'received_month' => 05,
+                'received_year' => 2025
+            ],
+
+
+            [
+                'name' => 'Broom, ceiling, plastic handle, long adjustable handle',
+                'category_id' => 18,
+                'status_id' => 1,
+                'unit_id' => 38,
+                'quantity' => 1,
+                'min_quantity' => 5,
+                'delivery_type' => "Receipt for Stock",
+                'received_day' => 7,
+                'received_month' => 05,
+                'received_year' => 2025
+            ],
+            [
+                'name' => 'Garden Fork',
+                'category_id' => 18,
+                'status_id' => 1,
+                'unit_id' => 38,
+                'quantity' => 1,
+                'min_quantity' => 5,
+                'delivery_type' => "Receipt for Stock",
+                'received_day' => 7,
+                'received_month' => 05,
+                'received_year' => 2025
+            ],
+            [
+                'name' => 'CR INK',
+                'category_id' => 18,
+                'status_id' => 1,
+                'unit_id' => 38,
+                'quantity' => 2,
+                'min_quantity' => 5,
+                'delivery_type' => "Receipt for Stock",
+                'received_day' => 7,
+                'received_month' => 05,
+                'received_year' => 2025
+            ],
+            [
+                'name' => 'EPSON 001 Black',
+                'category_id' => 18,
+                'status_id' => 1,
+                'unit_id' => 36,
+                'quantity' => 1,
+                'min_quantity' => 5,
+                'delivery_type' => "Receipt for Stock",
+                'received_day' => 7,
+                'received_month' => 05,
+                'received_year' => 2025
+            ],
+            [
+                'name' => 'EPSON 001 Cyan',
+                'category_id' => 18,
+                'status_id' => 1,
+                'unit_id' => 36,
+                'quantity' => 1,
+                'min_quantity' => 5,
+                'delivery_type' => "Receipt for Stock",
+                'received_day' => 7,
+                'received_month' => 05,
+                'received_year' => 2025
+            ],
+            [
+                'name' => 'EPSON 001 Magenta',
+                'category_id' => 18,
+                'status_id' => 1,
+                'unit_id' => 36,
+                'quantity' => 1,
+                'min_quantity' => 5,
+                'delivery_type' => "Receipt for Stock",
+                'received_day' => 7,
+                'received_month' => 05,
+                'received_year' => 2025
+            ],
+            [
+                'name' => 'EPSON 001 Yellow',
+                'category_id' => 18,
+                'status_id' => 1,
+                'unit_id' => 36,
+                'quantity' => 1,
+                'min_quantity' => 5,
+                'delivery_type' => "Receipt for Stock",
+                'received_day' => 7,
+                'received_month' => 05,
+                'received_year' => 2025
+            ],
+            [
+                'name' => 'Fastener, metal, big, 50s',
+                'category_id' => 18,
+                'status_id' => 1,
+                'unit_id' => 37,
+                'quantity' => 2,
+                'min_quantity' => 5,
+                'delivery_type' => "Receipt for Stock",
+                'received_day' => 7,
+                'received_month' => 05,
+                'received_year' => 2025
+            ],
+            [
+                'name' => 'Trolley Cart 75L',
+                'category_id' => 18,
+                'status_id' => 1,
+                'unit_id' => 38,
+                'quantity' => 1,
+                'min_quantity' => 5,
+                'delivery_type' => "Receipt for Stock",
+                'received_day' => 7,
+                'received_month' => 05,
+                'received_year' => 2025
+            ],
+            [
+                'name' => 'Gestetner Copy Printer Master DX2430m',
+                'category_id' => 18,
+                'status_id' => 1,
+                'unit_id' => 38,
+                'quantity' => 1,
+                'min_quantity' => 5,
+                'delivery_type' => "Receipt for Stock",
+                'received_day' => 7,
+                'received_month' => 05,
+                'received_year' => 2025
+            ],
+            [
+                'name' => 'Cattleya Notebook',
+                'category_id' => 18,
+                'status_id' => 1,
+                'unit_id' => 38,
+                'quantity' => 49,
+                'min_quantity' => 5,
+                'delivery_type' => "Receipt for Stock",
+                'received_day' => 7,
+                'received_month' => 05,
+                'received_year' => 2025
+            ],
+            [
+                'name' => 'Chalk',
+                'category_id' => 18,
+                'status_id' => 1,
+                'unit_id' => 37,
+                'quantity' => 1,
+                'min_quantity' => 5,
+                'delivery_type' => "Receipt for Stock",
+                'received_day' => 7,
+                'received_month' => 05,
+                'received_year' => 2025
+            ],
+            [
+                'name' => 'Sealing Strip',
+                'category_id' => 18,
+                'status_id' => 1,
+                'unit_id' => 38,
+                'quantity' => 1,
+                'min_quantity' => 5,
+                'delivery_type' => "Receipt for Stock",
+                'received_day' => 7,
+                'received_month' => 05,
+                'received_year' => 2025
+            ],
+            [
+                'name' => 'Glue Gun',
+                'category_id' => 18,
+                'status_id' => 1,
+                'unit_id' => 38,
+                'quantity' => 2,
+                'min_quantity' => 5,
+                'delivery_type' => "Receipt for Stock",
+                'received_day' => 7,
+                'received_month' => 05,
+                'received_year' => 2025
+            ],
+            [
+                'name' => 'Sliding Folder',
+                'category_id' => 18,
+                'status_id' => 1,
+                'unit_id' => 38,
+                'quantity' => 44,
+                'min_quantity' => 5,
+                'delivery_type' => "Receipt for Stock",
+                'received_day' => 7,
+                'received_month' => 05,
+                'received_year' => 2025
+            ],
+            [
+                'name' => 'Disinfectant Solution 1 Gal.',
+                'category_id' => 18,
+                'status_id' => 1,
+                'unit_id' => 46,
+                'quantity' => 1,
+                'min_quantity' => 5,
+                'delivery_type' => "Receipt for Stock",
+                'received_day' => 7,
+                'received_month' => 05,
+                'received_year' => 2025
+            ],
+            [
+                'name' => 'FOLDER, TAGBOARD, for A4 size documents (brown)',
+                'category_id' => 18,
+                'status_id' => 1,
+                'unit_id' => 41,
+                'quantity' => 1,
+                'min_quantity' => 5,
+                'delivery_type' => "Receipt for Stock",
+                'received_day' => 7,
+                'received_month' => 05,
+                'received_year' => 2025
+            ],
+            [
+                'name' => 'FOLDER, TAGBOARD, for Short size documents (brown)',
+                'category_id' => 18,
+                'status_id' => 1,
+                'unit_id' => 41,
+                'quantity' => 20,
+                'min_quantity' => 5,
+                'delivery_type' => "Receipt for Stock",
+                'received_day' => 7,
+                'received_month' => 05,
                 'received_year' => 2025
             ],
             // [
             //     'name' => '',
-            //     'category_id' => ,
+            //     'category_id' => 18,
             //     'status_id' => 1,
             //     'unit_id' => ,
             //     'quantity' => ,
-            //     'min_quantity' => ,
+            //     'min_quantity' => 5,
             //     'delivery_type' => "Receipt for Stock",
-            //     'received_day' => ,
-            //     'received_month' => 03,
+            //     'received_day' => 7,
+            //     'received_month' => 05,
             //     'received_year' => 2025
             // ],
             

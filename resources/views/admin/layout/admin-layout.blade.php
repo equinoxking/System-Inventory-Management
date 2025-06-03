@@ -64,16 +64,16 @@
                     <form id="pdf-report-form">
                         <div class="form-group">
                             <label for="period" class="font-weight-bold">Period</label>
-                            <select name="period" id="period" class="form-control">
-                                <option value="">Select period</option>
+                            <select name="period" id="period" class="form-select">
+                                <option value="">--Select period--</option>
                                 <option value="Monthly">Monthly</option>
                                 <option value="Quarterly">Quarterly</option>
                             </select>
                         </div>
                         <div class="form-group" id="month-row" style="display: none">
                             <label for="month" class="font-weight-bold">Month</label>
-                            <select name="month" id="month" class="form-control">
-                                <option value="">Select month</option>
+                            <select name="month" id="month" class="form-select">
+                                <option value="">--Select month--</option>
                                 <option value="1">January</option>
                                 <option value="2">February</option>
                                 <option value="3">March</option>
@@ -89,13 +89,13 @@
                             </select>
                             <label for="selectedYear" class="font-weight-bold">Select Year</label>
                             <select id="selectedYear" name="monthlySelectedYear" class="form-control">
-                                <option value="">Select a Year</option>
+                                <option value="">--Select a Year--</option>
                             </select>
                         </div>
                         <div class="form-group" id="quarterly-row" style="display: none">
                             <label for="quarterly" class="font-weight-bold">Quarterly</label>
-                            <select name="quarterly" id="quarterly" class="form-control">
-                                <option value="">Select quarterly</option>
+                            <select name="quarterly" id="quarterly" class="form-select">
+                                <option value="">--Select quarterly--</option>
                                 <option value="1-2-3">First Quarter</option>
                                 <option value="4-5-6">Second Quarter</option>
                                 <option value="7-8-9">Third Quarter</option>
@@ -103,13 +103,13 @@
                             </select>
                             <label for="selectedYear" class="font-weight-bold">Select Year</label>
                             <select id="yearSelectQuarterly" name="selectedYear" class="form-control">
-                                <option value="">Select a Year</option>
+                                <option value="">--Select a Year--</option>
                             </select>
                         </div>
                         <div class="form-group" id="signatories-row" style="display: none">
                             <label for="prepared" class="font-weight-bold">Prepared By:</label>
-                            <select name="prepared" id="prepared" class="form-control">
-                                <option value="">Select Prepared By:</option>
+                            <select name="prepared" id="prepared" class="form-select">
+                                <option value="">--Select Prepared By:--</option>
                                 @foreach ($admins as $admin)
                                     <option value="{{ $admin->id }}">{{ $admin->full_name }}</option>
                                 @endforeach
@@ -141,9 +141,9 @@
                 <div class="row">
                     <form id="generate-transaction-form">
                         <div class="form-group">
-                            <label for="selectOption" class="font-weight-bold">Option</label>
-                            <select name="selectOption" id="selectOption" class="form-control">
-                                <option value="">Select Option</option>
+                            <label for="selectOption" class="font-weight-bold">Filter By</label>
+                            <select name="selectOption" id="selectOption" class="form-select">
+                                <option value="">--Select Filter--</option>
                                 <option value="User">User</option>
                                 <option value="Division">Division</option>
                             </select>
@@ -151,30 +151,42 @@
 
                         <div class="form-group" id="user-select-group">
                             <label for="selection" class="font-weight-bold">User</label>
-                            <select name="selection" id="selection" class="form-control">
-                                <option value="">Select User</option>
-                                <option value="All">All</option>
-                                @foreach ($clients as $client)
-                                    <option value="{{ $client->id }}">{{ $client->full_name }}</option> 
+                            <select name="selection" id="selection" class="form-select">
+                                <option value="">--Select User--</option>
+                                @foreach ($clients->sortBy('full_name') as $client)
+                                    <option value="{{ $client->id }}">{{ $client->full_name }}</option>
                                 @endforeach
                             </select>
+
                         </div>
+
+                                                @php
+                            use Illuminate\Support\Facades\DB;
+
+                            $divisions = DB::table('clients')
+                                        ->select('division')
+                                        ->whereNotNull('division')
+                                        ->where('division', '!=', '')
+                                        ->distinct()
+                                        ->pluck('division');
+                        @endphp
 
                         <div class="form-group" id="division-select-group" style="display:none;">
                             <label for="division" class="font-weight-bold">Division</label>
-                            <select name="division" id="division" class="form-control">
-                                <option value="">Select Division</option>
-                                <option value="first division">First Division</option>
-                                <option value="second division">Second Division</option>
-                                <option value="third division">Third Division</option>
-                                <option value="fourth division">Fourth Division</option>
+                            <select name="division" id="division" class="form-select">
+                                <option value="">--Select Division--</option>
+                                @foreach ($divisions as $division)
+                                    <option value="{{ $division }}">{{ Str::title(Str::lower($division)) }}</option>
+                                @endforeach
                             </select>
+
                         </div>
+
 
                         <div class="form-group">
                             <label for="admin" class="font-weight-bold">Prepared By:</label>
-                            <select name="admin" id="admin" class="form-control">
-                                <option value="">Select Admin</option>
+                            <select name="admin" id="admin" class="form-select">
+                                <option value="">--Select Admin--</option>
                                 @foreach ($admins as $admin)
                                     <option value="{{ $admin->id }}"> {{ $admin->full_name }} </option>
                                 @endforeach

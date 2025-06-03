@@ -1,8 +1,35 @@
 <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">
-            <img src="{{ asset('assets/images/LOGO.webp') }}" alt="Logo"> Supplies Management System
-        </a>
+        <a class="navbar-brand d-flex align-items-center" href="{{ url('/admin/') }}">
+                <img src="{{ asset('assets/images/LOGO.webp') }}" alt="Logo" style="height: 40px; width: auto;">
+                <span class="brand-text ms-2" style="white-space: nowrap; font-weight: 600;">
+                    Office Supplies Inventory Management System
+                </span>
+            </a>
+
+            <style>
+                @media (max-width: 1200px) {
+                    .brand-text {
+                        font-size: 1.25rem; /* Smaller font on large screens */
+                    }
+                }
+                @media (max-width: 992px) {
+                    .brand-text {
+                        font-size: 1rem; /* Even smaller on medium */
+                    }
+                }
+                @media (max-width: 768px) {
+                    .brand-text {
+                        font-size: 0.875rem;
+                    }
+                }
+                @media (max-width: 576px) {
+                    .brand-text {
+                        font-size: 0.75rem;
+                    }
+                }
+            </style>
+
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -30,6 +57,7 @@
             <ul class="navbar-nav logout">
                 <button class="btn btn-danger" id="signOutButton" title="Logout button"><i class="fa fa-power-off"></i></button>
             </ul>
+            
             <ul class="navbar-nav logout ml-3">
                 <li class="nav-item mr-3 mt-1 text-light">
                     <strong>

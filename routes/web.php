@@ -78,6 +78,7 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::post('/delete-item', 'deleteItem');
         Route::patch('/update-item', 'editItem');
         Route::get('/admin/refreshItems', 'getItem');
+        Route::get('/get-item-info/{id}', 'getItemInfo');
     });
     //Route for Inventory Controller 
     Route::controller(InventoryManager::class)->group(function() {
@@ -100,9 +101,11 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
     Route::controller(AdminTransactionManager::class)->group(function(){
         Route::get('admin/transaction', 'goToTransactions');
         Route::patch('/change-transaction-status', 'updateTransactionStatus');
+        Route::patch('/change-past-transaction-status', 'updateTransactionStatus');
         Route::get('/admin/refreshTransactions', 'getTransactions');
         Route::post('/request-item-admin', 'requestItemAdmin');
         Route::get('/admin/refreshActedTransactions', 'getActedTransactions');
+        Route::get('/admin/refreshPastTransactions', 'getPastTransactions');
     });
     //Route for Account Controller 
     Route::controller(AccountManager::class)->group(function(){
@@ -115,6 +118,8 @@ Route::group(['middleware' => 'loginCheckInventoryAdmin'], function () {
         Route::post('/add-admin', 'addAdmin');
         Route::patch('/update-admin','updateAdmin');
         Route::delete('/delete-admin', 'deleteAdmin');
+        Route::patch('/change-admin-status','changeUserStatus');
+        Route::patch('/set-admin-role','setAdminRole');
     });
     //Route for Report Controller 
     Route::controller(ReportManager::class)->group(function(){

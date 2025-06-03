@@ -18,39 +18,23 @@ use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
 class TransactionsManager extends Controller
 {
     public function goToTransactions(){
-        if (session()->has('loginCheckUser') || session()->has('loggedInInventoryAdmin')) {
-            $user = session()->get('loginCheckUser');
-            $client_id = null;
-            if ($user) {
-                $client_id = $user['id'];
-            }
-            $items = ItemModel::all();
-            if ($client_id) {
-                $currentTransactions = TransactionModel::with('transactionDetail')
-                    ->where('user_id', $user)
-                    ->where('remark', '!=', 'Completed')
-                    ->orderBy('transaction_number', 'desc')
-                    ->get();
-                $actedTransactions = TransactionModel::with('transactionDetail')
-                ->where('user_id', $user)
-                ->where('remark', 'Completed')
-                ->orderBy('transaction_number', 'desc')
-                ->get();
-            } else {
-                // If no user (or admin), fetch all transactions (admin or global transactions)
-                $transactions = TransactionModel::with('transactionDetail')
-                    ->orderBy('transaction_number', 'desc')
-                    ->get();
-            }
-            $transactions = TransactionModel::all();
-            // Return the view with both items and transactions
-            return view('user.transactions', [
+        $items = ItemModel::all();
+        $client_id = session()->get('loginCheckUser')['id'];
+        $currentTransactions = TransactionModel::with('transactionDetail')
+        ->where('user_id', $client_id)
+        ->where('remark', '!=', 'Completed')
+        ->orderBy('transaction_number', 'desc')
+        ->get();
+        $actedTransactions = TransactionModel::with('transactionDetail')
+        ->where('user_id', $client_id)
+        ->where('remark', 'Completed')
+        ->orderBy('transaction_number', 'desc')
+        ->get();
+        return view('user.transactions', [
                 'items' => $items,
                 'currentTransactions' => $currentTransactions,
                 'actedTransactions' => $actedTransactions,
-                'transactions' => $transactions
-            ]);
-        } 
+        ]);
     }
     public function searchItem(Request $request){
         $query = $request->input('query'); 
@@ -403,12 +387,15 @@ class TransactionsManager extends Controller
             'client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'
         ])
         ->where(function ($query) use ($client_id) {
-            $query->where('status_id', 1)
-                ->orWhere('status_id', 2)
-                ->where('user_id', $client_id)
-                ->where('remark', "!=" , "Completed");
+            $query->where(function ($q) {
+                $q->where('status_id', 1)
+                ->orWhere('status_id', 2);
+            })
+            ->where('user_id', $client_id)
+            ->where('remark', '!=', 'Completed');
         })
-        ->get();        
+        ->get();
+   
         $formattedTransactions = $transactions->map(function ($transaction) {
             return [
                 'id' => $transaction->id,

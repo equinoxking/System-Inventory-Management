@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('control_number', 30)->unique();
             $table->string('full_name', 60)->unique();
             $table->string('position', 30);
+            $table->string('status', 30);
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
         });

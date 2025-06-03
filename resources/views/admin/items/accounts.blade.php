@@ -17,7 +17,7 @@
 <div class="container-fluid mt-3">
     <div class="row">
         <div class="col-md-9" style="text-align: left">
-            <h4><strong>USER ACCOUNTS</strong></h4>
+            <h4><strong>ACTIVE USERS</strong></h4>
         </div>
     </div>
 </div>
@@ -26,38 +26,42 @@
         <div class="col-md-12">
             <table id="accountTable" class="table-hover" style="font-size: 12px">
                 <thead>
-                    <th width="8%">Employee Number</th>
-                    <th width="30%">Full Name</th>
-                    <th width="20%">Email</th>
+                    <th width="8%">ID Number</th>
+                    <th width="25%">Full Name</th>
                     <th width="8%">System Role</th>
                     <th width="5%">Office</th>
-                    <th width="8%">Position</th>
+                    <th width="15%">Position</th>
+                    <th width="15%">Division</th>
                     <th width="5%">Status</th>
                     <th width="5%">Action</th>
                 </thead>
                 <tbody>
                     @foreach ($clients as $client)
-                        @if ($client->role->id != 1)
+                        @if ($client->role->id != 1 && $client->status != "Inactive")
                             <tr>
                                 <td>{{ $client->employee_number }}</td>
                                 <td>{{ $client->full_name }}</td>
-                                <td>{{ $client->email }}</td>
                                 <td>{{ $client->role->name }}</td>
                                 <td>{{ $client->office }}</td>
                                 <td>{{ $client->position }}</td>
+                                <td>{{ ucwords(strtolower($client->division)) }}</td>
                                 <td id="user_status" class="text-center">
                                     @if($client->status && $client->status == 'Active')
                                         <span class="badge badge-success" style="width: 4rem; font-size: 10px;" id="status-badge">
-                                            <i class="fas fa-check-circle"></i> Active
+                                            <i class="fas fa-check-circle"></i>Active
                                         </span>
                                     @else
                                         <span class="badge badge-danger" style="width: 4rem; font-size: 10px;" id="status-badge">
-                                            <i class="fas fa-times-circle"></i> Inactive
+                                            <i class="fas fa-times-circle"></i>Inactive
                                         </span>
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <button type="button" class="btn btn-warning" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="setUser('{{ addslashes(json_encode($client)) }}')" title="Set permission"><i class="fa fa-user" style="color: white;"></i></button>
+                                    <button type="button" class="btn btn-warning" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" 
+                                        onclick="setUser('{{ addslashes(json_encode(array_merge($client->toArray(), ['type' => 'user']))) }}')" 
+                                        title="Set permission">
+                                        <i class="fa fa-user" style="color: white;"></i>
+                                    </button>                                
                                     <button type="button" class="btn btn-danger" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="changeUserStatus('{{ addslashes(json_encode($client)) }}')" title="Change user status"><i class="fa fa-trash"></i></button>
                                 </td>
                             </tr>
@@ -73,11 +77,6 @@
         <div class="col-md-9" style="text-align: left">
             <h4><strong>ADMINISTRATORS</strong></h4>
         </div>
-        <div class="col-md-3" style="text-align: right">
-            <button type="button" class="btn btn-success" id="addAdminBtn" title="Add admin button">
-                <i class="fa-solid fa-plus"></i>
-            </button>
-        </div>
     </div>
 </div>
 <div class="container-fluid">
@@ -85,11 +84,13 @@
         <div class="col-md-12">
             <table id="adminTable" class="table-hover" style="font-size: 12px">
                 <thead>
-                    <th width="10%">Admin Number</th>
-                    <th>Full Name</th>
-                    <th width="10%">System Role</th>
-                    <th width="10%">Office Position</th>
-                    <th width="10%">Status</th>
+                    <th width="8%">ID Number</th>
+                    <th width="25%">Full Name</th>
+                    <th width="8%">System Role</th>
+                    <th width="5%">Office</th>
+                    <th width="15%">Position</th>
+                    <th width="15%">Division</th>
+                    <th width="5%">Status</th>
                     <th width="5%">Action</th>
                 </thead>
                 <tbody>
@@ -99,9 +100,11 @@
                             <td>{{ $admin->control_number }}</td>
                             <td>{{ $admin->full_name }}</td>
                             <td>
-                                {{ preg_replace('/([a-z])([A-Z])/', '$1 $2', $admin->role->name) }}
+                                {{ $admin->role->name === 'InventoryAdmin' ? 'Admin' : preg_replace('/([a-z])([A-Z])/', '$1 $2', $admin->role->name) }}
                             </td>
+                            <td>{{ $admin->client->office }}</td>
                             <td>{{ $admin->position }}</td>
+                            <td>{{ ucwords(strtolower($admin->client->division)) }}</td>
                             <td id="user_status" class="text-center">
                                 @if($admin->status && $admin->status == 'Active')
                                     <span class="badge badge-success" style="width: 4rem; font-size: 10px;" id="status-badge">
@@ -114,10 +117,67 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                                <button type="button" class="btn btn-warning" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="editAdmin('{{ addslashes(json_encode($admin)) }}')" title="Edit admin button"><i class="fa fa-edit" style="color: white;"></i></button>
-                                <button type="button" class="btn btn-danger" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="deleteAdmin('{{ addslashes(json_encode($admin)) }}')" title="Delete admin button"><i class="fa fa-trash"></i></button>
+                                <button type="button" class="btn btn-warning" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" 
+                                    onclick="setUser('{{ addslashes(json_encode(array_merge($admin->toArray(), ['type' => 'admin']))) }}')" 
+                                    title="Set permission">
+                                    <i class="fa fa-user" style="color: white;"></i>
+                                </button>                              
+                                <button type="button" class="btn btn-danger" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="changeAdminStatus('{{ addslashes(json_encode($admin)) }}')" title="Change status admin button"><i class="fa fa-trash"></i></button>
                             </td>
                         </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-md-9" style="text-align: left">
+            <h4><strong>INACTIVE USERS</strong></h4>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <table id="accountInactiveTable" class="table-hover" style="font-size: 12px">
+                <thead>
+                    <th width="8%">ID Number</th>
+                    <th width="25%">Full Name</th>
+                    <th width="8%">System Role</th>
+                    <th width="5%">Office</th>
+                    <th width="15%">Position</th>
+                    <th width="15%">Division</th>
+                    <th width="5%">Status</th>
+                    <th width="5%">Action</th>
+                </thead>
+                <tbody>
+                    @foreach ($clients as $client)
+                        @if ($client->role->id != 1 && $client->status == "Inactive")
+                            <tr>
+                                <td>{{ $client->employee_number }}</td>
+                                <td>{{ $client->full_name }}</td>
+                                <td>{{ $client->role->name }}</td>
+                                <td>{{ $client->office }}</td>
+                                <td>{{ $client->position }}</td>
+                                <td>{{ ucwords(strtolower($client->division)) }}</td>
+                                <td id="user_status" class="text-center">
+                                    @if($client->status && $client->status == 'Active')
+                                        <span class="badge badge-success" style="width: 4rem; font-size: 10px;" id="status-badge">
+                                            <i class="fas fa-check-circle"></i>Active
+                                        </span>
+                                    @else
+                                        <span class="badge badge-danger" style="width: 4rem; font-size: 10px;" id="status-badge">
+                                            <i class="fas fa-times-circle"></i>Inactive
+                                        </span>
+                                    @endif
+                                </td>
+                                <td class="text-center">                           
+                                    <button type="button" class="btn btn-success" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;" onclick="changeUserStatus('{{ addslashes(json_encode($client)) }}')" title="Change user status"><i class="fa fa-trash-restore"></i></button>
+                                </td>
+                            </tr>
+                        @endif
                     @endforeach
                 </tbody>
             </table>
@@ -167,8 +227,8 @@
                 </div>
                 <div class="row">
                     <div class="modal-footer">
-                        <div class="col-md-3 form-group">
-                            <button type="submit" class="btn btn-warning" id="set-role-submit-btn">SUBMIT</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-warning" id="set-role-submit-btn">SAVE</button>
                         </div>
                     </div>
                 </form>
@@ -209,8 +269,8 @@
                 </div>
                 <div class="row">
                     <div class="modal-footer">
-                        <div class="col-md-3 form-group">
-                            <button type="submit" class="btn btn-danger" id="change-user-status-submit-btn">SUBMIT</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-danger" id="change-user-status-submit-btn">SAVE</button>
                         </div>
                     </div>
                 </form>
@@ -264,8 +324,8 @@
                     </div>
                     <div class="row">
                         <div class="modal-footer">
-                            <div class="col-md-3 form-group">
-                                <button type="submit" class="btn btn-success" id="add-unit-submit-btn">SUBMIT</button>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success" id="add-unit-submit-btn">SAVE</button>
                             </div>
                         </div>
                     </div>
@@ -328,8 +388,8 @@
                 </div>
                 <div class="row">
                     <div class="modal-footer">
-                        <div class="col-md-3 form-group">
-                            <button type="submit" class="btn btn-warning" id="edit-admin-submit-btn">SUBMIT</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-warning" id="edit-admin-submit-btn">SAVE</button>
                         </div>
                     </div>
                 </form>
@@ -370,3 +430,5 @@
 <script src="{{ asset('assets/js/admin/accounts/other-function.js') }}"></script>
 <script src="{{ asset('assets/js/admin/accounts/clients-setting.js') }}"></script>
 <script src="{{ asset('assets/js/admin/accounts/status.js') }}"></script>
+<script src="{{ asset('assets/js/admin/accounts/change-status-admin.js') }}"></script>
+{{-- <script src="{{ asset('assets/js/admin/accounts/set-admin.js') }}"></script> --}}

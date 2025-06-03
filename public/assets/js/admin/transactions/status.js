@@ -9,8 +9,6 @@ $(document).ready(function(){
     $(document).on('submit', '#transaction-status-form', function(event){
       event.preventDefault();
       var formData = $('#transaction-status-form').serialize();
-      var status = $('#status').val();
-      console.log(status);
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

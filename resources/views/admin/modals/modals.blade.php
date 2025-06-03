@@ -13,26 +13,31 @@
                         @csrf
                         <div class="form-group">
                             <label for="fullName" class="font-weight-bold">Full Name</label>
-                            <select name="full_name" id="full_name" class="form-control">
-                                @foreach ($clients as $client)
+                            <select name="full_name" id="full_name" class="form-select">
+                                <option value="">--Select User--</option>
+                                @foreach ($clients->sortBy('full_name') as $client)
                                     <option value="{{ $client->id }}">{{ $client->full_name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="form-group" >
                             <label for="roleId" class="font-weight-bold">System Roles</label>
-                            <select name="role_id" id="role-id" class="form-control">
-                                <option value="">Select Role</option>
-                                @foreach ($roles as $role)
-                                    <option value="{{ $role->id }}">{{ $role->name }}</option>
+                            <select name="role_id" id="role-id" class="form-select">
+                                <option value="">--Select Role--</option>
+                                @foreach ($roles->sortBy('name') as $role)
+                                    @if (in_array($role->name, ['InventoryAdmin', 'User']))
+                                        <option value="{{ $role->id }}">
+                                            {{ $role->name == 'InventoryAdmin' ? 'Admin' : $role->name }}
+                                        </option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
                 </div>
                 <div class="row">
                     <div class="modal-footer">
-                        <div class="col-md-3 form-group">
-                            <button type="submit" class="btn btn-warning" id="set-role-submit-btn">SUBMIT</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-warning" id="set-role-submit-btn">SAVE</button>
                         </div>
                     </div>
                 </form>
@@ -56,8 +61,9 @@
                         @csrf
                         <div class="form-group">
                             <label for="fullName" class="font-weight-bold">Full Name</label>
-                            <select name="user_id" id="full_name" class="form-control">
-                                @foreach ($clients as $client)
+                            <select name="user_id" id="full_name" class="form-select">
+                                <option value="">--Select User--</option>
+                                @foreach ($clients->sortBy('full_name') as $client)
                                     @if ($client->id != 1)
                                         <option value="{{ $client->id }}">{{ $client->full_name }}</option>
                                     @endif
@@ -66,17 +72,17 @@
                         </div>
                         <div class="form-group" >
                             <label for="status" class="font-weight-bold">System Status</label>
-                            <select name="status" id="status" class="form-control">
-                                <option value="">Select User Status</option>
-                                <option value="Inactive">Deactivate</option>
+                            <select name="status" id="status" class="form-select">
+                                <option value="">--Select Status--</option>
                                 <option value="Active">Activate</option>
+                                <option value="Inactive">Deactivate</option>
                             </select>
                         </div>
                 </div>
                 <div class="row">
                     <div class="modal-footer">
-                        <div class="col-md-3 form-group">
-                            <button type="submit" class="btn btn-danger" id="change-user-status-submit-btn">SUBMIT</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-danger" id="change-user-status-submit-btn">SAVE</button>
                         </div>
                     </div>
                 </form>
@@ -100,7 +106,7 @@
                         <div class="form-group">
                             <label for="transactionStatusID" class="font-weight-bold">Transaction Number</label>
                             <select name="transaction-status-id" id="transaction-status-id" class="form-control">
-                                <option value="">Select Transaction Number</option>
+                                <option value="">--Select Transaction Number--</option>
                                 @foreach ($transacts as $transaction)
                                     @if ($transaction->status_id == 1) <!-- Only show transactions where status_id is 1 -->
                                         <option value="{{ $transaction->id }}">{{ $transaction->transaction_number }}</option>
@@ -130,7 +136,7 @@
                 <div class="row">
                     <div class="modal-footer">
                         <div class="col-md-3 form-group">
-                            <button type="submit" class="btn btn-warning" id="transaction-status-submit-btn">SUBMIT</button>
+                            <button type="submit" class="btn btn-warning" id="transaction-status-submit-btn">SAVE</button>
                         </div>
                     </div>
                     </form>
@@ -145,7 +151,7 @@
         <div class="modal-content">
             <!-- Modal Header -->
             <div class="modal-header bg-success text-white">
-                <h5 class="modal-title flex-grow-1 text-center"><strong>CREATE ITEM FORM</strong></h5>
+                <h5 class="modal-title flex-grow-1 text-center"><strong>ADD NEW ITEM FORM</strong></h5>
                 <button type="button" id="createItem-closeBtn" class="btn btn-danger" data-dismiss="modal" aria-label="Close">
                     &times;
                 </button>
@@ -199,11 +205,11 @@
                         <div class="col-md-12 d-flex justify-content-end">
                             <div class="col-md-2 form-group">
                                 <label for="" class="font-weight-bold">&nbsp</label>
-                                <button type="reset" class="btn btn-secondary rounded px-4 py-2 me-3 form-control">Clear</button>
+                                <button type="reset" class="btn btn-secondary rounded px-4 py-2 me-3 form-control">CLEAR</button>
                             </div>
                             <div class="col-md-2 form-group">
                                 <label for="" class="font-weight-bold">&nbsp</label>
-                                <button type="submit" id="addItemSubmit-btn" class="btn btn-success rounded px-4 py-2 form-control">Submit</button>
+                                <button type="submit" id="addItemSubmit-btn" class="btn btn-success rounded px-4 py-2 form-control">SAVE</button>
                             </div>
                         </div>
                     </div>
@@ -252,8 +258,8 @@
                         </div>
                     </div>
                     <div class="modal-footer justify-content-end">
-                        <button type="reset" class="btn btn-secondary rounded px-4 py-2 me-3">Clear</button>
-                        <button type="submit" id="requestItemSubmit-btn" class="btn btn-success rounded px-4 py-2">Submit</button>
+                        <button type="reset" class="btn btn-secondary rounded px-4 py-2 me-3">CLEAR</button>
+                        <button type="submit" id="requestItemSubmit-btn" class="btn btn-success rounded px-4 py-2">SAVE</button>
                     </div>
                 </div>
                
@@ -274,29 +280,36 @@
                 <div class="row edit-item-row">
                     <form id="edit-item-form">
                         <div class="form-group">
-                            <label for="editItemId" class="font-weight-bold">Select the item for editing</label>
-                            <select name="edit-item-id[]" id="edit-item-id" class="form-control">
+                            <label for="editItemId" class="font-weight-bold">Select item for editing (From)</label>
+                            <select name="edit-item-id[]" id="edit-item-id" class="form-select">
+                                <option value="">--Select Item--</option>
                                 @foreach ($items as $item)
                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
                                 @endforeach
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="category" class="font-weight-bold">Category</label>
-                            <input type="text" class="edit-search-category form-control" name="category[]" placeholder="Search categories..." autocomplete="off"/>
-                            <ul class="edit-category-results" style="display: none; max-height: 200px; overflow-y: auto;"></ul>
-                            <input type="text" class="edit-selected-category-id" id="edit-category" name="categoryId[]" hidden>
+                            <label for="edit-itemName" class="font-weight-bold">Item Name (To)</label>
+                            <textarea name="item_name[]" id="edit-item-name" class="form-control" cols="5" rows="1"></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="edit-itemName" class="font-weight-bold">Item Name</label>
-                            <textarea name="item_name[]" id="edit-item-name" class="form-control" cols="5" rows="1"></textarea>
+                            <label for="edit-category" class="font-weight-bold">Category</label>
+                            <select name="edit-category" id="edit-category" class="form-select">
+                                <option value="">--Select Category--</option>
+                                @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <!-- Item Unit -->
                         <div class="form-group">
-                            <label for="itemUnit" class="font-weight-bold">Unit</label>
-                            <input type="text" class="edit-search-unit form-control" name="unit[]"  placeholder="Search unit..." autocomplete="off"/>
-                            <ul class="edit-unit-results" style="display: none; max-height: 200px; overflow-y: auto;"></ul>
-                            <input type="text" class="edit-selected-unit-id" name="unitId[]" hidden>
+                            <label for="itemUnit" class="font-weight-bold">UoM</label>
+                            <select name="edit-unit" id="edit-unit" class="form-select">
+                                <option value="">--Select Unit--</option>
+                                @foreach ($units as $unit)
+                                    <option value="{{ $unit->id }}">{{ $unit->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="buffer" class="font-weight-bold">Buffer Stock</label>
@@ -305,8 +318,8 @@
                 </div>
                 <div class="row">
                     <div class="modal-footer">
-                        <div class="col-md-3 form-group">
-                            <button type="submit" class="btn btn-danger" id="delete-submit-btn">SUBMIT</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-danger" id="delete-submit-btn">SAVE</button>
                         </div>
                     </div>
                 </form>
@@ -326,7 +339,8 @@
                 <form id="delete-item-form">
                         <div class="form-group">
                             <label for="deleteItemId" class="font-weight-bold">Select Item to Delete</label>
-                            <select name="delete-item-id" id="delete-item-id" class="form-control">
+                            <select name="delete-item-id" id="delete-item-id" class="form-select">
+                                <option value="">--Select Item--</option>
                                 @foreach ($items as $item)
                                     <option value="{{ $item->id }}">{{ $item->name }}</option>
                                 @endforeach
@@ -349,7 +363,7 @@
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="d-flex justify-content-between align-items-center bg-warning text-dark p-3 rounded-top">
-                <h4 class="m-0 text-center flex-grow-1"><strong>DELIVERY FORM</strong></h4>
+                <h4 class="m-0 text-center flex-grow-1"><strong>ADD NEW DELIVERY FORM</strong></h4>
                 <button type="button" id="receivedItem-closeBtn" class="btn btn-danger p-2">&times;</button>
             </div>
             <form id="receivedItem-form" class="p-3">
@@ -366,8 +380,8 @@
                         </div>
                         <div class="col-md-2 form-group">
                             <label for="supplier" class="font-weight-bold">Supplier</label>
-                            <select name="supplier[]" class="form-control supplier">
-                                <option value="">Select Supplier</option>
+                            <select name="supplier[]" class="form-select supplier">
+                                <option value="">--Select Supplier--</option>
                                 @foreach ($suppliers as $supplier)
                                     <option value="{{ $supplier->name }}">{{ $supplier->name }}</option>
                                 @endforeach
@@ -397,11 +411,11 @@
                     <div class="col-md-12 d-flex justify-content-end">
                         <div class="col-md-2 form-group">
                             <label for="" class="font-weight-bold">&nbsp</label>
-                            <button type="reset" class="btn btn-secondary rounded px-4 py-2 me-3 form-control">Clear</button>
+                            <button type="reset" class="btn btn-secondary rounded px-4 py-2 me-3 form-control">CLEAR</button>
                         </div>
                         <div class="col-md-2 form-group">
                             <label for="" class="font-weight-bold">&nbsp</label>
-                            <button type="submit" id="receivedItemSubmit-btn" class="btn btn-warning rounded px-4 py-2 form-control">Save</button>
+                            <button type="submit" id="receivedItemSubmit-btn" class="btn btn-warning rounded px-4 py-2 form-control">SAVE</button>
                         </div>
                     </div>
                 </div>

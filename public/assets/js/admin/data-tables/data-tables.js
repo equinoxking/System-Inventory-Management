@@ -45,35 +45,13 @@ $(function () {
         table.column(2).search(val, false, true).draw(); 
     });
 
-    $('#status-filter').on('change', function () {
-        var statusVal = $(this).val().toLowerCase();
 
-        table.rows().every(function () {
-            var row = this.node();
-            var quantity = parseInt($(row).find('td').eq(3).text().trim(), 10);
-            var statusText = $(row).find('td').eq(5).text().trim().toLowerCase();
+// Trigger table redraw on filter change
+$('#status-filter').on('change', function () {
+    table.draw();
+});
 
-            var showRow = false;
 
-            if (statusVal === '') {
-                if (quantity > 0) {
-                    showRow = true;
-                }
-            } else {
-                if (statusVal === 'available' && quantity > 0 && statusText === 'available') {
-                    showRow = true;
-                } else if (statusVal === 'unavailable' && quantity === 0 && statusText === 'unavailable') {
-                    showRow = true;
-                }
-            }
-
-            if (showRow) {
-                $(row).show();
-            } else {
-                $(row).hide();
-            }
-        });
-    });
 
     $('#min-quantity-filter, #max-quantity-filter, #stock-level-filter').on('input change', function () {
         table.draw();
@@ -95,7 +73,6 @@ $(function () {
                 { name: 'xs', width: 576 }
             ]
         },
-        "order": [[1, 'desc']],
         "autoWidth": false,
         "processing": false,
         "serverSide": false,
@@ -106,7 +83,7 @@ $(function () {
                 return json.data;
             } // Ensure that 'data' is the key where the array of rows is located
         },
-        "order": [[0, 'desc']], 
+        "order": [[0, 'asc']], 
         "columns": [
             { "data": "transaction_number" },
             { "data": "stock_on_hand"},
@@ -128,13 +105,13 @@ $(function () {
                 "class": "text-center"
             },
         ],
-        columnDefs: [
-        {
-            targets: 0, // Index of the column to hide
-            visible: false,
-            searchable: false
-        }
-    ]
+    //     columnDefs: [
+    //     {
+    //         targets: 0, // Index of the column to hide
+    //         visible: false,
+    //         searchable: false
+    //     }
+    // ]
     });
     $('#transactionTable').on('click', '.edit-btn', function() {
         var data = table.row($(this).closest('tr')).data();
@@ -142,10 +119,26 @@ $(function () {
     });
     setInterval(function() {
         table.ajax.reload(null, false);  
-    }, 6000);
+    }, 100000000000);
 });
 $(function () {
     var table = $('#accountTable').dataTable({
+        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
+        "pageLength": 5,
+        "responsive": {
+            breakpoints: [
+                { name: 'xl', width: Infinity },
+                { name: 'lg', width: 1200 },
+                { name: 'md', width: 992 },
+                { name: 'sm', width: 768 },
+                { name: 'xs', width: 576 }
+            ]
+        },
+        "order": [[0, 'desc']], 
+    });
+});
+$(function () {
+    var table = $('#accountInactiveTable').dataTable({
         "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
         "pageLength": 5,
         "responsive": {
@@ -263,13 +256,13 @@ $(function () {
                 }
             },     
         ],
-        columnDefs: [
-        {
-            targets: 0, // Index of the column to hide
-            visible: false,
-            searchable: false
-        }
-        ],
+        // columnDefs: [
+        // {
+        //     targets: 0, // Index of the column to hide
+        //     visible: false,
+        //     searchable: false
+        // }
+        // ],
         rowCallback: function(row, data) {
             $(row).removeClass('dt-row-denied dt-row-canceled');
             if (data.remarks === 'Denied') {
@@ -341,10 +334,21 @@ $(function () {
         "order": [[0, 'desc']],
     });
 
-    $('#po-filter').on('keyup', function () {
-        var val = $(this).val();
-        table.column(1).search(val, false, true).draw(); 
-    });
+   $('#po-filter').on('keyup', function () {
+    var val = $(this).val().trim();
+
+    if (val === '') {
+        // Clear the search filter and redraw table
+        table.column(1).search('').draw();
+    } else {
+        // Escape regex characters
+        var escapedVal = val.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        // Apply exact match with regex
+        table.column(1).search('^' + escapedVal + '$', true, false).draw();
+    }
+});
+
+
 
     $('#supplier-filter').on('keyup', function () {
         var val = $(this).val();
@@ -430,4 +434,66 @@ $(function () {
         },
         "order": [[0, 'desc']],
     });
+});
+$(function () {
+    var table = $('#pastTransactionTable').DataTable({
+        "aLengthMenu": [[5, 10, 25, 50, 75, 100, -1], [5, 10, 25, 50, 75, 100, "All"]],
+        "pageLength": 5,
+        // "lengthChange": false,
+        "responsive": {
+            breakpoints: [
+                { name: 'xl', width: Infinity },
+                { name: 'lg', width: 1200 },
+                { name: 'md', width: 992 },
+                { name: 'sm', width: 768 },
+                { name: 'xs', width: 576 }
+            ]
+        },
+        "autoWidth": false,
+        "processing": false,
+        "serverSide": false,
+        "ajax": {
+            url: '/admin/refreshPastTransactions',  // Replace with your actual endpoint
+            type: 'GET',
+            "dataSrc": function (json) {
+                return json.data;
+            } // Ensure that 'data' is the key where the array of rows is located
+        },
+        "order": [[0, 'asc']], 
+        "columns": [
+            { "data": "transaction_number" },
+            { "data": "stock_on_hand"},
+            { "data": "quantity" },
+            { "data": "unit" },
+            { "data": "item_name" },
+            { "data": "client_name" },
+            { "data": "time_request" },
+            {
+                "data": null,  // This column will have the action buttons
+                "render": function(data, type, row) {
+                    if (row.status === 'Pending') {
+                        return '<button type="button" class="btn btn-warning edit-btn" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;"><i class="fa fa-edit"></i></button>';
+                    } else {
+                        return ''; 
+                    }
+                },
+                "orderable": false,
+                "class": "text-center"
+            },
+        ],
+        columnDefs: [
+        {
+            targets: 0, // Index of the column to hide
+            visible: false,
+            searchable: false
+        }
+    ]
+    });
+    $('#pastTransactionTable').on('click', '.edit-btn', function() {
+        var data = table.row($(this).closest('tr')).data();
+        changeStatus(data);
+    });
+    setInterval(function() {
+        table.ajax.reload(null, false);  
+    }, 6000);
 });

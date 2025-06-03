@@ -19,8 +19,6 @@ return new class extends Migration
             $table->string('division', 255)->nullable();
             $table->string('office', 10);
             $table->string('position', 60);
-            $table->string('email' , 100)->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('username', 30)->unique();
             $table->string('password' , 120);
             $table->string('status', 15);

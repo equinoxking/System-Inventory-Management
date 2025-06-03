@@ -88,8 +88,8 @@
                 </div>
                 <div class="row">
                     <div class="modal-footer">
-                        <div class="col-md-3 form-group">
-                            <button type="submit" class="btn btn-warning" id="edit-unit-submit-btn">SUBMIT</button>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-warning" id="edit-unit-submit-btn">SAVE</button>
                         </div>
                     </div>
                 </form>
@@ -148,8 +148,8 @@
                     </div>
                     <div class="row">
                         <div class="modal-footer">
-                            <div class="col-md-3 form-group">
-                                <button type="submit" class="btn btn-success" id="add-unit-submit-btn">SUBMIT</button>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-success" id="add-unit-submit-btn">SAVE</button>
                             </div>
                         </div>
                     </div>

@@ -52,7 +52,15 @@ class DashboardAccountManager extends Controller
             // Fetch admin ID safely
             $adminSession = session()->get('loggedInInventoryAdmin');
             $admin_id = $adminSession['admin_id'] ?? null;
-
+            
+            $admin = new AdminModel();
+            $admin->client_id = $client->id;
+            $admin->role_id = $client->role_id;
+            $admin->full_name = $client->full_name;
+            $admin->status = "Active";
+            $admin->control_number = $client->employee_number;
+            $admin->position = $client->position;
+            $admin->save();
             // Log the role change activity
             $user_id = null;
             $activity = "Set the role of " . $client->full_name . " to " . optional($client->role)->name . ".";

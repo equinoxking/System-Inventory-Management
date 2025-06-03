@@ -14,7 +14,7 @@ class CategorySeeder extends Seeder
      */
     public function run(): void
     {
-        // DB::unprepared('SET IDENTITY_INSERT categories ON');
+        DB::unprepared('SET IDENTITY_INSERT categories ON');
         $categories = [
             [
                 'id' => 1, 'name' => 'Pesticides or Pest Repellents', 'description' => 'Substances to control or repel pests and insects.',
@@ -105,7 +105,7 @@ class CategorySeeder extends Seeder
             ]);
         }
 
-        // DB::unprepared('SET IDENTITY_INSERT categories OFF');
+        DB::unprepared('SET IDENTITY_INSERT categories OFF');
     }
     private function generateControlNumber() {
         $currentYearAndMonth = Carbon::now()->format('Y-m');

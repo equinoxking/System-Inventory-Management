@@ -57,16 +57,14 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12 d-flex justify-content-end">
-                <div class="col-md-1 form-group">
-                    <label for="" class="font-weight-bold">&nbsp</label>
-                    <button type="reset" class="btn btn-secondary rounded px-4 py-2 me-3 w-100">Clear</button>
-                </div>
-                <div class="col-md-1 form-group">
-                    <label for="" class="font-weight-bold">&nbsp</label>
-                    <button type="submit" id="requestItemSubmit-btn" class="btn btn-success rounded px-4 py-2 w-100">Submit</button>
-                </div>
+        <div class="row mt-3 justify-content-end">
+            <div class="col-auto form-group text-end">
+                <label for="" class="font-weight-bold">&nbsp;</label>
+                <button type="reset" class="btn btn-secondary rounded px-4 py-2 w-100">CLEAR</button>
+            </div>
+            <div class="col-auto form-group text-end">
+                <label for="" class="font-weight-bold">&nbsp;</label>
+                <button type="submit" id="requestItemSubmit-btn" class="btn btn-success rounded px-4 py-2 w-100">SAVE</button>
             </div>
         </div>
     </form>

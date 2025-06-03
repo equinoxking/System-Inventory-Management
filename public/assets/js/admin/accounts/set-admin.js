@@ -1,17 +1,9 @@
-function setUser(client) {
+function setAdmin(client){
     $('#setUserModal').modal('show');
     let data = JSON.parse(client);
-
-    // Use client_id if it's admin, otherwise use id
-    if (data.type === 'admin') {
-        $('#set-user-id').val(data.client_id);
-    } else {
-        $('#set-user-id').val(data.id);
-    }
-
+    $('#set-user-id').val(data.client_id);
     $('#full-name').val(data.full_name);
 }
-
 $(document).ready(function(){
     $(document).on('submit', '#set-user-role-form' ,function(event){
         event.preventDefault();
@@ -20,7 +12,7 @@ $(document).ready(function(){
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            url: '/set-user-role',
+            url: '/set-admin-role',
             type: 'PATCH',
             data: formData,
             beforeSend: function() {

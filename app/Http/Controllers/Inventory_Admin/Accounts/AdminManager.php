@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Carbon;
 use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
+use App\Models\ClientModel;
 
 class AdminManager extends Controller
 {
@@ -127,13 +128,16 @@ class AdminManager extends Controller
     
         try {
             // Attempt to delete the admin record
+            $adminData = AdminModel::where('id', $request->get('admin_id'))->first();
             $admin = AdminModel::where('id', $request->get('admin_id'))->delete();
-    
+            $client = ClientModel::where('id', $adminData->client_id)->update([
+                'role_id' => 4
+            ]);
             // Check if the deletion was successful
-            if($admin){
+            if($admin && $client){
                 // Log deletion activity
                 $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'] ?? null;
-                $activity = "Deleted admin with ID: " . $request->get('admin_id');
+                $activity = "Deleted admin role of " . $adminData->full_name . ".";
                 (new TrailManager)->createUserTrail(null, $admin_id, $activity);
     
                 // Return success message
@@ -184,5 +188,158 @@ class AdminManager extends Controller
             // If an error occurs (e.g., database issue), return the default control number
             return $currentYearAndMonth . '-00001';  // Default in case of error
         }
-    }    
+    }
+    public function changeUserStatus(Request $request){
+        // Validate incoming request to ensure all required fields are provided
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required', // Ensure user_id is provided
+            'full_name'=> 'required', // Ensure full_name is provided
+            'status' => 'required'    // Ensure status is provided (Active or Inactive)
+        ]);
+    
+        // If validation fails, return a 400 error with the validation errors
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'message' => $validator->errors() // Return validation errors
+            ]);
+        } else {
+            // Find the client by user_id
+            $admin = AdminModel::where('id' , $request->get('user_id'))->first();
+            
+            // If client not found, return a 404 error
+            if(!$admin){
+                return response()->json([
+                    'message' => "Check your id", // Inform the user that the id was not found
+                    'status' => 404
+                ]);
+            } else {
+                // Get the status value from the request
+                $sendData = $request->get('status');
+    
+                // Perform actions based on the provided status value (Active or Inactive)
+                switch ($sendData) {
+                    case 'Inactive':
+                        // Set the client's status to Inactive
+                        $admin->status = "Inactive";
+                        $admin->save(); // Save the updated client
+    
+                        // Log the activity if the status was successfully updated
+                        if($admin){
+                            $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                            $user_id = null; // User ID is null because the action is performed by an admin
+                            $activity = "Updated the status of " .  $admin->full_name . " into  " . $admin->status . "."; // Activity log text
+                            (new TrailManager)->createUserTrail($user_id, $admin_id, $activity); // Log the action
+    
+                            // Return a success response
+                            return response()->json([
+                                'status' => 200,
+                                'message' => "Change user status successful!" // Success message
+                            ]);
+                        } else {
+                            // If status update failed, return a 500 error
+                            return response()->json([
+                                'status' => 500,
+                                'message' => "Check your internet connection!" // Inform the user to check the connection
+                            ]);
+                        }
+                        break;
+                    
+                    case 'Active':
+                        // Set the client's status to Active
+                        $admin->status = "Active";
+                        $admin->save(); // Save the updated client
+    
+                        // Log the activity if the status was successfully updated
+                        if($admin){
+                            $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                            $user_id = null; // User ID is null because the action is performed by an admin
+                            $activity = "Updated the status of " .  $admin->full_name . " into  " . $admin->status . "."; // Activity log text
+                            (new TrailManager)->createUserTrail($user_id, $admin_id, $activity); // Log the action
+    
+                            // Return a success response
+                            return response()->json([
+                                'status' => 200,
+                                'message' => "Change user status successful!" // Success message
+                            ]);
+                        } else {
+                            // If status update failed, return a 500 error
+                            return response()->json([
+                                'status' => 500,
+                                'message' => "Check your internet connection!" // Inform the user to check the connection
+                            ]);
+                        }
+                        break;
+    
+                    default:
+                        // Return a 500 error for unexpected status values
+                        return response()->json([
+                            'status' => 500,
+                            'message' => "Check your internet connection!" // Inform the user to check the connection
+                        ]);
+                }
+            }
+        }
+    }
+    public function setAdminRole(Request $request){
+        // Validate incoming request to ensure all required fields are provided
+        $validator = Validator::make($request->all(), [
+            'user_id' => 'required', // Ensure user_id is provided
+            'full_name'=> 'required', // Ensure full_name is provided
+            'role_id' => 'required'   // Ensure role_id is provided
+        ]);
+    
+        // If validation fails, return a 400 error with the validation errors
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 400,
+                'message' => $validator->errors()
+            ]);
+        } else {
+            // Find the client by user_id
+            $client = ClientModel::where('id', $request->get('user_id'))->first();
+            $clientOldRole = $client->role->name;
+            $oldRoleLabel = $clientOldRole === 'InventoryAdmin' ? 'Admin' : $clientOldRole;
+            if (!$client) {
+                return response()->json([
+                    'status' => 404,
+                    'message' => "Check your id"
+                ]);
+            }
+
+            // Update the client's role_id
+            $client->role_id = $request->get('role_id');
+            $client->save();
+
+            $client->load('role');
+            $clientNewRole = $client->role ? $client->role->name : 'None';
+            $newRoleLabel = $clientNewRole === 'InventoryAdmin' ? 'Admin' : $clientNewRole;
+            $admin = new AdminModel();
+            $admin->client_id = $client->id;
+            $admin->role_id = $client->role_id;
+            $admin->full_name = $client->full_name;
+            $admin->status = "Active";
+            $admin->control_number = $client->employee_number;
+            $admin->position = $client->position;
+            $admin->save();
+
+            if ($client && $admin) {
+                $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
+                $user_id = null;
+                $activity = "Set a role of " . $client->full_name . " from " . $oldRoleLabel . " to " . $newRoleLabel . ".";
+                (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
+
+                return response()->json([
+                    'status' => 200,
+                    'message' => "Set role successful!"
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 500,
+                    'message' => "Check your internet connection!"
+                ]);
+            }
+
+        }
+    }        
 }

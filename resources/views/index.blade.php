@@ -173,12 +173,12 @@
                         <input type="text" class="form-control" id="positionRegister" name="position" placeholder="Enter here your position">
                     </div>
                     <div class="form-group">
-                        <label for="emailAddress" class="font-weight-bold">Email Address</label>
-                        <input type="email" class="form-control" id="emailAddressRegister" name="email" placeholder="Enter email">
-                    </div>
-                    <div class="form-group">
                         <label for="username" class="font-weight-bold">Username</label>
                         <input type="text" class="form-control" id="usernameRegister" name="username" placeholder="Enter username">
+                    </div>
+                    <div class="form-group">
+                        <label for="division" class="font-weight-bold">Division</label>
+                        <input type="text" class="form-control" id="divisionRegister" name="division" placeholder="Enter division">
                     </div>
                     <div class="form-group">
                         <label for="password" class="font-weight-bold">Password</label>

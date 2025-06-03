@@ -15,7 +15,7 @@ class UnitSeeder extends Seeder
      */
     public function run(): void
     {
-        // DB::unprepared('SET IDENTITY_INSERT units ON');
+        DB::unprepared('SET IDENTITY_INSERT units ON');
 
         $units = [
             ['id' => 35, 'name' => 'can',      'description' => 'Metal container for liquids or food',           'symbol' => 'cn'],
@@ -50,7 +50,7 @@ class UnitSeeder extends Seeder
             ]);
         }
 
-        // DB::unprepared('SET IDENTITY_INSERT units OFF');
+        DB::unprepared('SET IDENTITY_INSERT units OFF');
     }
     private function generateControlNumber() {
         $currentYearAndMonth = Carbon::now()->format('Y-m');

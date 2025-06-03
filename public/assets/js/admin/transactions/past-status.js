@@ -1,30 +1,23 @@
-function setUser(client) {
-    $('#setUserModal').modal('show');
-    let data = JSON.parse(client);
-
-    // Use client_id if it's admin, otherwise use id
-    if (data.type === 'admin') {
-        $('#set-user-id').val(data.client_id);
-    } else {
-        $('#set-user-id').val(data.id);
-    }
-
-    $('#full-name').val(data.full_name);
+function changePastStatus(transaction){
+    $('#transactionStatusModal').modal('show');
+    $('#transaction-status-id').val(transaction.id);
 }
-
+$('#transaction-status-close-btn').click(function(){
+    $('#transactionStatusModal').modal('hide');
+});
 $(document).ready(function(){
-    $(document).on('submit', '#set-user-role-form' ,function(event){
-        event.preventDefault();
-        var formData = $('#set-user-role-form').serialize();
+    $(document).on('submit', '#transaction-status-form', function(event){
+      event.preventDefault();
+      var formData = $('#transaction-status-form').serialize();
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            url: '/set-user-role',
+            url: '/change-past-transaction-status',
             type: 'PATCH',
             data: formData,
             beforeSend: function() {
-                $('#set-role-submit-btn').attr('disabled', true);
+                $('#transaction-status-submit-btn').attr('disabled', true);
                 Swal.fire({
                     title: 'Loading...',
                     text: 'Please wait while we process your request.',
@@ -50,19 +43,18 @@ $(document).ready(function(){
                             html: errorMessages,
                             showConfirmButton: true,
                         }).then(function() {
-                            $('#set-role-submit-btn').attr('disabled', false);
+                            $('#transaction-status-submit-btn').attr('disabled', false);
                         });
-                }else if(response.status === 403){
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: response.message,
-                            showConfirmButton: true,
-                        }).then(function() {
-                            $('#set-role-submit-btn').attr('disabled', false);
-                            $('#addAdminModal').modal('show');
-                            $('#setUserModal').modal('hide');
-                        });
+                }else if(response.status === 501){
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error!",
+                        text: response.message,
+                        showConfirmButton: true,
+                    }).then(function() {
+                        $('#transaction-status-submit-btn').attr('disabled', false);
+                        $('#transactionStatusModal').modal('hide');
+                    });
                 }else if(response.status === 200){
                     Swal.fire({
                     icon: "success",
@@ -78,7 +70,4 @@ $(document).ready(function(){
             }
         });
     });
-});
-$('#set-user-close-btn').click(function(){
-    $('#setUserModal').modal('hide');
 });

@@ -130,7 +130,7 @@ class LoginController extends Controller {
         // Log the activity
         $admin_id = $admin->id;
         $user_id = null;  
-        $activity = "Admin details updated for the client.";
+        $activity = "Logged in into the system.";
         (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
         // Successful response
         return response()->json(['message' => 'Admin session updated successfully']);

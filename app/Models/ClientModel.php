@@ -43,4 +43,8 @@ class ClientModel extends Model
     {
         return $this->hasMany(TrailModel::class, 'user_id', 'id');
     }
+    // public function admin()
+    // {
+    //     return $this->hasMany(AdminModel::class, 'client', 'id');
+    // }
 }

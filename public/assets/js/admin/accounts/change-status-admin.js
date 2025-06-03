@@ -1,30 +1,22 @@
-function setUser(client) {
-    $('#setUserModal').modal('show');
+function changeAdminStatus(client){
+    $('#changeUserStatusModal').modal('show');
     let data = JSON.parse(client);
-
-    // Use client_id if it's admin, otherwise use id
-    if (data.type === 'admin') {
-        $('#set-user-id').val(data.client_id);
-    } else {
-        $('#set-user-id').val(data.id);
-    }
-
-    $('#full-name').val(data.full_name);
+    $('#change-user-status-id').val(data.id);
+    $('#change-user-full-name').val(data.full_name);
 }
-
 $(document).ready(function(){
-    $(document).on('submit', '#set-user-role-form' ,function(event){
+    $(document).on('submit', '#change-user-status-form' ,function(event){
         event.preventDefault();
-        var formData = $('#set-user-role-form').serialize();
+        var formData = $('#change-user-status-form').serialize();
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
-            url: '/set-user-role',
+            url: '/change-admin-status',
             type: 'PATCH',
             data: formData,
             beforeSend: function() {
-                $('#set-role-submit-btn').attr('disabled', true);
+                $('#change-user-status-submit-btn').attr('disabled', true);
                 Swal.fire({
                     title: 'Loading...',
                     text: 'Please wait while we process your request.',
@@ -50,18 +42,7 @@ $(document).ready(function(){
                             html: errorMessages,
                             showConfirmButton: true,
                         }).then(function() {
-                            $('#set-role-submit-btn').attr('disabled', false);
-                        });
-                }else if(response.status === 403){
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: response.message,
-                            showConfirmButton: true,
-                        }).then(function() {
-                            $('#set-role-submit-btn').attr('disabled', false);
-                            $('#addAdminModal').modal('show');
-                            $('#setUserModal').modal('hide');
+                            $('#change-user-status-submit-btn').attr('disabled', false);
                         });
                 }else if(response.status === 200){
                     Swal.fire({
@@ -79,6 +60,22 @@ $(document).ready(function(){
         });
     });
 });
-$('#set-user-close-btn').click(function(){
-    $('#setUserModal').modal('hide');
+$(document).ready(function() {
+    var userStatusElement = $('#status-badge');  // The badge showing the current status
+    var statusDropdown = $('#status');  // The status dropdown
+    
+    // Check if the user has 'Active' status
+    if (userStatusElement.hasClass('badge-success')) {
+        // Set 'Active' option selected in the dropdown (Activate)
+        statusDropdown.val('Active');
+    } 
+    // Check if the user has 'Inactive' status
+    else if (userStatusElement.hasClass('badge-danger')) {
+        // Set 'Inactive' option selected in the dropdown (Deactivate)
+        statusDropdown.val('Inactive');
+    }
+});
+
+$('#change-user-status-close-btn').click(function(){
+    $('#changeUserStatusModal').modal('hide');
 });

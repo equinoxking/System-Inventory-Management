@@ -200,16 +200,10 @@ class itemManager extends Controller
         $validator = Validator::make($request->all(), [
             'edit-item-id' => 'required|array', 
             'edit-item-id.*' => 'required|exists:items,id',  // Ensure each item ID exists in the 'items' table
-            'category' => 'required|array',
-            'category.*' => 'required|exists:categories,name',  // Validate each category name exists in the 'categories' table
-            'categoryId' => 'required|array',
-            'categoryId.*' => 'required|exists:categories,id',  // Ensure category IDs exist in the 'categories' table
+            'edit-category' => 'required|exists:categories,id',
             'item_name' => 'required|array',
             'item_name.*' => 'required|min:3|max:60',  // Validate item names with a minimum length of 3 and maximum length of 60
-            'unit' => 'required|array',
-            'unit.*' => 'required',  // Ensure units are provided
-            'unitId' => 'required|array',
-            'unitId.*' => 'required|exists:units,id',  // Validate unit IDs exist in the 'units' table
+            'edit-unit.*' => 'required|exists:units,id',  // Validate unit IDs exist in the 'units' table
             'buffer' => 'required|array',
             'buffer.*' => 'required',  // Ensure buffer values are provided
         ]);
@@ -226,8 +220,8 @@ class itemManager extends Controller
                 // Fetch the 'Available' item status
                 $status = ItemStatusModel::where('name', 'Available')->first();
                 // Fetch the category and unit based on provided IDs
-                $selectedCategory = CategoryModel::findOrFail($request->get('categoryId')[$index]);
-                $selectedUnit = UnitModel::findOrFail($request->get('unitId')[$index]);
+                $selectedCategory = CategoryModel::findOrFail($request->get('edit-category'));
+                $selectedUnit = UnitModel::findOrFail($request->get('edit-unit'));
 
                 // If either category or unit is invalid, skip the current iteration
                 if (!$selectedCategory || !$selectedUnit) {
@@ -237,6 +231,7 @@ class itemManager extends Controller
                 // Attempt to find the existing item, or create a new one if not found
                 $item = ItemModel::find($editItemId);
                 if ($item) {
+                    $itemNameOld = $item->name;
                     // If item exists, update its details
                     $item->category_id = $selectedCategory->id;
                     $item->status_id = $status->id;
@@ -274,7 +269,7 @@ class itemManager extends Controller
                     // Log the activity of editing an item
                     $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
                     $user_id = null;  // User ID is null here, assuming no specific user is being tracked
-                    $activity = "Edited an item: " .  $item->name . ".";
+                    $activity = "Edited an item " .  'from ' . $itemNameOld . " to " . $item->name . '.';
                     (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
 
                     // Save the updated inventory
@@ -290,5 +285,15 @@ class itemManager extends Controller
                 'message' => 'Items and inventories have been updated successfully.',
             ]);
         }
+    }
+    public function getItemInfo($id){
+    $item = ItemModel::with(['category', 'inventory.unit'])->findOrFail($id);
+
+    return response()->json([
+        'category_id' => $item->category_id,
+        'unit_id' => $item->inventory->unit_id ?? null,
+        'min_quantity' => $item->inventory->min_quantity ?? 0,
+        'item_name' => $item->name,
+    ]);
     }
 }

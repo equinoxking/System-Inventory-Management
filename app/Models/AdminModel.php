@@ -36,4 +36,9 @@ class AdminModel extends Model
     {
         return $this->hasMany(TrailModel::class, 'admin_id', 'id');
     }
+    public function client()
+    {
+        return $this->belongsTo(ClientModel::class);
+    }
+
 }

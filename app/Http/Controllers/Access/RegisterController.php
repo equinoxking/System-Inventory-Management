@@ -19,15 +19,9 @@ class RegisterController extends Controller{
             'office' => 'required',
             'username' => 'required|min:6|max:16',
             'position' => 'required',
-            'email' => [
-                'required',
-                'email',
-                'max:100',
-                'unique:clients,email',
-                'regex:/^[a-zA-Z0-9._%+-]+@gmail\.com$/',
-            ],
             'password' => 'required|min:6|max:30',
-            're-password' => 'required|same:password'
+            're-password' => 'required|same:password',
+            'division' => 'required',
         ]);
         // Send error to the user
         if ($validator->fails()) {
@@ -47,10 +41,10 @@ class RegisterController extends Controller{
             $client->full_name = strtolower($request->get('fullName'));
             $client->office = $request->get('office');
             $client->position = $request->get('position');
-            $client->email = $request->get('email');
             $client->username = $request->get('username');
             $client->password = Hash::make($request->get('password')); 
             $client->status = "Active";
+            $client->division = $request->get('division');
             $client->employee_number = $request->get('employee_number');
             $client->role_id = $role;
             $client->save();

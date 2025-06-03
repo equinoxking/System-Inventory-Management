@@ -87,42 +87,46 @@ html, body {
     <!-- Form Body -->
     
 </div> --}}
-<div class="container-fluid" style="margin-top: 8rem;">  
+<div class="container-fluid mt-2">  
     <div class="row align-items-stretch">  
         <!-- Notifications Section -->  
         
-        <div class="col-9"> 
-            <div class="card p-3">  
-                <div class="table-responsive"  style=" position: absolute; top: 0px; height: 100%; width: 90%">  
+        
+        <div class="col-9">
+            <div class="card p-3">
+                <div class="table-responsive" style="width: 100%;">
                     <h4 class="mt-3" id="tableTitle">Top 10 Commonly Used Items for this Month</h4>
-                    <div id="top10Container">
-                        <table class="table table-bordered table-hover" style="font-size: 13px; width: 100%;" id="top10Table">  
-                            <thead class="thead-light">  
-                                <tr>  
+
+                    <!-- Make this scrollable -->
+                    <div id="top10Container" style="max-height: 300px; overflow-y: auto;">
+                        <table class="table table-bordered table-hover" style="font-size: 13px; width: 100%;" id="top10Table">
+                            <thead class="thead-light">
+                                <tr>
                                     <th style="width: 5%; text-align:left">No.</th>
                                     <th>Item Name</th>
                                     <th style="width: 12%">Stock on Hand</th>
-                                    <th style="width: 10%;">Buffer Stock</th>  
-                                    <th style="width: 14%;">Request Frequency</th>  
-                                </tr>  
-                            </thead>  
-                            <tbody>  
-                                @foreach ($top10IssuedItems as $index => $data)
-                                <tr class="{{ $data['item']->inventory->quantity == 0 ? 'table-danger text-dark' : '' }}">
-                                    <td>{{ $index + 1 }}.</td>
-                                    <td class="text-left">{{ $data['item']->name }}</td>
-                                    <td  class="text-right">{{ $data['item']->inventory->quantity}}</td>
-                                    <td>{{ $data['item']->inventory->min_quantity }}</td>
-                                    <td>{{ $data['request_count'] }}</td>
+                                    <th style="width: 10%;">Buffer Stock</th>
+                                    <th style="width: 14%;">Request Frequency</th>
                                 </tr>
-                            @endforeach
-                            </tbody>  
+                            </thead>
+                            <tbody>
+                                @foreach ($top10IssuedItems as $index => $data)
+                                    <tr class="{{ $data['item']->inventory->quantity == 0 ? 'table-danger text-dark' : '' }}">
+                                        <td>{{ $index + 1 }}.</td>
+                                        <td class="text-left">{{ $data['item']->name }}</td>
+                                        <td class="text-right">{{ $data['item']->inventory->quantity }}</td>
+                                        <td>{{ $data['item']->inventory->min_quantity }}</td>
+                                        <td>{{ $data['request_count'] }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
                         </table>
                     </div>
-                    <div id="availableItemContainer" >
+
+                    <div id="availableItemContainer" style="max-height: 300px; overflow-y: auto;">
                         <h4 class="mt-3" id="tableTitle">Critical Items</h4>
                         <table id="availableItemTable" class="table table-bordered table-hover" style="font-size: 11px;">
-                            <thead class="thead-light">  
+                            <thead class="thead-light">
                                 <tr>
                                     <th>Item Name</th>
                                     <th width="12%">Stock On Hand</th>
@@ -134,15 +138,17 @@ html, body {
                                     <tr class="{{ $itemData['item']->inventory->quantity == 0 ? 'table-danger text-dark' : '' }}">
                                         <td>{{ $itemData['item']->name }}</td>
                                         <td class="text-right">{{ $itemData['item']->inventory->quantity }}</td>
-                                        <td>{{ $itemData['item']->inventory->min_quantity  }}</td>
+                                        <td>{{ $itemData['item']->inventory->min_quantity }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
                     </div>
-                </div>  
-            </div>  
-        </div> 
+                </div>
+            </div>
+        </div>
+
+
         <div class="col-md-3">  
             <div class="row">  
                 <div class="col-md-6 mb-1">  
@@ -181,8 +187,8 @@ html, body {
                             </a>
                             <!-- Dropdown Menu -->
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="{{ url('/admin/transaction') }}">Action Transactions</a></li>
-                                <li><a class="dropdown-item" id="requestBtnDashboard">Create Transaction</a></li>
+                                <li><a class="dropdown-item" href="{{ url('/admin/transaction') }}">View Transactions</a></li>
+                                <li><a class="dropdown-item" id="requestBtnDashboard">Add New Transaction</a></li>
                                 {{-- <li><a class="dropdown-item" id="updateTransactionStatus">Approved/Disapproved Transaction</a></li> --}}
                             </ul>
                         </div>
@@ -206,8 +212,8 @@ html, body {
                             <!-- Dropdown Menu -->
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{{ url('/admin/lookup-tables/items') }}?set_critical=true" id="viewItems">View Critical Items</a></li>
-                                <li><a class="dropdown-item" id="addItem">Add Item</a></li>
-                                <li><a class="dropdown-item" id="editItem">Edit Item</a></li>
+                                <li><a class="dropdown-item" id="addItem">Add New Item</a></li>
+                                {{-- <li><a class="dropdown-item" id="editItem">Edit Item</a></li> --}}
                                 <li><a class="dropdown-item" id="deleteItem">Delete Item</a></li>
                             </ul>
                         </div>
@@ -222,7 +228,7 @@ html, body {
                 </div>
                 <div class="col-md-6 mb-1">  
                     <div class="card">  
-                        <h4 class="card-title">Delivered Items</h4>
+                        <h4 class="card-title">Deliveries</h4>
                         <div class="dropdown" style="display: inline-block;">
                             <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-truck icon" style="color: #ffc107;7 font-size: 40px;"></i>
@@ -230,7 +236,7 @@ html, body {
                             <!-- Dropdown Menu -->
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{{ url('/admin/lookup-tables/deliveries') }}">View Deliveries</a></li>
-                                <li><a class="dropdown-item" id="receivedBtn">Create Delivery</a></li>
+                                <li><a class="dropdown-item" id="receivedBtn">Add New Delivery</a></li>
                             </ul>
                         </div>  
                         <div class="icon-number">
@@ -304,8 +310,8 @@ html, body {
                             <!-- Dropdown Menu -->
                             <ul class="dropdown-menu">
                                 <li><a class="dropdown-item" href="{{ url('/admin/reports/monthly-report') }}">View Monthly Report (Summary)</a></li>
-                                <li><a class="dropdown-item" href="{{ url('/admin/reports/quarterly-report') }}">View Quarterly Report (Summary)</a></li>
                                 <li><a class="dropdown-item generateReportBtn">Inventory Report</a></li>
+                                <li><a class="dropdown-item" href="{{ url('/admin/reports/quarterly-report') }}">View Quarterly Report (Summary)</a></li>
                                 <li><a class="dropdown-item pdfTransactionGenerationBtn">User Ledger Report</a></li>
                             </ul>
                         </div>
@@ -320,7 +326,7 @@ html, body {
                 </div>  
                 <div class="col-md-6 ">  
                     <div class="card">  
-                        <h4 class="card-title">System Activity Logs</h4> 
+                        <h4 class="card-title">Activity Logs</h4> 
                         <div class="dropdown" style="display: inline-block;">
                             <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="fas fa-history icon" style="color: #fd7e14; font-size: 40px;"></i>
@@ -446,4 +452,31 @@ document.getElementById('edit_unit_id').addEventListener('change', function () {
             tableTitle.textContent = showingTop10 ? 'Critical Items' : 'Top 10 Commonly Used Items for this Month';
         });
     });
+    $('#edit-item-id').change(function () {
+    const itemId = $(this).val();
+
+    if (itemId) {
+        $.ajax({
+            url: `/get-item-info/${itemId}`, // backend route
+            type: 'GET',
+            success: function (response) {
+                // Populate the form fields
+                $('#edit-category').val(response.category_id);
+                $('#edit-unit').val(response.unit_id);
+                $('#edit-buffer').val(response.min_quantity);
+                $('#edit-item-name').val(response.item_name);
+            },
+            error: function (xhr) {
+                console.error('Failed to fetch item info:', xhr);
+            }
+        });
+    } else {
+        // Clear the fields if no item is selected
+        $('#edit-category').val('');
+        $('#edit-unit').val('');
+        $('#edit-buffer').val('');
+        $('#edit-item-name').val('');
+    }
+});
+
 </script>

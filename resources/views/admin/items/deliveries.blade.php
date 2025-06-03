@@ -17,7 +17,7 @@
 <div class="container-fluid card w-100 shadow rounded p-4" id="receivedItemForm" style="max-height: 500px; overflow-y: auto; background-color: #f8f9fa; display:none; border: 2px solid #ddd;">
     <!-- Form Header -->
     <div class="d-flex justify-content-between align-items-center bg-warning text-dark p-3 rounded-top">
-        <h4 class="m-0 text-center flex-grow-1"><strong>DELIVERY FORM</strong></h4>
+        <h4 class="m-0 text-center flex-grow-1"><strong>ADD NEW DELIVERY FORM</strong></h4>
         <button type="button" id="receivedItem-closeBtn" class="btn btn-danger p-2">&times;</button>
     </div>
     <!-- Form Body -->
@@ -63,16 +63,14 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12 d-flex justify-content-end">
-                <div class="col-md-1 form-group">
-                    <label for="" class="font-weight-bold">&nbsp</label>
-                    <button type="reset" class="btn btn-secondary rounded px-4 py-2 me-3 form-control">Clear</button>
-                </div>
-                <div class="col-md-1 form-group">
-                    <label for="" class="font-weight-bold">&nbsp</label>
-                    <button type="submit" id="receivedItemSubmit-btn" class="btn btn-warning rounded px-4 py-2 form-control">Save</button>
-                </div>
+        <div class="row mt-3 justify-content-end">
+            <div class="col-auto form-group text-end">
+                <label for="" class="font-weight-bold">&nbsp;</label>
+                <button type="reset" class="btn btn-secondary rounded px-4 py-2 form-control">CLEAR</button>
+            </div>
+            <div class="col-auto form-group text-end">
+                <label for="" class="font-weight-bold">&nbsp;</label>
+                <button type="submit" id="receivedItemSubmit-btn" class="btn btn-warning rounded px-4 py-2 form-control">SAVE</button>
             </div>
         </div>
     </form>

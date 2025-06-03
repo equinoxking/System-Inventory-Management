@@ -16,7 +16,7 @@ use App\Models\ItemModel;
 use App\Models\NotificationModel;
 use App\Models\UserNotificationModel;
 use App\Http\Controllers\Inventory_Admin\Trail\TrailManager;
-
+use Illuminate\Support\Facades\DB;
 class AdminTransactionManager extends Controller
 {
     public function goToTransactions(){
@@ -190,7 +190,7 @@ class AdminTransactionManager extends Controller
 
                             $admin_id = session()->get('loggedInInventoryAdmin')['admin_id'];
                             $user_id = null;
-                            $activity = "Updated the remarks of Transaction No." . $transaction->transaction_number . " into item released.";
+                            $activity = "Updated the remarks of Transaction No." . $transaction->transaction_number . " from pending into item released.";
                             (new TrailManager)->createUserTrail($user_id, $admin_id, $activity);
 
                             if (!$inventory || !$notification) {
@@ -278,38 +278,52 @@ class AdminTransactionManager extends Controller
         }
     }
     public function getTransactions(Request $request)
-    {
-        $transactions = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'])
-        ->where(function ($query) {
-            $query->where('status_id', 1);
-        })
-        ->get();     
-
-        $formattedTransactions = $transactions->map(function ($transaction) {
-            return [
-                'id' => $transaction->id,
-                'time_request' => \Carbon\Carbon::parse($transaction->created_at)->format('F d, Y h:i A'),
-                'transaction_number' => $transaction->transaction_number,
-                'client_name' => $transaction->client ? $transaction->client->full_name : $transaction->admin->full_name,
-                'item_name' => $transaction->item->name,
-                'unit' => $transaction->item->inventory->unit->name,
-                'stock_on_hand' => $transaction->item->inventory->quantity,
-                'quantity' => $transaction->transactionDetail->request_quantity,
-                'released_by' => $transaction->adminBy ? $transaction->adminBy->full_name : '',
-                'request_aging' => $transaction->request_aging,
-                'time_released' => $transaction->released_time ? \Carbon\Carbon::parse($transaction->released_time)->format('h:i A') : '',
-                'time_approved' => $transaction->approved_time ? \Carbon\Carbon::parse($transaction->approved_time)->format('h:i A') : '',
-                'date_approved' => $transaction->approved_date ? \Carbon\Carbon::parse($transaction->approved_date)->format('F d, Y') : '',
-                'released_aging' => $transaction->released_aging,
-                'status' => $transaction->status ? $transaction->status->name : '',
-                'remarks' => $transaction->remark,
-            ];
-        });
+{
+    // Get current date in Asia/Manila timezone
+    $today = \Carbon\Carbon::now('Asia/Manila');
     
-        return response()->json([
-            'data' => $formattedTransactions
-        ]);
-    }
+    // Get the date 5 working days ago in Asia/Manila timezone
+    $fiveWorkingDaysFromNow = \Carbon\Carbon::now('Asia/Manila')->addWeekdays(5);
+
+    // Retrieve transactions where the created_at date is within the last 5 working days
+    $transactions = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'])
+        ->where(function ($query) use ($today, $fiveWorkingDaysFromNow) {
+            $query->where('status_id', 1)
+                  // Convert created_at to Asia/Manila timezone using SWITCHOFFSET
+                  ->whereRaw("SWITCHOFFSET(created_at, '+08:00') between ? and ?", [
+                      $today->toDateString(),
+                      $fiveWorkingDaysFromNow->toDateString()
+                  ]);
+        })
+    ->get();
+
+
+    $formattedTransactions = $transactions->map(function ($transaction) {
+        return [
+            'id' => $transaction->id,
+            'time_request' => \Carbon\Carbon::parse($transaction->created_at)->timezone('Asia/Manila')->format('F d, Y h:i A'),
+            'transaction_number' => $transaction->transaction_number,
+            'client_name' => $transaction->client ? $transaction->client->full_name : $transaction->admin->full_name,
+            'item_name' => $transaction->item->name,
+            'unit' => $transaction->item->inventory->unit->name,
+            'stock_on_hand' => $transaction->item->inventory->quantity,
+            'quantity' => $transaction->transactionDetail->request_quantity,
+            'released_by' => $transaction->adminBy ? $transaction->adminBy->full_name : '',
+            'request_aging' => $transaction->request_aging,
+            'time_released' => $transaction->released_time ? \Carbon\Carbon::parse($transaction->released_time)->timezone('Asia/Manila')->format('h:i A') : '',
+            'time_approved' => $transaction->approved_time ? \Carbon\Carbon::parse($transaction->approved_time)->timezone('Asia/Manila')->format('h:i A') : '',
+            'date_approved' => $transaction->approved_date ? \Carbon\Carbon::parse($transaction->approved_date)->timezone('Asia/Manila')->format('F d, Y') : '',
+            'released_aging' => $transaction->released_aging,
+            'status' => $transaction->status ? $transaction->status->name : '',
+            'remarks' => $transaction->remark,
+        ];
+    });
+    return response()->json([
+        'data' => $formattedTransactions
+    ]);
+}
+
+
     public function getActedTransactions(Request $request)
     {
         $transactions = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'])
@@ -346,6 +360,48 @@ class AdminTransactionManager extends Controller
             'data' => $formattedTransactions
         ]);
     }
+    public function getPastTransactions(Request $request){
+    // Get current date in Asia/Manila timezone
+    $today = \Carbon\Carbon::now('Asia/Manila');
+    
+    // Get the date 5 working days ago in Asia/Manila timezone
+    $fiveWorkingDaysAgo = \Carbon\Carbon::now('Asia/Manila')->subWeekdays(5); // Excludes weekends
+
+
+    // Retrieve transactions where the created_at date is older than 5 working days ago
+    $transactions = TransactionModel::with(['client', 'item', 'transactionDetail', 'status', 'item.inventory', 'admin', 'adminBy'])
+        ->where(function ($query) use ($fiveWorkingDaysAgo, $today) {
+            // Log the raw SQL query for debugging
+            $query->where('status_id', 1)
+                ->whereRaw("SWITCHOFFSET(created_at, '+08:00') < ?", [$fiveWorkingDaysAgo->toDateString()]);
+        })
+        ->get();
+    // Format the transactions for the response
+    $formattedTransactions = $transactions->map(function ($transaction) {
+        return [
+            'id' => $transaction->id,
+            'time_request' => \Carbon\Carbon::parse($transaction->created_at)->timezone('Asia/Manila')->format('F d, Y h:i A'),
+            'transaction_number' => $transaction->transaction_number,
+            'client_name' => $transaction->client ? $transaction->client->full_name : $transaction->admin->full_name,
+            'item_name' => $transaction->item->name,
+            'unit' => $transaction->item->inventory->unit->name,
+            'stock_on_hand' => $transaction->item->inventory->quantity,
+            'quantity' => $transaction->transactionDetail->request_quantity,
+            'released_by' => $transaction->adminBy ? $transaction->adminBy->full_name : '',
+            'request_aging' => $transaction->request_aging,
+            'time_released' => $transaction->released_time ? \Carbon\Carbon::parse($transaction->released_time)->timezone('Asia/Manila')->format('h:i A') : '',
+            'time_approved' => $transaction->approved_time ? \Carbon\Carbon::parse($transaction->approved_time)->timezone('Asia/Manila')->format('h:i A') : '',
+            'date_approved' => $transaction->approved_date ? \Carbon\Carbon::parse($transaction->approved_date)->timezone('Asia/Manila')->format('F d, Y') : '',
+            'released_aging' => $transaction->released_aging,
+            'status' => $transaction->status ? $transaction->status->name : '',
+            'remarks' => $transaction->remark,
+        ];
+    });
+    return response()->json([
+        'data' => $formattedTransactions
+    ]);
+    }
+
     public function requestItemAdmin(Request $request) {
         $validator = Validator::make($request->all(), [
             'requestItemId' => 'required|array',

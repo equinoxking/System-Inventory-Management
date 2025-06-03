@@ -261,7 +261,7 @@ class ReportTransactionManager extends Controller
                         $preparedBy = AdminModel::where('id', $request->get('admin'))->first();
                         $logoPh = $this->getCompressedBase64Image('assets/images/LOGO-PH.png', 'png');
                         $logoWebp = $this->getCompressedBase64Image('assets/images/LOGO.webp', 'webp');
-                        $generatedBy = AdminModel::where('id', session()->get('loggedInInventoryAdmin')['id'])->first();
+                        $generatedBy = AdminModel::where('client_id', session()->get('loggedInInventoryAdmin')['id'])->first();
                         $data = [
                             'transactions' => $transactions,
                             'preparedBy' => $preparedBy,
@@ -302,7 +302,7 @@ class ReportTransactionManager extends Controller
                     $now = Carbon::now('Asia/Manila')->format('F j, Y h:i A');
                     $logoPh = $this->getCompressedBase64Image('assets/images/LOGO-PH.png', 'png');
                     $logoWebp = $this->getCompressedBase64Image('assets/images/LOGO.webp', 'webp');
-                    $generatedBy = AdminModel::where('id', session()->get('loggedInInventoryAdmin')['id'])->first();
+                    $generatedBy = AdminModel::where('client_id', session()->get('loggedInInventoryAdmin')['id'])->first();
                     $preparedBy = AdminModel::where('id', $request->get('admin'))->first();
                     $client = ClientModel::where('id', $selectionOption)->first();
                     $data = [
@@ -345,7 +345,7 @@ class ReportTransactionManager extends Controller
                     $now = Carbon::now('Asia/Manila')->format('F j, Y h:i A');
                     $logoPh = $this->getCompressedBase64Image('assets/images/LOGO-PH.png', 'png');
                     $logoWebp = $this->getCompressedBase64Image('assets/images/LOGO.webp', 'webp');
-                    $generatedBy = AdminModel::where('id', session()->get('loggedInInventoryAdmin')['id'])->first();
+                    $generatedBy = AdminModel::where('client_id', session()->get('loggedInInventoryAdmin')['id'])->first();
                     $preparedBy = AdminModel::where('id', $request->get('admin'))->first();
 
                     // You might not have a single client here, but if you want you can pass the division name or leave null
